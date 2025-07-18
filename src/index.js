@@ -174,31 +174,23 @@
 
   /**
    * Disable all buttons except the specified one during critical operations
-   * @param {HTMLElement} exceptButton - Button to keep enabled
+
    */
-  const disableAllButtons = (exceptButton = null) => {
+  const disableAllButtons = () => {
     const buttons = [connectAndInitBtn, downloadLatestBtn, downloadNightlyBtn, writeBtn, verifyBtn, runBtn]
     buttons.forEach(button => {
-      if (button !== exceptButton) {
-        button.disabled = true
-      }
+      button.disabled = true
     })
-    // Also disable file input
-    if (fileInput !== exceptButton) {
-      fileInput.disabled = true
-    }
   }
 
   /**
    * Enable all buttons after critical operations complete
    */
   const enableAllButtons = () => {
-    const buttons = [connectAndInitBtn, downloadLatestBtn, downloadNightlyBtn, writeBtn, verifyBtn, runBtn]
+    const buttons = [connectAndInitBtn, downloadLatestBtn, downloadNightlyBtn, writeBtn, verifyBtn, runBtn, fileInput]
     buttons.forEach(button => {
       button.disabled = false
     })
-    // Also enable file input
-    fileInput.disabled = false
   }
 
   /**
@@ -343,7 +335,7 @@
     
     try {
       // Disable all buttons except the write button during firmware write operation
-      disableAllButtons(writeBtn)
+      disableAllButtons()
       toggleProgress(true)
       showStatus('正在烧入固件...', 'info')
       
@@ -418,7 +410,7 @@
     
     try {
       // Disable all buttons except the verify button during firmware verification operation
-      disableAllButtons(verifyBtn)
+      disableAllButtons()
       toggleProgress(true)
       showStatus('正在验证固件...', 'info')
       
