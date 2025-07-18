@@ -119,6 +119,47 @@
         font-size: 13px;
       }
 
+      .version-info-container {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .version-info {
+        flex: 1;
+        min-width: 200px;
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 12px;
+        text-align: center;
+      }
+
+      .version-label {
+        font-size: 12px;
+        color: #6c757d;
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+
+      .version-value {
+        font-size: 14px;
+        color: #495057;
+        font-weight: 600;
+        word-break: break-all;
+      }
+
+      .version-value.loading {
+        color: #6c757d;
+        font-style: italic;
+      }
+
+      .version-value.error {
+        color: #dc3545;
+        font-size: 12px;
+      }
+
       .file-input-wrapper {
         position: relative;
         display: inline-block;
@@ -275,6 +316,16 @@
 
         <div class="section">
           <h3>📥 固件下载</h3>
+          <div class="version-info-container">
+            <div class="version-info" id="LatestVersionInfo">
+              <div class="version-label">最新版本</div>
+              <div class="version-value" id="LatestVersion">获取中...</div>
+            </div>
+            <div class="version-info" id="NightlyVersionInfo">
+              <div class="version-label">每日构建</div>
+              <div class="version-value" id="NightlyVersion">获取中...</div>
+            </div>
+          </div>
           <div class="button-group">
             <input type="button" value="下载最新固件" id="DownloadLatest" class="download-btn" />
             <input type="button" value="下载每日构建" id="DownloadNightly" class="download-btn" />

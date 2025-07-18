@@ -10,6 +10,10 @@
   const downloadNightlyBtn = document.getElementById('DownloadNightly')
   /** @type {HTMLDivElement} */
   const downloadStatus = document.getElementById('DownloadStatus')
+  /** @type {HTMLDivElement} */
+  const latestVersionElement = document.getElementById('LatestVersion')
+  /** @type {HTMLDivElement} */
+  const nightlyVersionElement = document.getElementById('NightlyVersion')
 
   /** @type {HTMLInputElement} */
   const fileInput = document.getElementById('FileInput')
@@ -48,6 +52,88 @@
   const FIRMWARE_URLS = {
     latest: 'https://github.com/SimDevices-Project/SimGEKI/releases/latest/download/SimGEKI-SimGETRO_Public.bin',
     nightly: 'https://github.com/SimDevices-Project/SimGEKI/releases/download/nightly/SimGEKI-SimGETRO_Public.bin'
+  }
+
+  // GitHub API URLs for version information
+  const API_URLS = {
+    latest: 'https://api.github.com/repos/SimDevices-Project/SimGEKI/releases/latest',
+    nightly: 'https://api.github.com/repos/SimDevices-Project/SimGEKI/releases/tags/nightly'
+  }
+
+  /**
+   * Fetch and display latest version information
+   */
+  const fetchLatestVersion = async () => {
+    try {
+      latestVersionElement.className = 'version-value loading'
+      latestVersionElement.textContent = '获取中...'
+      
+      const response = await fetch(API_URLS.latest)
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`)
+      }
+      
+      const data = await response.json()
+      const version = data.tag_name || '未知版本'
+      
+      latestVersionElement.className = 'version-value'
+      latestVersionElement.textContent = version
+      showLog(`获取到最新版本信息: ${version}`)
+      
+    } catch (error) {
+      latestVersionElement.className = 'version-value error'
+      latestVersionElement.textContent = '获取失败'
+      showLog(`获取最新版本信息失败: ${error.message}`)
+    }
+  }
+
+  /**
+   * Fetch and display nightly version information
+   */
+  const fetchNightlyVersion = async () => {
+    try {
+      nightlyVersionElement.className = 'version-value loading'
+      nightlyVersionElement.textContent = '获取中...'
+      
+      const response = await fetch(API_URLS.nightly)
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`)
+      }
+      
+      const data = await response.json()
+      const publishedAt = data.published_at
+      
+      if (publishedAt) {
+        // Format the date: "2025-07-18T15:23:30Z" -> "2025-07-18 15:23"
+        const date = new Date(publishedAt)
+        const formattedDate = date.getFullYear() + '-' + 
+          String(date.getMonth() + 1).padStart(2, '0') + '-' + 
+          String(date.getDate()).padStart(2, '0') + ' ' +
+          String(date.getHours()).padStart(2, '0') + ':' + 
+          String(date.getMinutes()).padStart(2, '0')
+        
+        nightlyVersionElement.className = 'version-value'
+        nightlyVersionElement.textContent = formattedDate
+        showLog(`获取到每日构建信息: ${formattedDate}`)
+      } else {
+        throw new Error('无发布日期信息')
+      }
+      
+    } catch (error) {
+      nightlyVersionElement.className = 'version-value error'
+      nightlyVersionElement.textContent = '获取失败'
+      showLog(`获取每日构建信息失败: ${error.message}`)
+    }
+  }
+
+  /**
+   * Fetch all version information
+   */
+  const fetchVersionInfo = async () => {
+    await Promise.all([
+      fetchLatestVersion(),
+      fetchNightlyVersion()
+    ])
   }
 
   /**
@@ -451,4 +537,7 @@
   writeBtn.addEventListener('click', writeFirmeware)
   verifyBtn.addEventListener('click', verifyFirmeware)
   runBtn.addEventListener('click', runFirmeware)
+
+  // Fetch version information when page loads
+  fetchVersionInfo()
 })()
