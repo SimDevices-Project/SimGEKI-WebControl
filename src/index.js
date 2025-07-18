@@ -1,4 +1,42 @@
 ;(async () => {
+  // Tab functionality
+  const tabButtons = document.querySelectorAll('.tab-button')
+  const tabContents = document.querySelectorAll('.tab-content')
+
+  /**
+   * Switch to specified tab
+   * @param {string} tabName - Name of tab to switch to
+   */
+  const switchTab = (tabName) => {
+    // Update tab buttons
+    tabButtons.forEach(button => {
+      if (button.dataset.tab === tabName) {
+        button.classList.add('active')
+      } else {
+        button.classList.remove('active')
+      }
+    })
+
+    // Update tab contents
+    tabContents.forEach(content => {
+      if (content.id === `${tabName}-tab`) {
+        content.classList.add('active')
+      } else {
+        content.classList.remove('active')
+      }
+    })
+
+    showLog(`切换到${tabName === 'firmware' ? '固件刷入' : '设备配置'}标签页`)
+  }
+
+  // Add click listeners to tab buttons
+  tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      switchTab(button.dataset.tab)
+    })
+  })
+
+  // Firmware tab elements
   /** @type {HTMLInputElement} */
   const connectAndInitBtn = document.getElementById('ConnectAndInit')
   /** @type {HTMLDivElement} */
@@ -40,13 +78,35 @@
   /** @type {HTMLTextAreaElement} */
   const logBox = document.getElementById('LogBox')
 
+  // Config tab elements
+  /** @type {HTMLInputElement} */
+  const connectConfigBtn = document.getElementById('ConnectConfigDevice')
+  /** @type {HTMLUListElement} */
+  const configConnectList = document.getElementById('ConfigConnectedList')
+  /** @type {HTMLDivElement} */
+  const configConnectionStatus = document.getElementById('ConfigConnectionStatus')
+  /** @type {HTMLInputElement} */
+  const readConfigBtn = document.getElementById('ReadConfig')
+  /** @type {HTMLInputElement} */
+  const writeConfigBtn = document.getElementById('WriteConfig')
+  /** @type {HTMLInputElement} */
+  const resetDeviceBtn = document.getElementById('ResetDevice')
+  /** @type {HTMLDivElement} */
+  const configOperationStatus = document.getElementById('ConfigOperationStatus')
+  /** @type {HTMLDivElement} */
+  const deviceInfo = document.getElementById('DeviceInfo')
+  /** @type {HTMLTextAreaElement} */
+  const configLogBox = document.getElementById('ConfigLogBox')
+
   let activeDevice = null
+  let configDevice = null // Device for configuration mode (main firmware)
 
   let isDataReceived = false
   let ReceivedData = new Uint8Array([])
   let downloadedFirmware = null
 
   const REPORT_ID = 0xaa
+  const CONFIG_REPORT_ID = 0x01 // Different report ID for main firmware
 
   // Firmware URLs
   const FIRMWARE_URLS = {
@@ -179,7 +239,7 @@
 
    */
   const disableAllButtons = () => {
-    const buttons = [connectAndInitBtn, downloadLatestBtn, downloadNightlyBtn, writeBtn, verifyBtn, runBtn]
+    const buttons = [connectAndInitBtn, downloadLatestBtn, downloadNightlyBtn, writeBtn, verifyBtn, runBtn, connectConfigBtn, readConfigBtn, writeConfigBtn, resetDeviceBtn]
     buttons.forEach(button => {
       button.disabled = true
     })
@@ -189,7 +249,7 @@
    * Enable all buttons after critical operations complete
    */
   const enableAllButtons = () => {
-    const buttons = [connectAndInitBtn, downloadLatestBtn, downloadNightlyBtn, writeBtn, verifyBtn, runBtn, fileInput]
+    const buttons = [connectAndInitBtn, downloadLatestBtn, downloadNightlyBtn, writeBtn, verifyBtn, runBtn, fileInput, connectConfigBtn, readConfigBtn, writeConfigBtn, resetDeviceBtn]
     buttons.forEach(button => {
       button.disabled = false
     })
@@ -288,6 +348,11 @@
   const showLog = (message) => {
     logBox.value += message + '\n'
     logBox.scrollTop = logBox.scrollHeight
+  }
+
+  const showConfigLog = (message) => {
+    configLogBox.value += message + '\n'
+    configLogBox.scrollTop = configLogBox.scrollHeight
   }
 
   const onReport = (reportID, data) => {
@@ -463,7 +528,14 @@
       return
     }
     const data = new Uint8Array([0xF0], 0, 63)
-    sendReport(REPORT_ID, data)
+    await sendReport(REPORT_ID, data)
+    showLog('已发送跳转程序指令，准备切换到设备配置模式')
+    
+    // Switch to config tab after a short delay
+    setTimeout(() => {
+      switchTab('config')
+      showConfigLog('已从固件刷入模式切换，准备连接设备配置模式')
+    }, 1000)
   }
 
   /**
@@ -545,6 +617,154 @@
     }
   }
 
+  /**
+   * Connect to device in configuration mode (main firmware)
+   */
+  const connectConfigDevice = async () => {
+    try {
+      connectConfigBtn.disabled = true
+      showStatus('正在请求配置设备...', 'info', configConnectionStatus)
+      showConfigLog('开始连接配置设备...')
+      
+      // Request device with different PID for main firmware
+      const devices = await navigator.hid.requestDevice({
+        filters: [
+          {
+            vendorId: 0x8088,
+            productId: 0x0001, // Different PID for main firmware
+          },
+        ],
+      })
+      
+      if (devices.length === 0) {
+        throw new Error('未选择设备')
+      }
+      
+      configDevice = devices[0]
+      showList(configConnectList, devices)
+      
+      await configDevice.open()
+      showStatus('配置设备已连接！', 'success', configConnectionStatus)
+      showConfigLog(`配置设备已连接: ${configDevice.productName}`)
+      
+      // Read device information
+      readDeviceInfo()
+      
+    } catch (error) {
+      showStatus(`连接失败: ${error.message}`, 'error', configConnectionStatus)
+      showConfigLog(`配置设备连接失败: ${error.message}`)
+      if (configDevice && configDevice.opened) {
+        try {
+          await configDevice.close()
+        } catch (closeError) {
+          showConfigLog(`关闭设备时出错: ${closeError.message}`)
+        }
+      }
+      configDevice = null
+    } finally {
+      connectConfigBtn.disabled = false
+    }
+  }
+
+  /**
+   * Read device information and configuration
+   */
+  const readDeviceInfo = async () => {
+    if (!configDevice || !configDevice.opened) {
+      showConfigLog('设备未连接')
+      return
+    }
+    
+    try {
+      showConfigLog('正在读取设备信息...')
+      deviceInfo.innerHTML = `
+        <strong>设备名称:</strong> ${configDevice.productName || '未知'}<br>
+        <strong>厂商ID:</strong> 0x${configDevice.vendorId.toString(16).padStart(4, '0')}<br>
+        <strong>产品ID:</strong> 0x${configDevice.productId.toString(16).padStart(4, '0')}<br>
+        <strong>序列号:</strong> ${configDevice.serialNumber || '未知'}<br>
+        <strong>状态:</strong> 已连接
+      `
+    } catch (error) {
+      showConfigLog(`读取设备信息失败: ${error.message}`)
+    }
+  }
+
+  /**
+   * Read device configuration
+   */
+  const readConfig = async () => {
+    if (!configDevice || !configDevice.opened) {
+      showStatus('设备未连接', 'error', configOperationStatus)
+      return
+    }
+    
+    try {
+      showStatus('正在读取配置...', 'info', configOperationStatus)
+      showConfigLog('开始读取设备配置...')
+      
+      // This is a placeholder for actual config reading
+      // Implementation depends on the device's configuration protocol
+      showConfigLog('配置读取功能待实现')
+      showStatus('配置读取功能正在开发中', 'info', configOperationStatus)
+      
+    } catch (error) {
+      showStatus(`读取配置失败: ${error.message}`, 'error', configOperationStatus)
+      showConfigLog(`读取配置失败: ${error.message}`)
+    }
+  }
+
+  /**
+   * Write device configuration
+   */
+  const writeConfig = async () => {
+    if (!configDevice || !configDevice.opened) {
+      showStatus('设备未连接', 'error', configOperationStatus)
+      return
+    }
+    
+    try {
+      showStatus('正在写入配置...', 'info', configOperationStatus)
+      showConfigLog('开始写入设备配置...')
+      
+      // This is a placeholder for actual config writing
+      // Implementation depends on the device's configuration protocol
+      showConfigLog('配置写入功能待实现')
+      showStatus('配置写入功能正在开发中', 'info', configOperationStatus)
+      
+    } catch (error) {
+      showStatus(`写入配置失败: ${error.message}`, 'error', configOperationStatus)
+      showConfigLog(`写入配置失败: ${error.message}`)
+    }
+  }
+
+  /**
+   * Reset device
+   */
+  const resetDevice = async () => {
+    if (!configDevice || !configDevice.opened) {
+      showStatus('设备未连接', 'error', configOperationStatus)
+      return
+    }
+    
+    try {
+      if (!confirm('确定要重置设备吗？这将重启设备并恢复默认设置。')) {
+        return
+      }
+      
+      showStatus('正在重置设备...', 'info', configOperationStatus)
+      showConfigLog('开始重置设备...')
+      
+      // This is a placeholder for actual device reset
+      // Implementation depends on the device's reset protocol
+      showConfigLog('设备重置功能待实现')
+      showStatus('设备重置功能正在开发中', 'info', configOperationStatus)
+      
+    } catch (error) {
+      showStatus(`重置设备失败: ${error.message}`, 'error', configOperationStatus)
+      showConfigLog(`重置设备失败: ${error.message}`)
+    }
+  }
+
   // Event listeners
   connectAndInitBtn.addEventListener('click', connectAndInitialize)
   
@@ -564,6 +784,12 @@
   writeBtn.addEventListener('click', writeFirmeware)
   verifyBtn.addEventListener('click', verifyFirmeware)
   runBtn.addEventListener('click', runFirmeware)
+
+  // Config tab event listeners
+  connectConfigBtn.addEventListener('click', connectConfigDevice)
+  readConfigBtn.addEventListener('click', readConfig)
+  writeConfigBtn.addEventListener('click', writeConfig)
+  resetDeviceBtn.addEventListener('click', resetDevice)
 
   // Fetch version information when page loads
   fetchVersionInfo()

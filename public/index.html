@@ -301,6 +301,66 @@
         border: 1px solid #bee5eb;
       }
 
+      /* Tab styles */
+      .tab-container {
+        background: white;
+        border-radius: 0 0 15px 15px;
+        overflow: hidden;
+      }
+
+      .tab-nav {
+        display: flex;
+        background: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+      }
+
+      .tab-button {
+        flex: 1;
+        padding: 15px 20px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+        color: #6c757d;
+        transition: all 0.3s ease;
+        border-radius: 0;
+        box-shadow: none;
+        position: relative;
+      }
+
+      .tab-button:hover {
+        background: #e9ecef;
+        color: #495057;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .tab-button.active {
+        background: white;
+        color: #4facfe;
+        border-bottom: 3px solid #4facfe;
+      }
+
+      .tab-button.active::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: #4facfe;
+      }
+
+      .tab-content {
+        display: none;
+        padding: 30px;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
       @media (max-width: 600px) {
         .button-group {
           flex-direction: column;
@@ -310,6 +370,11 @@
           width: 100%;
           text-align: center;
         }
+
+        .tab-button {
+          padding: 12px 15px;
+          font-size: 14px;
+        }
       }
     </style>
   </head>
@@ -317,10 +382,16 @@
     <div class="container">
       <div class="header">
         <h1>SimGEKI WebControl</h1>
-        <p>设备固件管理工具</p>
+        <p>设备固件管理与配置工具</p>
       </div>
       
-      <div class="content">
+      <div class="tab-container">
+        <div class="tab-nav">
+          <button class="tab-button active" data-tab="firmware">🔧 固件刷入</button>
+          <button class="tab-button" data-tab="config">⚙️ 设备配置</button>
+        </div>
+        
+        <div class="tab-content active" id="firmware-tab">
         <div class="section">
           <h3>🔗 设备连接</h3>
           <div class="button-group">
@@ -380,6 +451,40 @@
         <div class="section">
           <h3>📝 操作日志</h3>
           <textarea name="log" id="LogBox" class="log-box" readonly></textarea>
+        </div>
+        </div>
+        
+        <div class="tab-content" id="config-tab">
+          <div class="section">
+            <h3>🔗 设备连接</h3>
+            <div class="button-group">
+              <input type="button" value="连接设备" id="ConnectConfigDevice" />
+            </div>
+            <ul id="ConfigConnectedList" class="connected-list"></ul>
+            <div id="ConfigConnectionStatus" class="status"></div>
+          </div>
+
+          <div class="section">
+            <h3>⚙️ 设备配置</h3>
+            <div class="button-group">
+              <input type="button" value="读取配置" id="ReadConfig" />
+              <input type="button" value="写入配置" id="WriteConfig" />
+              <input type="button" value="重置设备" id="ResetDevice" />
+            </div>
+            <div id="ConfigOperationStatus" class="status"></div>
+          </div>
+
+          <div class="section">
+            <h3>📊 设备信息</h3>
+            <div id="DeviceInfo" style="background: #f8f9fa; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 14px; line-height: 1.6;">
+              未连接设备
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>📝 配置日志</h3>
+            <textarea name="configLog" id="ConfigLogBox" class="log-box" readonly></textarea>
+          </div>
         </div>
       </div>
     </div>
