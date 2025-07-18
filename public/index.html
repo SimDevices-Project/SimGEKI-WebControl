@@ -109,6 +109,16 @@
         box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
       }
 
+      .download-notice {
+        margin-top: 15px;
+        padding: 10px;
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        border-radius: 5px;
+        color: #856404;
+        font-size: 13px;
+      }
+
       .file-input-wrapper {
         position: relative;
         display: inline-block;
@@ -271,6 +281,9 @@
             <input type="button" value="下载每日构建" id="DownloadNightly" class="download-btn" />
           </div>
           <div id="DownloadStatus" class="status"></div>
+          <div class="download-notice">
+            💡 <strong>提示：</strong>如果下载失败（CORS错误），请手动下载固件文件后使用"选择固件文件"功能。
+          </div>
         </div>
 
         <div class="section">

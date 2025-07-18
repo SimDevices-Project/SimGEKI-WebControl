@@ -136,8 +136,21 @@
       showLog(`${name}固件下载完成，大小: ${receivedLength} 字节`)
       
     } catch (error) {
-      showStatus(`下载失败: ${error.message}`, 'error', downloadStatus)
-      showLog(`固件下载失败: ${error.message}`)
+      // Check if it's a CORS error
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        showStatus(`下载失败：CORS错误。请手动下载固件文件：${url}`, 'error', downloadStatus)
+        showLog(`CORS错误：无法从 ${url} 下载固件。请手动下载后使用"选择文件"功能。`)
+        
+        // Show user-friendly instructions
+        setTimeout(() => {
+          if (confirm('由于浏览器安全限制，无法直接下载固件。是否打开GitHub下载页面？')) {
+            window.open(url, '_blank')
+          }
+        }, 1000)
+      } else {
+        showStatus(`下载失败: ${error.message}`, 'error', downloadStatus)
+        showLog(`固件下载失败: ${error.message}`)
+      }
     } finally {
       downloadLatestBtn.disabled = false
       downloadNightlyBtn.disabled = false
