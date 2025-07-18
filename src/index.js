@@ -291,7 +291,7 @@
   }
 
   const onReport = (reportID, data) => {
-    showLog(`Received report: ${reportID}\n${new Uint8Array(data.buffer)}`)
+    // showLog(`Received report: ${reportID}\n${new Uint8Array(data.buffer)}`)
     isDataReceived = true
     ReceivedData = new Uint8Array(data.buffer)
   }
@@ -301,7 +301,7 @@
       return
     }
     await activeDevice.sendReport(reportID, new Uint8Array(data))
-    showLog(`Sent report: ${reportID}\n${new Uint8Array(data)}`)
+    // showLog(`Sent report: ${reportID}\n${new Uint8Array(data)}`)
   }
 
   const writeFirmeware = async () => {
