@@ -173,6 +173,35 @@
   }
 
   /**
+   * Disable all buttons except the specified one during critical operations
+   * @param {HTMLElement} exceptButton - Button to keep enabled
+   */
+  const disableAllButtons = (exceptButton = null) => {
+    const buttons = [connectAndInitBtn, downloadLatestBtn, downloadNightlyBtn, writeBtn, verifyBtn, runBtn]
+    buttons.forEach(button => {
+      if (button !== exceptButton) {
+        button.disabled = true
+      }
+    })
+    // Also disable file input
+    if (fileInput !== exceptButton) {
+      fileInput.disabled = true
+    }
+  }
+
+  /**
+   * Enable all buttons after critical operations complete
+   */
+  const enableAllButtons = () => {
+    const buttons = [connectAndInitBtn, downloadLatestBtn, downloadNightlyBtn, writeBtn, verifyBtn, runBtn]
+    buttons.forEach(button => {
+      button.disabled = false
+    })
+    // Also enable file input
+    fileInput.disabled = false
+  }
+
+  /**
    * Download firmware from URL
    * @param {string} url 
    * @param {string} name 
@@ -313,7 +342,8 @@
     }
     
     try {
-      writeBtn.disabled = true
+      // Disable all buttons except the write button during firmware write operation
+      disableAllButtons(writeBtn)
       toggleProgress(true)
       showStatus('正在烧入固件...', 'info')
       
@@ -349,7 +379,8 @@
       showStatus(`烧入失败: ${error.message}`, 'error')
       showLog(`固件烧入失败: ${error.message}`)
     } finally {
-      writeBtn.disabled = false
+      // Re-enable all buttons after operation completes
+      enableAllButtons()
       setTimeout(() => toggleProgress(false), 2000)
     }
   }
@@ -386,7 +417,8 @@
     }
     
     try {
-      verifyBtn.disabled = true
+      // Disable all buttons except the verify button during firmware verification operation
+      disableAllButtons(verifyBtn)
       toggleProgress(true)
       showStatus('正在验证固件...', 'info')
       
@@ -426,7 +458,8 @@
       showStatus(`验证失败: ${error.message}`, 'error')
       showLog(`固件验证失败: ${error.message}`)
     } finally {
-      verifyBtn.disabled = false
+      // Re-enable all buttons after operation completes
+      enableAllButtons()
       setTimeout(() => toggleProgress(false), 2000)
     }
   }
