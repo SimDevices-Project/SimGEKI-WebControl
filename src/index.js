@@ -50,8 +50,8 @@
 
   // Firmware URLs
   const FIRMWARE_URLS = {
-    latest: 'https://github.com/SimDevices-Project/SimGEKI/releases/latest/download/SimGEKI-SimGETRO_Public.bin',
-    nightly: 'https://github.com/SimDevices-Project/SimGEKI/releases/download/nightly/SimGEKI-SimGETRO_Public.bin'
+    latest: 'https://simdevices-project.github.io/SimGEKI/standard/SimGEKI-SimGETRO_Public.bin',
+    nightly: 'https://simdevices-project.github.io/SimGEKI/nightly/SimGEKI-SimGETRO_Public.bin'
   }
 
   // GitHub API URLs for version information
@@ -157,6 +157,7 @@
     progressText.textContent = text || `${Math.round(percent)}%`
   }
 
+  let timer = null
   /**
    * Show status message
    * @param {string} message 
@@ -167,9 +168,10 @@
     element.className = `status ${type}`
     element.textContent = message
     element.style.display = 'block'
-    setTimeout(() => {
+    clearTimeout(timer)
+    timer = setTimeout(() => {
       element.style.display = 'none'
-    }, 5000)
+    }, 8000)
   }
 
   /**
