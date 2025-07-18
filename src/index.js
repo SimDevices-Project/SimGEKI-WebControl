@@ -1,10 +1,8 @@
 ;(async () => {
   /** @type {HTMLInputElement} */
-  const requestBtn = document.getElementById('RequestDevices')
-  /** @type {HTMLInputElement} */
-  const connectBtn = document.getElementById('ConnectDevice')
-  /** @type {HTMLInputElement} */
-  const iapInitBtn = document.getElementById('IAP_Init')
+  const connectAndInitBtn = document.getElementById('ConnectAndInit')
+  /** @type {HTMLDivElement} */
+  const connectionStatus = document.getElementById('ConnectionStatus')
 
   /** @type {HTMLInputElement} */
   const downloadLatestBtn = document.getElementById('DownloadLatest')
@@ -183,34 +181,10 @@
     logBox.scrollTop = logBox.scrollHeight
   }
 
-  const requestDevices = async () => {
-    const devices = await navigator.hid.requestDevice({
-      filters: [
-        {
-          vendorId: 0x8088,
-          productId: 0x00fe,
-        },
-      ],
-    })
-    showList(connectList, devices)
-    activeDevice = devices[0]
-  }
-
   const onReport = (reportID, data) => {
     showLog(`Received report: ${reportID}\n${new Uint8Array(data.buffer)}`)
     isDataReceived = true
     ReceivedData = new Uint8Array(data.buffer)
-  }
-
-  const connectDevice = async () => {
-    if (activeDevice === null || activeDevice.opened) {
-      return
-    }
-    await activeDevice.open()
-    showLog('Device connected to ' + activeDevice.productName)
-    activeDevice.addEventListener('inputreport', (event) => {
-      onReport(event.reportId, event.data)
-    })
   }
 
   const sendReport = async (reportID, data) => {
@@ -219,14 +193,6 @@
     }
     await activeDevice.sendReport(reportID, new Uint8Array(data))
     showLog(`Sent report: ${reportID}\n${new Uint8Array(data)}`)
-  }
-
-  const initIAP = async () => {
-    if (activeDevice === null || !activeDevice.opened) {
-      return
-    }
-    const data = new Uint8Array([0xa1], 0, 63)
-    sendReport(REPORT_ID, data)
   }
 
   const writeFirmeware = async () => {
@@ -256,7 +222,7 @@
     }
     
     if (isDataReceived === false) {
-      showStatus('请先初始化IAP', 'error')
+      showStatus('请先连接设备并初始化', 'error')
       return
     }
     
@@ -329,7 +295,7 @@
     }
     
     if (isDataReceived === false) {
-      showStatus('请先初始化IAP', 'error')
+      showStatus('请先连接设备并初始化', 'error')
       return
     }
     
@@ -386,17 +352,88 @@
     const data = new Uint8Array([0xF0], 0, 63)
     sendReport(REPORT_ID, data)
   }
-  // const connectDevice = async () => {
-  //   if(activeDevice === null) {
-  //     return
-  //   }
-  //   await activeDevice.open()
-  // }
+
+  /**
+   * Unified function to request device, connect, and initialize IAP
+   */
+  const connectAndInitialize = async () => {
+    try {
+      connectAndInitBtn.disabled = true
+      showStatus('正在请求设备...', 'info', connectionStatus)
+      showLog('开始连接设备流程...')
+      
+      // Step 1: Request devices
+      const devices = await navigator.hid.requestDevice({
+        filters: [
+          {
+            vendorId: 0x8088,
+            productId: 0x00fe,
+          },
+        ],
+      })
+      
+      if (devices.length === 0) {
+        throw new Error('未选择任何设备')
+      }
+      
+      activeDevice = devices[0]
+      showList(connectList, devices)
+      showStatus('设备已选择，正在连接...', 'info', connectionStatus)
+      showLog(`设备已选择: ${activeDevice.productName}`)
+      
+      // Step 2: Connect to device
+      if (activeDevice.opened) {
+        await activeDevice.close()
+      }
+      
+      await activeDevice.open()
+      showStatus('设备已连接，正在初始化IAP...', 'info', connectionStatus)
+      showLog(`设备已连接: ${activeDevice.productName}`)
+      
+      activeDevice.addEventListener('inputreport', (event) => {
+        onReport(event.reportId, event.data)
+      })
+      
+      // Step 3: Initialize IAP
+      const data = new Uint8Array([0xa1], 0, 63)
+      await sendReport(REPORT_ID, data)
+      
+      // Wait for IAP initialization response
+      await new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          reject(new Error('IAP初始化超时'))
+        }, 5000)
+        
+        const interval = setInterval(() => {
+          if (isDataReceived) {
+            clearTimeout(timeout)
+            clearInterval(interval)
+            resolve()
+          }
+        }, 100)
+      })
+      
+      showStatus('设备连接并初始化完成！', 'success', connectionStatus)
+      showLog('IAP初始化完成，设备准备就绪')
+      
+    } catch (error) {
+      showStatus(`连接失败: ${error.message}`, 'error', connectionStatus)
+      showLog(`设备连接失败: ${error.message}`)
+      if (activeDevice && activeDevice.opened) {
+        try {
+          await activeDevice.close()
+        } catch (closeError) {
+          showLog(`关闭设备时出错: ${closeError.message}`)
+        }
+      }
+      activeDevice = null
+    } finally {
+      connectAndInitBtn.disabled = false
+    }
+  }
 
   // Event listeners
-  requestBtn.addEventListener('click', requestDevices)
-  connectBtn.addEventListener('click', connectDevice)
-  iapInitBtn.addEventListener('click', initIAP)
+  connectAndInitBtn.addEventListener('click', connectAndInitialize)
   
   downloadLatestBtn.addEventListener('click', () => downloadFirmware(FIRMWARE_URLS.latest, '最新版'))
   downloadNightlyBtn.addEventListener('click', () => downloadFirmware(FIRMWARE_URLS.nightly, '每日构建'))
