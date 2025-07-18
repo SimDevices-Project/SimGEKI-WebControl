@@ -7,13 +7,31 @@
   const iapInitBtn = document.getElementById('IAP_Init')
 
   /** @type {HTMLInputElement} */
+  const downloadLatestBtn = document.getElementById('DownloadLatest')
+  /** @type {HTMLInputElement} */
+  const downloadNightlyBtn = document.getElementById('DownloadNightly')
+  /** @type {HTMLDivElement} */
+  const downloadStatus = document.getElementById('DownloadStatus')
+
+  /** @type {HTMLInputElement} */
   const fileInput = document.getElementById('FileInput')
+  /** @type {HTMLDivElement} */
+  const selectedFile = document.getElementById('SelectedFile')
   /** @type {HTMLInputElement} */
   const writeBtn = document.getElementById('WriteFirmeware')
   /** @type {HTMLInputElement} */
   const verifyBtn = document.getElementById('VerifyFirmeware')
   /** @type {HTMLInputElement} */
   const runBtn = document.getElementById('RunFirmeware')
+
+  /** @type {HTMLDivElement} */
+  const progressContainer = document.getElementById('ProgressContainer')
+  /** @type {HTMLDivElement} */
+  const progressFill = document.getElementById('ProgressFill')
+  /** @type {HTMLDivElement} */
+  const progressText = document.getElementById('ProgressText')
+  /** @type {HTMLDivElement} */
+  const operationStatus = document.getElementById('OperationStatus')
 
   /** @type {HTMLUListElement} */
   const connectList = document.getElementById('ConnectedList')
@@ -24,8 +42,107 @@
 
   let isDataReceived = false
   let ReceivedData = new Uint8Array([])
+  let downloadedFirmware = null
 
   const REPORT_ID = 0xaa
+
+  // Firmware URLs
+  const FIRMWARE_URLS = {
+    latest: 'https://github.com/SimDevices-Project/SimGEKI/releases/latest/download/SimGEKI-SimGETRO_Public.bin',
+    nightly: 'https://github.com/SimDevices-Project/SimGEKI/releases/download/nightly/SimGEKI-SimGETRO_Public.bin'
+  }
+
+  /**
+   * Show/hide progress bar
+   * @param {boolean} show 
+   */
+  const toggleProgress = (show) => {
+    progressContainer.style.display = show ? 'block' : 'none'
+    if (!show) {
+      updateProgress(0, '')
+    }
+  }
+
+  /**
+   * Update progress bar
+   * @param {number} percent 
+   * @param {string} text 
+   */
+  const updateProgress = (percent, text) => {
+    progressFill.style.width = `${percent}%`
+    progressText.textContent = text || `${Math.round(percent)}%`
+  }
+
+  /**
+   * Show status message
+   * @param {string} message 
+   * @param {'success'|'error'|'info'} type 
+   * @param {HTMLElement} element 
+   */
+  const showStatus = (message, type = 'info', element = operationStatus) => {
+    element.className = `status ${type}`
+    element.textContent = message
+    element.style.display = 'block'
+    setTimeout(() => {
+      element.style.display = 'none'
+    }, 5000)
+  }
+
+  /**
+   * Download firmware from URL
+   * @param {string} url 
+   * @param {string} name 
+   */
+  const downloadFirmware = async (url, name) => {
+    try {
+      downloadLatestBtn.disabled = true
+      downloadNightlyBtn.disabled = true
+      
+      showStatus(`正在下载${name}固件...`, 'info', downloadStatus)
+      
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+      }
+      
+      const reader = response.body.getReader()
+      const contentLength = +response.headers.get('Content-Length')
+      let receivedLength = 0
+      let chunks = []
+      
+      while (true) {
+        const { done, value } = await reader.read()
+        
+        if (done) break
+        
+        chunks.push(value)
+        receivedLength += value.length
+        
+        if (contentLength) {
+          const percent = (receivedLength / contentLength) * 100
+          showStatus(`正在下载${name}固件... ${Math.round(percent)}%`, 'info', downloadStatus)
+        }
+      }
+      
+      downloadedFirmware = new Uint8Array(receivedLength)
+      let position = 0
+      for (let chunk of chunks) {
+        downloadedFirmware.set(chunk, position)
+        position += chunk.length
+      }
+      
+      showStatus(`${name}固件下载完成！大小: ${(receivedLength / 1024).toFixed(2)} KB`, 'success', downloadStatus)
+      selectedFile.textContent = `已下载: ${name}固件 (${(receivedLength / 1024).toFixed(2)} KB)`
+      showLog(`${name}固件下载完成，大小: ${receivedLength} 字节`)
+      
+    } catch (error) {
+      showStatus(`下载失败: ${error.message}`, 'error', downloadStatus)
+      showLog(`固件下载失败: ${error.message}`)
+    } finally {
+      downloadLatestBtn.disabled = false
+      downloadNightlyBtn.disabled = false
+    }
+  }
 
   /**
    *
@@ -100,19 +217,49 @@
   }
 
   const writeFirmeware = async () => {
-    if (isDataReceived === false || fileInput.files.length === 0) {
+    let firmwareData = null
+    let fileName = ''
+    
+    // Check if we have downloaded firmware or local file
+    if (downloadedFirmware) {
+      firmwareData = downloadedFirmware
+      fileName = '下载的固件'
+    } else if (fileInput.files.length > 0) {
+      const file = fileInput.files[0]
+      const reader = new FileReader()
+      fileName = file.name
+      
+      await new Promise((resolve, reject) => {
+        reader.onload = () => {
+          firmwareData = new Uint8Array(reader.result)
+          resolve()
+        }
+        reader.onerror = reject
+        reader.readAsArrayBuffer(file)
+      })
+    } else {
+      showStatus('请先选择固件文件或下载固件', 'error')
       return
     }
-    const file = fileInput.files[0]
-    const reader = new FileReader()
-    reader.readAsArrayBuffer(file)
-    reader.onload = async () => {
-      const data = new Uint8Array(reader.result)
-      let i = 0
-      let length = data.length
-      for (i = 0; i < length; i += 61) {
-        const dataToSend = data.slice(i, i + 61)
-        sendReport(REPORT_ID, [0xa2, 61, ...dataToSend])
+    
+    if (isDataReceived === false) {
+      showStatus('请先初始化IAP', 'error')
+      return
+    }
+    
+    try {
+      writeBtn.disabled = true
+      toggleProgress(true)
+      showStatus('正在烧入固件...', 'info')
+      
+      const totalLength = firmwareData.length
+      const chunkSize = 61
+      let writtenBytes = 0
+      
+      for (let i = 0; i < totalLength; i += chunkSize) {
+        const dataToSend = firmwareData.slice(i, i + chunkSize)
+        await sendReport(REPORT_ID, [0xa2, chunkSize, ...dataToSend])
+        
         await new Promise((resolve) => {
           const interval = setInterval(() => {
             if (isDataReceived) {
@@ -122,27 +269,71 @@
             }
           }, 1)
         })
+        
+        writtenBytes += dataToSend.length
+        const percent = (writtenBytes / totalLength) * 100
+        updateProgress(percent, `烧入中: ${Math.round(percent)}%`)
       }
-      sendReport(REPORT_ID, [0xa3])
-      showLog('Firmeware write done')
+      
+      await sendReport(REPORT_ID, [0xa3])
+      updateProgress(100, '烧入完成')
+      showStatus(`固件烧入完成: ${fileName}`, 'success')
+      showLog(`固件烧入完成: ${fileName}`)
+      
+    } catch (error) {
+      showStatus(`烧入失败: ${error.message}`, 'error')
+      showLog(`固件烧入失败: ${error.message}`)
+    } finally {
+      writeBtn.disabled = false
+      setTimeout(() => toggleProgress(false), 2000)
     }
   }
 
   const verifyFirmeware = async () => {
-    if (isDataReceived === false || fileInput.files.length === 0) {
+    let firmwareData = null
+    let fileName = ''
+    
+    // Check if we have downloaded firmware or local file
+    if (downloadedFirmware) {
+      firmwareData = downloadedFirmware
+      fileName = '下载的固件'
+    } else if (fileInput.files.length > 0) {
+      const file = fileInput.files[0]
+      const reader = new FileReader()
+      fileName = file.name
+      
+      await new Promise((resolve, reject) => {
+        reader.onload = () => {
+          firmwareData = new Uint8Array(reader.result)
+          resolve()
+        }
+        reader.onerror = reject
+        reader.readAsArrayBuffer(file)
+      })
+    } else {
+      showStatus('请先选择固件文件或下载固件', 'error')
       return
     }
-    const file = fileInput.files[0]
-    const reader = new FileReader()
-    reader.readAsArrayBuffer(file)
-    let state_OK = true
-    reader.onload = async () => {
-      const data = new Uint8Array(reader.result)
-      let i = 0
-      let length = data.length
-      for (i = 0; i < length; i += 61) {
-        const dataToSend = data.slice(i, i + 61)
-        sendReport(REPORT_ID, [0xa4, 61, ...dataToSend])
+    
+    if (isDataReceived === false) {
+      showStatus('请先初始化IAP', 'error')
+      return
+    }
+    
+    try {
+      verifyBtn.disabled = true
+      toggleProgress(true)
+      showStatus('正在验证固件...', 'info')
+      
+      const totalLength = firmwareData.length
+      const chunkSize = 61
+      let verifiedBytes = 0
+      let state_OK = true
+      
+      for (let i = 0; i < totalLength; i += chunkSize) {
+        const dataToSend = firmwareData.slice(i, i + chunkSize)
+        await sendReport(REPORT_ID, [0xa4, chunkSize, ...dataToSend])
+        
         await new Promise((resolve) => {
           const interval = setInterval(() => {
             if (isDataReceived) {
@@ -155,9 +346,23 @@
             }
           }, 1)
         })
+        
+        verifiedBytes += dataToSend.length
+        const percent = (verifiedBytes / totalLength) * 100
+        updateProgress(percent, `验证中: ${Math.round(percent)}%`)
       }
-      sendReport(REPORT_ID, [0xa5])
-      showLog(`Firmeware verify ${state_OK ? 'OK' : 'Failed'}`)
+      
+      await sendReport(REPORT_ID, [0xa5])
+      updateProgress(100, state_OK ? '验证通过' : '验证失败')
+      showStatus(`固件验证${state_OK ? '通过' : '失败'}: ${fileName}`, state_OK ? 'success' : 'error')
+      showLog(`固件验证${state_OK ? '通过' : '失败'}: ${fileName}`)
+      
+    } catch (error) {
+      showStatus(`验证失败: ${error.message}`, 'error')
+      showLog(`固件验证失败: ${error.message}`)
+    } finally {
+      verifyBtn.disabled = false
+      setTimeout(() => toggleProgress(false), 2000)
     }
   }
 
@@ -175,9 +380,24 @@
   //   await activeDevice.open()
   // }
 
+  // Event listeners
   requestBtn.addEventListener('click', requestDevices)
   connectBtn.addEventListener('click', connectDevice)
   iapInitBtn.addEventListener('click', initIAP)
+  
+  downloadLatestBtn.addEventListener('click', () => downloadFirmware(FIRMWARE_URLS.latest, '最新版'))
+  downloadNightlyBtn.addEventListener('click', () => downloadFirmware(FIRMWARE_URLS.nightly, '每日构建'))
+  
+  fileInput.addEventListener('change', (event) => {
+    downloadedFirmware = null // Clear downloaded firmware when local file is selected
+    if (event.target.files.length > 0) {
+      const file = event.target.files[0]
+      selectedFile.textContent = `已选择: ${file.name} (${(file.size / 1024).toFixed(2)} KB)`
+    } else {
+      selectedFile.textContent = ''
+    }
+  })
+  
   writeBtn.addEventListener('click', writeFirmeware)
   verifyBtn.addEventListener('click', verifyFirmeware)
   runBtn.addEventListener('click', runFirmeware)
