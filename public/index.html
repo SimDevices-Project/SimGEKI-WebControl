@@ -467,15 +467,16 @@
           <div class="section">
             <h3>⚙️ 设备配置</h3>
             <div class="button-group">
-              <input type="button" value="读取配置" id="ReadConfig" />
-              <input type="button" value="写入配置" id="WriteConfig" />
-              <input type="button" value="重置设备" id="ResetDevice" />
+              <input type="button" value="重置摇杆" id="ResetLeverBtn" />
+              <input type="button" value="读取摇杆信息" id="ReadLeverInfoBtn" />
+              <input type="button" value="开启实时监控" id="ToggleMonitorBtn" />
+              <!-- <input type="button" value="重置设备" id="ResetDevice" /> -->
             </div>
             <div id="ConfigOperationStatus" class="status"></div>
           </div>
 
           <div class="section">
-            <h3>📊 设备信息</h3>
+            <h3>📊 设备状态</h3>
             <div id="DeviceInfo" style="background: #f8f9fa; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 14px; line-height: 1.6;">
               未连接设备
             </div>
