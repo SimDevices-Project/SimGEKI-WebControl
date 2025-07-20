@@ -28,8 +28,18 @@ jobs:
         node-version: '18'
         cache: 'npm'
         
+    - name: Verify package files
+      run: |
+        echo "package.json content:"
+        cat package.json
+        echo "package-lock.json exists:"
+        ls -la package-lock.json
+        
     - name: Install dependencies
-      run: npm ci
+      run: |
+        # Use npm ci for faster, reliable, reproducible builds
+        # Fall back to npm install if package-lock.json is out of sync
+        npm ci || npm install
       
     - name: Build project
       run: npm run build
