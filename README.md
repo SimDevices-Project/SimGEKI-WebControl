@@ -38,17 +38,20 @@ npm run build
 项目配置了 GitHub Actions 自动构建工作流：
 
 - 当代码推送到 `main` 或 `master` 分支时，会自动触发构建
-- 构建完成后，自动部署到 `gh-pages` 分支
+- 构建完成后，通过 GitHub Pages Actions 自动部署
 - 部署的静态页面可通过 GitHub Pages 访问
 
 ### 工作流程
 
 1. **检出代码** - 获取最新的源代码
-2. **设置 Node.js 环境** - 安装 Node.js 18
-3. **安装依赖** - 运行 `npm ci` 安装项目依赖
-4. **执行 webpack 生产构建** - 编译和压缩 JavaScript 代码
-5. **复制静态文件** - 将 `public` 目录的文件复制到 `dist` 目录
-6. **部署到 gh-pages 分支** - 自动推送构建结果到 GitHub Pages
+2. **设置 Node.js 环境** - 安装 Node.js 18 并配置 npm 缓存
+3. **验证包文件** - 检查 package.json 和 package-lock.json
+4. **安装依赖** - 运行 `npm ci`（失败时回退到 `npm install`）
+5. **执行 webpack 生产构建** - 运行 `npm run build` 编译和压缩代码
+6. **准备部署文件** - 将 `public` 目录的文件复制到 `dist` 目录
+7. **配置 Pages** - 设置 GitHub Pages 部署环境
+8. **上传构建产物** - 上传 `dist` 目录作为 Pages 部署包
+9. **部署到 GitHub Pages** - 通过 GitHub Pages Actions 自动部署
 
 ### 启用 GitHub Pages
 
@@ -56,10 +59,8 @@ npm run build
 
 1. 进入仓库的 **Settings** 页面
 2. 在左侧菜单找到 **Pages** 选项
-3. 在 **Source** 中选择 **Deploy from a branch**
-4. 选择 **gh-pages** 分支作为源
-5. 根目录选择 **/ (root)**
-6. 点击 **Save** 保存设置
+3. 在 **Source** 中选择 **GitHub Actions**
+4. 工作流会自动处理部署，无需手动选择分支
 
 ### 本地预览生产版本
 
@@ -76,4 +77,4 @@ npm run preview
 
 ## 许可证
 
-AGPLv3 License
+AGPL-3.0 License
