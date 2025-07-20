@@ -5,19 +5,490 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SimGEKI-WebControl</title>
-    <style type="text/css"></style>
+    <style type="text/css">
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+        color: #333;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 2.5em;
+        font-weight: 300;
+        margin-bottom: 10px;
+      }
+
+      .header p {
+        opacity: 0.9;
+        font-size: 1.1em;
+      }
+
+      .content {
+        padding: 30px;
+      }
+
+      .section {
+        margin-bottom: 30px;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        border-left: 4px solid #4facfe;
+      }
+
+      .section h3 {
+        margin-bottom: 15px;
+        color: #2c3e50;
+        font-size: 1.3em;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-bottom: 15px;
+      }
+
+      button, input[type="button"] {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+      }
+
+      button:hover, input[type="button"]:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+      }
+
+      button:active, input[type="button"]:active {
+        transform: translateY(0);
+      }
+
+      button:disabled, input[type="button"]:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .download-btn {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+      }
+
+      .download-btn:hover {
+        box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+      }
+
+      .download-notice {
+        margin-top: 15px;
+        padding: 10px;
+        background: #fff3cd;
+        border: 1px solid #ffeaa7;
+        border-radius: 5px;
+        color: #856404;
+        font-size: 13px;
+      }
+
+      .version-info-container {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .version-info {
+        flex: 1;
+        min-width: 200px;
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 12px;
+        text-align: center;
+      }
+
+      .version-label {
+        font-size: 12px;
+        color: #6c757d;
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+
+      .version-value {
+        font-size: 14px;
+        color: #495057;
+        font-weight: 600;
+        word-break: break-all;
+      }
+
+      .version-value.loading {
+        color: #6c757d;
+        font-style: italic;
+      }
+
+      .version-value.error {
+        color: #dc3545;
+        font-size: 12px;
+      }
+
+      .file-input-wrapper {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 15px;
+      }
+
+      input[type="file"] {
+        position: absolute;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+      }
+
+      input[type="file"]:disabled {
+        cursor: not-allowed;
+      }
+
+      .file-input-label {
+        display: inline-block;
+        padding: 12px 24px;
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        color: white;
+        border-radius: 25px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);
+      }
+
+      .file-input-label:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(17, 153, 142, 0.4);
+      }
+
+      .file-input-wrapper:hover {
+        transition: all 0.3s ease;
+        transform: translateY(-2px);
+      }
+
+      .file-input-wrapper:has(input:disabled) .file-input-label {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);
+      }
+
+      .progress-container {
+        margin: 20px 0;
+        display: none;
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 20px;
+        background: #e9ecef;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 10px;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        width: 0%;
+        transition: width 0.3s ease;
+        border-radius: 10px;
+      }
+
+      .progress-text {
+        text-align: center;
+        font-size: 14px;
+        color: #666;
+        font-weight: 500;
+      }
+
+      .connected-list {
+        background: white;
+        border: 2px dashed #dee2e6;
+        border-radius: 10px;
+        padding: 15px;
+        margin: 15px 0;
+        min-height: 60px;
+      }
+
+      .connected-list:empty::before {
+        content: "未连接设备";
+        color: #999;
+        font-style: italic;
+      }
+
+      .connected-list li {
+        background: #e3f2fd;
+        padding: 8px 15px;
+        margin: 5px 0;
+        border-radius: 20px;
+        border-left: 4px solid #2196f3;
+        list-style: none;
+      }
+
+      .log-box {
+        width: 100%;
+        height: 200px;
+        border: 2px solid #dee2e6;
+        border-radius: 10px;
+        padding: 15px;
+        font-family: 'Courier New', monospace;
+        font-size: 12px;
+        background: #f8f9fa;
+        resize: vertical;
+        line-height: 1.4;
+      }
+
+      .status {
+        padding: 10px 15px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 500;
+        margin: 10px 0;
+        display: none;
+      }
+
+      .status.success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .status.error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      .status.info {
+        background: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
+      }
+
+      /* Tab styles */
+      .tab-container {
+        background: white;
+        border-radius: 0 0 15px 15px;
+        overflow: hidden;
+      }
+
+      .tab-nav {
+        display: flex;
+        background: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+      }
+
+      .tab-button {
+        flex: 1;
+        padding: 15px 20px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+        color: #6c757d;
+        transition: all 0.3s ease;
+        border-radius: 0;
+        box-shadow: none;
+        position: relative;
+      }
+
+      .tab-button:hover {
+        background: #e9ecef;
+        color: #495057;
+        transform: none;
+        box-shadow: none;
+      }
+
+      .tab-button.active {
+        background: white;
+        color: #4facfe;
+        border-bottom: 3px solid #4facfe;
+      }
+
+      .tab-button.active::after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: #4facfe;
+      }
+
+      .tab-content {
+        display: none;
+        padding: 30px;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      @media (max-width: 600px) {
+        .button-group {
+          flex-direction: column;
+        }
+        
+        button, input[type="button"], .file-input-label {
+          width: 100%;
+          text-align: center;
+        }
+
+        .tab-button {
+          padding: 12px 15px;
+          font-size: 14px;
+        }
+      }
+    </style>
   </head>
   <body>
-    <h1>WebControl</h1>
-    <input type="button" value="请求设备" id="RequestDevices" />
-    <input type="button" value="连接设备" id="ConnectDevice" />
-    <input type="button" value="初始化IAP" id="IAP_Init" />
-    <input type="file" name="fileInput" id="FileInput">
-    <input type="button" value="烧入固件" id="WriteFirmeware">
-    <input type="button" value="验证固件" id="VerifyFirmeware">
-    <input type="button" value="跳转程序" id="RunFirmeware">
-    <ul id="ConnectedList"></ul>
-    <textarea name="log" id="LogBox"></textarea>
+    <div class="container">
+      <div class="header">
+        <h1>SimGEKI WebControl</h1>
+        <p>设备固件管理与配置工具</p>
+      </div>
+      
+      <div class="tab-container">
+        <div class="tab-nav">
+          <button class="tab-button active" data-tab="firmware">🔧 固件刷入</button>
+          <button class="tab-button" data-tab="config">⚙️ 设备配置</button>
+        </div>
+        
+        <div class="tab-content active" id="firmware-tab">
+        <div class="section">
+          <h3>🔗 设备连接</h3>
+          <div class="button-group">
+            <input type="button" value="连接设备并初始化" id="ConnectAndInit" />
+          </div>
+          <ul id="ConnectedList" class="connected-list"></ul>
+          <div id="ConnectionStatus" class="status"></div>
+        </div>
+
+        <div class="section">
+          <h3>📥 固件下载</h3>
+          <div class="version-info-container">
+            <div class="version-info" id="LatestVersionInfo">
+              <div class="version-label">最新版本</div>
+              <div class="version-value" id="LatestVersion">获取中...</div>
+            </div>
+            <div class="version-info" id="NightlyVersionInfo">
+              <div class="version-label">每日构建</div>
+              <div class="version-value" id="NightlyVersion">获取中...</div>
+            </div>
+          </div>
+          <div class="button-group">
+            <input type="button" value="下载最新固件" id="DownloadLatest" class="download-btn" />
+            <input type="button" value="下载每日构建" id="DownloadNightly" class="download-btn" />
+          </div>
+          <div id="DownloadStatus" class="status"></div>
+          <div class="download-notice">
+            💡 <strong>提示：</strong>如果下载失败（CORS错误），请手动下载固件文件后使用"选择固件文件"功能。
+          </div>
+        </div>
+
+        <div class="section">
+          <h3>📁 本地固件文件</h3>
+          <div class="file-input-wrapper">
+            <input type="file" name="fileInput" id="FileInput" accept=".bin">
+            <label for="FileInput" class="file-input-label">选择固件文件</label>
+          </div>
+          <div id="SelectedFile" style="margin-top: 10px; font-size: 14px; color: #666;"></div>
+        </div>
+
+        <div class="section">
+          <h3>⚡ 固件操作</h3>
+          <div class="button-group">
+            <input type="button" value="烧入固件" id="WriteFirmeware">
+            <input type="button" value="验证固件" id="VerifyFirmeware">
+            <input type="button" value="跳转程序" id="RunFirmeware">
+          </div>
+          <div class="progress-container" id="ProgressContainer">
+            <div class="progress-bar">
+              <div class="progress-fill" id="ProgressFill"></div>
+            </div>
+            <div class="progress-text" id="ProgressText">0%</div>
+          </div>
+          <div id="OperationStatus" class="status"></div>
+        </div>
+
+        <div class="section">
+          <h3>📝 操作日志</h3>
+          <textarea name="log" id="LogBox" class="log-box" readonly></textarea>
+        </div>
+        </div>
+        
+        <div class="tab-content" id="config-tab">
+          <div class="section">
+            <h3>🔗 设备连接</h3>
+            <div class="button-group">
+              <input type="button" value="连接设备" id="ConnectConfigDevice" />
+            </div>
+            <ul id="ConfigConnectedList" class="connected-list"></ul>
+            <div id="ConfigConnectionStatus" class="status"></div>
+          </div>
+
+          <div class="section">
+            <h3>⚙️ 设备配置</h3>
+            <div class="button-group">
+              <input type="button" value="重置摇杆" id="ResetLeverBtn" />
+              <input type="button" value="读取摇杆信息" id="ReadLeverInfoBtn" />
+              <input type="button" value="开启实时监控" id="ToggleMonitorBtn" />
+              <!-- <input type="button" value="重置设备" id="ResetDevice" /> -->
+            </div>
+            <div id="ConfigOperationStatus" class="status"></div>
+          </div>
+
+          <div class="section">
+            <h3>📊 设备状态</h3>
+            <div id="DeviceInfo" style="background: #f8f9fa; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 14px; line-height: 1.6;">
+              未连接设备
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>📝 配置日志</h3>
+            <textarea name="configLog" id="ConfigLogBox" class="log-box" readonly></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
   </body>
   <script src="main.js"></script>
 </html>

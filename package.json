@@ -6,15 +6,19 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack serve",
-    "pack": "webpack --mode=production "
+    "build": "webpack --mode=production",
+    "pack": "webpack --mode=production",
+    "preview": "webpack serve --mode=production --open",
+    "clean": "rimraf dist"
   },
   "author": "",
-  "license": "ISC",
+  "license": "AGPL-3.0",
   "dependencies": {
   },
   "devDependencies": {
     "webpack": "^5.82.1",
     "webpack-cli": "^5.1.1",
-    "webpack-dev-server": "^4.15.0"
+    "webpack-dev-server": "^4.15.0",
+    "rimraf": "^5.0.1"
   }
 }
