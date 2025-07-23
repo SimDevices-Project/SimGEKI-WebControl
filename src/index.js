@@ -94,6 +94,10 @@
   /** @type {HTMLInputElement} */
   const toggleMonitorBtn = document.getElementById('ToggleMonitorBtn')
   /** @type {HTMLInputElement} */
+  const saveConfigBtn = document.getElementById('SaveConfigBtn')
+  /** @type {HTMLInputElement} */
+  const cancelConfigBtn = document.getElementById('CancelConfigBtn')
+  /** @type {HTMLInputElement} */
   // const resetDeviceBtn = document.getElementById('ResetDevice')
   /** @type {HTMLDivElement} */
   const configOperationStatus = document.getElementById('ConfigOperationStatus')
@@ -1103,66 +1107,87 @@
   }
 
   /**
-   * Write device configuration
+   * Save device configuration
    */
-  const writeConfig = async () => {
+  const saveConfig = async () => {
     if (!configDevice || !configDevice.opened) {
       showStatus('设备未连接', 'error', configOperationStatus)
       return
     }
 
     try {
-      showStatus('正在写入配置...', 'info', configOperationStatus)
-      showConfigLog('开始写入设备配置...')
+      showStatus('正在保存配置...', 'info', configOperationStatus)
+      showConfigLog('开始保存设备配置...')
 
-      // Send config write command and wait for response
-      const command = [0x02, 0x01] // Example command to write config
+      // Send save config command (0x81)
+      // Protocol: [Report ID, Symbol, Command, Unused, ...Payload]
+      const command = [0x00, 0x81, 0x00]
+      // Pad to 64 bytes
+      while (command.length < 63) {
+        command.push(0x00)
+      }
+      
       const response = await sendConfigReportAndWait(CONFIG_REPORT_ID, command)
       
-      showConfigLog(`配置写入响应: ${Array.from(response).map(x => x.toString(16).padStart(2, '0')).join(' ')}`)
-      showStatus('配置写入完成', 'success', configOperationStatus)
-      showConfigLog('配置写入完成')
+      // Check response: [Report ID, Symbol, Command, State, ...Payload]
+      if (response.length >= 4 && response[2] === 0x01) { // STATE_OK = 0x01
+        showConfigLog(`配置保存成功，响应: ${Array.from(response.slice(0, 8)).map(x => x.toString(16).padStart(2, '0')).join(' ')}`)
+        showStatus('配置保存完成', 'success', configOperationStatus)
+        showConfigLog('配置已成功保存到设备')
+      } else {
+        throw new Error(`设备返回错误状态: ${response[2] ? response[2].toString(16) : '未知'}`)
+      }
     } catch (error) {
       showStatus(
-        `写入配置失败: ${error.message}`,
+        `保存配置失败: ${error.message}`,
         'error',
         configOperationStatus
       )
-      showConfigLog(`写入配置失败: ${error.message}`)
+      showConfigLog(`保存配置失败: ${error.message}`)
     }
   }
 
   /**
-   * Reset device
+   * Cancel configuration changes (discard unsaved changes)
    */
-  const resetDevice = async () => {
+  const cancelConfig = async () => {
     if (!configDevice || !configDevice.opened) {
       showStatus('设备未连接', 'error', configOperationStatus)
       return
     }
 
     try {
-      if (!confirm('确定要重置设备吗？这将重启设备并恢复默认设置。')) {
-        return
+      showStatus('正在放弃配置...', 'info', configOperationStatus)
+      showConfigLog('开始放弃未保存的配置更改...')
+
+      // Send cancel config command (0x80)
+      // Protocol: [Report ID, Symbol, Command, Unused, ...Payload]
+      const command = [0x00, 0x80, 0x00]
+      // Pad to 64 bytes
+      while (command.length < 63) {
+        command.push(0x00)
       }
-
-      showStatus('正在重置设备...', 'info', configOperationStatus)
-      showConfigLog('开始重置设备...')
-
-      // Send device reset command and wait for response
-      const command = [0x03, 0xFF] // Example command to reset device
-      const response = await sendConfigReportAndWait(CONFIG_REPORT_ID, command, 10000) // Longer timeout for reset
       
-      showConfigLog(`设备重置响应: ${Array.from(response).map(x => x.toString(16).padStart(2, '0')).join(' ')}`)
-      showStatus('设备重置完成', 'success', configOperationStatus)
-      showConfigLog('设备重置完成')
+      const response = await sendConfigReportAndWait(CONFIG_REPORT_ID, command)
+      
+      // Check response: [Report ID, Symbol, Command, State, ...Payload]
+      if (response.length >= 4 && response[2] === 0x01) { // STATE_OK = 0x01
+        showConfigLog(`配置放弃成功，响应: ${Array.from(response.slice(0, 8)).map(x => x.toString(16).padStart(2, '0')).join(' ')}`)
+        showStatus('配置放弃完成', 'success', configOperationStatus)
+        showConfigLog('未保存的配置更改已放弃，设备恢复到之前保存的状态')
+        
+        // 放弃配置后立即读取摇杆信息以确认状态
+        setTimeout(() => readLeverInfo(), 500)
+      } else {
+        throw new Error(`设备返回错误状态: ${response[2] ? response[2].toString(16) : '未知'}`)
+      }
     } catch (error) {
       showStatus(
-        `重置设备失败: ${error.message}`,
+        `放弃配置失败: ${error.message}`,
         'error',
         configOperationStatus
       )
-      showConfigLog(`重置设备失败: ${error.message}`)
+      showConfigLog(`放弃配置失败: ${error.message}`)
     }
   }
 
@@ -1197,7 +1222,8 @@
   resetLeverBtn.addEventListener('click', resetLever)
   readLeverInfoBtn.addEventListener('click', readLeverInfo)
   toggleMonitorBtn.addEventListener('click', toggleLeverMonitoring)
-  // resetDeviceBtn.addEventListener('click', resetDevice)
+  saveConfigBtn.addEventListener('click', saveConfig)
+  cancelConfigBtn.addEventListener('click', cancelConfig)
 
   // Fetch version information when page loads
   fetchVersionInfo()

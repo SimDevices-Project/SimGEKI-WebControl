@@ -13,7 +13,8 @@
       }
 
       body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          sans-serif;
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         min-height: 100vh;
         padding: 20px;
@@ -72,7 +73,8 @@
         margin-bottom: 15px;
       }
 
-      button, input[type="button"] {
+      button,
+      input[type='button'] {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         border: none;
@@ -85,16 +87,19 @@
         box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
       }
 
-      button:hover, input[type="button"]:hover {
+      button:hover,
+      input[type='button']:hover {
         transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
       }
 
-      button:active, input[type="button"]:active {
+      button:active,
+      input[type='button']:active {
         transform: translateY(0);
       }
 
-      button:disabled, input[type="button"]:disabled {
+      button:disabled,
+      input[type='button']:disabled {
         opacity: 0.6;
         cursor: not-allowed;
         transform: none;
@@ -166,7 +171,7 @@
         margin-bottom: 15px;
       }
 
-      input[type="file"] {
+      input[type='file'] {
         position: absolute;
         opacity: 0;
         width: 100%;
@@ -174,7 +179,7 @@
         cursor: pointer;
       }
 
-      input[type="file"]:disabled {
+      input[type='file']:disabled {
         cursor: not-allowed;
       }
 
@@ -247,7 +252,7 @@
       }
 
       .connected-list:empty::before {
-        content: "未连接设备";
+        content: '未连接设备';
         color: #999;
         font-style: italic;
       }
@@ -365,8 +370,10 @@
         .button-group {
           flex-direction: column;
         }
-        
-        button, input[type="button"], .file-input-label {
+
+        button,
+        input[type='button'],
+        .file-input-label {
           width: 100%;
           text-align: center;
         }
@@ -384,76 +391,109 @@
         <h1>SimGEKI WebControl</h1>
         <p>设备固件管理与配置工具</p>
       </div>
-      
+
       <div class="tab-container">
         <div class="tab-nav">
-          <button class="tab-button active" data-tab="firmware">🔧 固件刷入</button>
+          <button class="tab-button active" data-tab="firmware">
+            🔧 固件刷入
+          </button>
           <button class="tab-button" data-tab="config">⚙️ 设备配置</button>
         </div>
-        
+
         <div class="tab-content active" id="firmware-tab">
-        <div class="section">
-          <h3>🔗 设备连接</h3>
-          <div class="button-group">
-            <input type="button" value="连接设备并初始化" id="ConnectAndInit" />
-          </div>
-          <ul id="ConnectedList" class="connected-list"></ul>
-          <div id="ConnectionStatus" class="status"></div>
-        </div>
-
-        <div class="section">
-          <h3>📥 固件下载</h3>
-          <div class="version-info-container">
-            <div class="version-info" id="LatestVersionInfo">
-              <div class="version-label">最新版本</div>
-              <div class="version-value" id="LatestVersion">获取中...</div>
+          <div class="section">
+            <h3>🔗 设备连接</h3>
+            <div class="button-group">
+              <input
+                type="button"
+                value="连接设备并初始化"
+                id="ConnectAndInit"
+              />
             </div>
-            <div class="version-info" id="NightlyVersionInfo">
-              <div class="version-label">每日构建</div>
-              <div class="version-value" id="NightlyVersion">获取中...</div>
+            <ul id="ConnectedList" class="connected-list"></ul>
+            <div id="ConnectionStatus" class="status"></div>
+          </div>
+
+          <div class="section">
+            <h3>📥 固件下载</h3>
+            <div class="version-info-container">
+              <div class="version-info" id="LatestVersionInfo">
+                <div class="version-label">最新版本</div>
+                <div class="version-value" id="LatestVersion">获取中...</div>
+              </div>
+              <div class="version-info" id="NightlyVersionInfo">
+                <div class="version-label">每日构建</div>
+                <div class="version-value" id="NightlyVersion">获取中...</div>
+              </div>
+            </div>
+            <div class="button-group">
+              <input
+                type="button"
+                value="下载最新固件"
+                id="DownloadLatest"
+                class="download-btn"
+              />
+              <input
+                type="button"
+                value="下载每日构建"
+                id="DownloadNightly"
+                class="download-btn"
+              />
+            </div>
+            <div id="DownloadStatus" class="status"></div>
+            <div class="download-notice">
+              💡
+              <strong>提示：</strong
+              >如果下载失败（CORS错误），请手动下载固件文件后使用"选择固件文件"功能。
             </div>
           </div>
-          <div class="button-group">
-            <input type="button" value="下载最新固件" id="DownloadLatest" class="download-btn" />
-            <input type="button" value="下载每日构建" id="DownloadNightly" class="download-btn" />
-          </div>
-          <div id="DownloadStatus" class="status"></div>
-          <div class="download-notice">
-            💡 <strong>提示：</strong>如果下载失败（CORS错误），请手动下载固件文件后使用"选择固件文件"功能。
-          </div>
-        </div>
 
-        <div class="section">
-          <h3>📁 本地固件文件</h3>
-          <div class="file-input-wrapper">
-            <input type="file" name="fileInput" id="FileInput" accept=".bin">
-            <label for="FileInput" class="file-input-label">选择固件文件</label>
-          </div>
-          <div id="SelectedFile" style="margin-top: 10px; font-size: 14px; color: #666;"></div>
-        </div>
-
-        <div class="section">
-          <h3>⚡ 固件操作</h3>
-          <div class="button-group">
-            <input type="button" value="烧入固件" id="WriteFirmeware">
-            <input type="button" value="验证固件" id="VerifyFirmeware">
-            <input type="button" value="跳转程序" id="RunFirmeware">
-          </div>
-          <div class="progress-container" id="ProgressContainer">
-            <div class="progress-bar">
-              <div class="progress-fill" id="ProgressFill"></div>
+          <div class="section">
+            <h3>📁 本地固件文件</h3>
+            <div class="file-input-wrapper">
+              <input
+                type="file"
+                name="fileInput"
+                id="FileInput"
+                accept=".bin"
+              />
+              <label for="FileInput" class="file-input-label"
+                >选择固件文件</label
+              >
             </div>
-            <div class="progress-text" id="ProgressText">0%</div>
+            <div
+              id="SelectedFile"
+              style="margin-top: 10px; font-size: 14px; color: #666"
+            ></div>
           </div>
-          <div id="OperationStatus" class="status"></div>
+
+          <div class="section">
+            <h3>⚡ 固件操作</h3>
+            <div class="button-group">
+              <input type="button" value="烧入固件" id="WriteFirmeware" />
+              <input type="button" value="验证固件" id="VerifyFirmeware" />
+              <input type="button" value="跳转程序" id="RunFirmeware" />
+            </div>
+            <div class="progress-container" id="ProgressContainer">
+              <div class="progress-bar">
+                <div class="progress-fill" id="ProgressFill"></div>
+              </div>
+              <div class="progress-text" id="ProgressText">0%</div>
+            </div>
+            <div id="OperationStatus" class="status"></div>
+          </div>
+
+          <div class="section">
+            <h3>📝 操作日志</h3>
+            <textarea
+              name="log"
+              id="LogBox"
+              class="log-box"
+              readonly
+            ></textarea>
+          </div>
         </div>
 
-        <div class="section">
-          <h3>📝 操作日志</h3>
-          <textarea name="log" id="LogBox" class="log-box" readonly></textarea>
-        </div>
-        </div>
-        
         <div class="tab-content" id="config-tab">
           <div class="section">
             <h3>🔗 设备连接</h3>
@@ -467,24 +507,50 @@
           <div class="section">
             <h3>⚙️ 设备配置</h3>
             <div class="button-group">
-              <input type="button" value="重置摇杆" id="ResetLeverBtn" />
-              <input type="button" value="读取摇杆信息" id="ReadLeverInfoBtn" />
-              <input type="button" value="开启实时监控" id="ToggleMonitorBtn" />
-              <!-- <input type="button" value="重置设备" id="ResetDevice" /> -->
+                <input type="button" value="校准摇杆" id="ResetLeverBtn" />
+                <input
+                  type="button"
+                  value="读取摇杆信息"
+                  id="ReadLeverInfoBtn"
+                />
+                <input
+                  type="button"
+                  value="开启实时监控"
+                  id="ToggleMonitorBtn"
+                />
+            </div>
+            <div class="button-group">
+                <input type="button" value="保存配置" id="SaveConfigBtn" />
+                <input type="button" value="放弃配置" id="CancelConfigBtn" />
             </div>
             <div id="ConfigOperationStatus" class="status"></div>
           </div>
 
           <div class="section">
             <h3>📊 设备状态</h3>
-            <div id="DeviceInfo" style="background: #f8f9fa; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 14px; line-height: 1.6;">
+            <div
+              id="DeviceInfo"
+              style="
+                background: #f8f9fa;
+                padding: 15px;
+                border-radius: 8px;
+                font-family: monospace;
+                font-size: 14px;
+                line-height: 1.6;
+              "
+            >
               未连接设备
             </div>
           </div>
 
           <div class="section">
             <h3>📝 配置日志</h3>
-            <textarea name="configLog" id="ConfigLogBox" class="log-box" readonly></textarea>
+            <textarea
+              name="configLog"
+              id="ConfigLogBox"
+              class="log-box"
+              readonly
+            ></textarea>
           </div>
         </div>
       </div>
