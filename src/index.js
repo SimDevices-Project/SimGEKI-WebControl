@@ -290,8 +290,8 @@
           console.warn('实时摇杆监控失败:', error.message)
         })
       }
-    }, 1000) // Update every second
-    showConfigLog('已启动实时摇杆监控 (每秒更新)')
+    }, 0) // Update every second
+    showConfigLog('已启动实时摇杆监控')
     if (toggleMonitorBtn) {
       toggleMonitorBtn.value = '停止实时监控'
       toggleMonitorBtn.style.background = 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)'
@@ -314,6 +314,7 @@
   const toggleLeverMonitoring = () => {
     if (!configDevice || !configDevice.opened) {
       showStatus('请先连接配置设备', 'error', configOperationStatus)
+      stopLeverMonitoring();
       return
     }
     
@@ -908,6 +909,11 @@
             productId: 0x0021, // Different PID for main firmware
             usagePage: 0xff00, // Custom usage page for main firmware
           },
+          {
+            vendorId: 0x8088,
+            productId: 0x0101, // PID for SimGEKI main firmware (0x0101, in none SG mode)
+            usagePage: 0xff00, // Custom usage page for main firmware
+          }
         ],
       })
 
@@ -954,6 +960,7 @@
   const readDeviceStat = async () => {
     if (!configDevice || !configDevice.opened) {
       showConfigLog('设备未连接')
+      stopLeverMonitoring()
       return
     }
 
@@ -1082,7 +1089,7 @@
       }
     } catch (error) {
       showConfigLog(`读取摇杆信息失败: ${error.message}`)
-      deviceStat.innerHTML += `<br><strong style="color: #dc3545;">摇杆状态:</strong> 读取失败`
+      deviceStat.innerHTML = `<br><strong style="color: #dc3545;">摇杆状态:</strong> 读取失败`
     }
   }
 
