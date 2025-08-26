@@ -328,9 +328,9 @@
   // Firmware URLs
   const FIRMWARE_URLS = {
     latest:
-      'https://simdevices-project.github.io/SimGEKI/standard/SimGEKI-SimGETRO_Public.bin',
+      'https://simdevices.bysb.net/SimGEKI/standard/SimGEKI-SimGETRO_Public.bin',
     nightly:
-      'https://simdevices-project.github.io/SimGEKI/nightly/SimGEKI-SimGETRO_Public.bin',
+      'https://simdevices.bysb.net/SimGEKI/nightly/SimGEKI-SimGETRO_Public.bin',
   }
 
   // GitHub API URLs for version information
