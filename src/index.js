@@ -94,6 +94,8 @@
   /** @type {HTMLInputElement} */
   const toggleMonitorBtn = document.getElementById('ToggleMonitorBtn')
   /** @type {HTMLInputElement} */
+  const lightTestBtn = document.getElementById('LightTestBtn')
+  /** @type {HTMLInputElement} */
   const saveConfigBtn = document.getElementById('SaveConfigBtn')
   /** @type {HTMLInputElement} */
   const cancelConfigBtn = document.getElementById('CancelConfigBtn')
@@ -454,6 +456,8 @@
       element.style.display = 'none'
     }, 8000)
   }
+
+  const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
   /**
    * Disable all buttons except the specified one during critical operations
@@ -1093,6 +1097,58 @@
     }
   }
 
+  const sendLedCommand = async (r, g, b) => {
+    const command = [0x00, 0xb0, 0x00, 0xff, 0xff, 0x01, 0xff, r, g, b]
+    while (command.length < 63) {
+      command.push(0x00)
+    }
+
+    const response = await sendConfigReportAndWait(CONFIG_REPORT_ID, command)
+
+    if (response.length >= 3 && response[2] === 0x01) {
+      return response
+    }
+
+    throw new Error(`设备返回错误状态: ${response[2] ? response[2].toString(16) : '未知'}`)
+  }
+
+  const lightTestSequence = [
+    { name: '红色', rgb: [0xff, 0x00, 0x00] },
+    { name: '绿色', rgb: [0x00, 0xff, 0x00] },
+    { name: '蓝色', rgb: [0x00, 0x00, 0xff] },
+    { name: '白色', rgb: [0xff, 0xff, 0xff] },
+  ]
+
+  const runLightTest = async () => {
+    if (!configDevice || !configDevice.opened) {
+      showStatus('设备未连接', 'error', configOperationStatus)
+      return
+    }
+
+    try {
+      lightTestBtn.disabled = true
+      showStatus('正在执行灯光测试...', 'info', configOperationStatus)
+      showConfigLog('开始灯光测试: R -> G -> B -> W，每步间隔1秒')
+
+      for (const step of lightTestSequence) {
+        const [r, g, b] = step.rgb
+        await sendLedCommand(r, g, b)
+        showConfigLog(`已切换到${step.name} (${r}, ${g}, ${b})`)
+        await delay(1000)
+      }
+
+      await delay(3000)
+      await sendLedCommand(0x00, 0x00, 0x00)
+      showConfigLog('灯光测试完成，已关闭灯光')
+      showStatus('灯光测试完成', 'success', configOperationStatus)
+    } catch (error) {
+      showStatus(`灯光测试失败: ${error.message}`, 'error', configOperationStatus)
+      showConfigLog(`灯光测试失败: ${error.message}`)
+    } finally {
+      lightTestBtn.disabled = false
+    }
+  }
+
   /**
    * Get position description based on roller value
    * @param {number} value - Current roller value
@@ -1229,6 +1285,7 @@
   resetLeverBtn.addEventListener('click', resetLever)
   readLeverInfoBtn.addEventListener('click', readLeverInfo)
   toggleMonitorBtn.addEventListener('click', toggleLeverMonitoring)
+  lightTestBtn.addEventListener('click', runLightTest)
   saveConfigBtn.addEventListener('click', saveConfig)
   cancelConfigBtn.addEventListener('click', cancelConfig)
 
