@@ -1,4 +1,74 @@
-;(async () => {
+import {
+  allButtons,
+  configElements,
+  firmwareElements,
+  tabElements,
+} from './modules/domElements'
+import {
+  appendLog,
+  createProgressController,
+  createStatusDisplay,
+  delay,
+  renderDeviceList,
+} from './modules/ui'
+import { HIDCommunicator } from './modules/communicator'
+import { createTabController } from './modules/tabs'
+import { createFirmwareController } from './modules/firmware'
+import { createConfigController } from './modules/config'
+
+const initialize = () => {
+  const showStatus = createStatusDisplay()
+  const firmwareProgress = createProgressController(
+    firmwareElements.progressContainer,
+    firmwareElements.progressFill,
+    firmwareElements.progressText
+  )
+
+  const firmwareCommunicator = new HIDCommunicator()
+  const configCommunicator = new HIDCommunicator()
+
+  const tabs = createTabController(tabElements)
+
+  const firmwareController = createFirmwareController({
+    elements: firmwareElements,
+    communicator: firmwareCommunicator,
+    showStatus,
+    progress: firmwareProgress,
+    showLog: (message) => appendLog(firmwareElements.logBox, message),
+    renderList: renderDeviceList,
+    switchToConfigTab: () => tabs.switchTab('config'),
+    lockButtons: allButtons,
+  })
+
+  const configController = createConfigController({
+    elements: configElements,
+    communicator: configCommunicator,
+    showStatus,
+    showConfigLog: (message) => appendLog(configElements.configLogBox, message),
+    renderList: renderDeviceList,
+    delay,
+  })
+
+  tabs.bind()
+  firmwareController.bindEvents()
+  configController.bindEvents()
+  firmwareController.fetchVersionInfo()
+
+  window.getHIDDebugInfo = () => ({
+    firmware: firmwareCommunicator.getDebugInfo(),
+    config: configCommunicator.getDebugInfo(),
+  })
+
+  window.addEventListener('beforeunload', () => {
+    configController.stopMonitoring()
+  })
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initialize)
+} else {
+  initialize()
+};(async () => {
   // Tab functionality
   const tabButtons = document.querySelectorAll('.tab-button')
   const tabContents = document.querySelectorAll('.tab-content')
@@ -104,7 +174,7 @@
   /** @type {HTMLDivElement} */
   const configOperationStatus = document.getElementById('ConfigOperationStatus')
   /** @type {HTMLDivElement} */
-  const deviceStat = document.getElementById('DeviceInfo')
+  const deviceStat = document.getElementById('DeviceStatus')
   /** @type {HTMLTextAreaElement} */
   const configLogBox = document.getElementById('ConfigLogBox')
 
@@ -1134,10 +1204,10 @@
         const [r, g, b] = step.rgb
         await sendLedCommand(r, g, b)
         showConfigLog(`已切换到${step.name} (${r}, ${g}, ${b})`)
-        await delay(1000)
+        await delay(500)
       }
 
-      await delay(3000)
+      await delay(2000)
       await sendLedCommand(0x00, 0x00, 0x00)
       showConfigLog('灯光测试完成，已关闭灯光')
       showStatus('灯光测试完成', 'success', configOperationStatus)

@@ -505,7 +505,7 @@
           </div>
 
           <div class="section">
-            <h3>⚙️ 设备配置</h3>
+            <h3>🕹️ 摇杆配置</h3>
             <div class="button-group">
                 <input type="button" value="校准摇杆" id="ResetLeverBtn" />
                 <input
@@ -513,6 +513,27 @@
                   value="读取摇杆信息"
                   id="ReadLeverInfoBtn"
                 />
+            </div>
+            <div id="ConfigOperationStatus" class="status"></div>
+          </div>
+
+          <div class="section">
+            <h3>🎮 输入模式</h3>
+            <div class="button-group">
+              <input type="button" value="读取当前输入模式" id="ReadInputModeBtn" />
+            </div>
+            <div class="button-group">
+              <select id="InputModeSelect" style="padding: 10px 14px; border-radius: 20px; border: 1px solid #dee2e6; font-size: 14px;">
+                <option value="io4">IO4兼容</option>
+                <option value="keyboard">键盘输入</option>
+                <option value="dll">DLL输入</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>🧪 调试</h3>
+            <div class="button-group">
                 <input
                   type="button"
                   value="开启实时监控"
@@ -520,17 +541,20 @@
                 />
                 <input type="button" value="灯光测试" id="LightTestBtn" />
             </div>
+          </div>
+
+          <div class="section">
+            <h3>💾 保存或放弃</h3>
             <div class="button-group">
                 <input type="button" value="保存配置" id="SaveConfigBtn" />
                 <input type="button" value="放弃配置" id="CancelConfigBtn" />
             </div>
-            <div id="ConfigOperationStatus" class="status"></div>
           </div>
 
           <div class="section">
             <h3>📊 设备状态</h3>
             <div
-              id="DeviceInfo"
+              id="DeviceStatus"
               style="
                 background: #f8f9fa;
                 padding: 15px;
