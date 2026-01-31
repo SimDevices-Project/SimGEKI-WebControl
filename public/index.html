@@ -524,10 +524,12 @@
             </div>
             <div class="button-group">
               <select id="InputModeSelect" style="padding: 10px 14px; border-radius: 20px; border: 1px solid #dee2e6; font-size: 14px;">
-                <option value="io4">IO4兼容</option>
-                <option value="keyboard">键盘输入</option>
-                <option value="dll">DLL输入</option>
+                <option value="0">未知</option>
+                <option value="1">IO4兼容</option>
+                <option value="2">DLL输入</option>
+                <option value="3">模拟键盘</option>
               </select>
+              <input type="button" value="设置输入模式" id="SetInputModeBtn" />
             </div>
           </div>
 
@@ -536,7 +538,7 @@
             <div class="button-group">
                 <input
                   type="button"
-                  value="开启实时监控"
+                  value="开启摇杆监控"
                   id="ToggleMonitorBtn"
                 />
                 <input type="button" value="灯光测试" id="LightTestBtn" />

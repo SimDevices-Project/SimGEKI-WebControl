@@ -1,4 +1,4 @@
-import { CONFIG_REPORT_ID, HID_TIMEOUT } from '../constants'
+import { CONFIG_COMMANDS, CONFIG_REPORT_ID, HID_TIMEOUT } from '../constants'
 
 export const createConfigController = ({
   elements,
@@ -18,6 +18,9 @@ export const createConfigController = ({
     configConnectionStatus,
     resetLeverBtn,
     readLeverInfoBtn,
+    readInputModeBtn,
+    setInputModeBtn,
+    inputModeSelect,
     toggleMonitorBtn,
     lightTestBtn,
     saveConfigBtn,
@@ -25,6 +28,19 @@ export const createConfigController = ({
     configOperationStatus,
     deviceStat,
   } = elements
+
+  const getInputModeLabel = (mode) => {
+    switch (mode) {
+      case 1:
+        return 'IO4兼容'
+      case 2:
+        return '键盘输入'
+      case 3:
+        return 'DLL输入'
+      default:
+        return '未知'
+    }
+  }
 
   const sendConfigReportAndWait = (reportId, data, timeout = HID_TIMEOUT) =>
     communicator.send(reportId, data, timeout)
@@ -98,7 +114,7 @@ export const createConfigController = ({
     try {
       showConfigLog('正在读取摇杆信息...')
 
-      const command = [0x00, 0xa1, 0x00]
+      const command = [0x00, CONFIG_COMMANDS.ROLLER_GET_DATA, 0x00]
       while (command.length < 63) {
         command.push(0x00)
       }
@@ -139,6 +155,81 @@ export const createConfigController = ({
     }
   }
 
+  const readInputMode = async () => {
+    if (!configDevice || !configDevice.opened) {
+      showStatus('设备未连接', 'error', configOperationStatus)
+      showConfigLog('设备未连接，无法读取输入模式')
+      return
+    }
+
+    try {
+      showStatus('正在读取输入模式...', 'info', configOperationStatus)
+      showConfigLog('正在读取输入模式...')
+
+      const command = [0x00, CONFIG_COMMANDS.INPUT_MODE_GET, 0x00]
+      while (command.length < 63) {
+        command.push(0x00)
+      }
+
+      const response = await sendConfigReportAndWait(CONFIG_REPORT_ID, command)
+
+      if (response.length >= 4 && response[2] === 0x01) {
+        const mode = response[3]
+        if (inputModeSelect) {
+          inputModeSelect.value = String(mode)
+        }
+        showStatus(`输入模式已读取: ${getInputModeLabel(mode)}`, 'success', configOperationStatus)
+        showConfigLog(`输入模式读取成功: ${getInputModeLabel(mode)} (${mode})`)
+      } else {
+        throw new Error(`设备返回错误状态: ${response[2] ? response[2].toString(16) : '未知'}`)
+      }
+    } catch (error) {
+      showStatus(`读取输入模式失败: ${error.message}`, 'error', configOperationStatus)
+      showConfigLog(`读取输入模式失败: ${error.message}`)
+    }
+  }
+
+  const setInputMode = async () => {
+    if (!configDevice || !configDevice.opened) {
+      showStatus('设备未连接', 'error', configOperationStatus)
+      showConfigLog('设备未连接，无法设置输入模式')
+      return
+    }
+
+    if (!inputModeSelect) {
+      showStatus('未找到输入模式选择器', 'error', configOperationStatus)
+      return
+    }
+
+    const mode = Number.parseInt(inputModeSelect.value, 10)
+    if (!Number.isInteger(mode) || mode < 1 || mode > 3) {
+      showStatus('请选择有效的输入模式', 'error', configOperationStatus)
+      return
+    }
+
+    try {
+      showStatus('正在设置输入模式...', 'info', configOperationStatus)
+      showConfigLog(`正在设置输入模式为: ${getInputModeLabel(mode)} (${mode})`)
+
+      const command = [0x00, CONFIG_COMMANDS.INPUT_MODE_SET, 0x00, mode]
+      while (command.length < 63) {
+        command.push(0x00)
+      }
+
+      const response = await sendConfigReportAndWait(CONFIG_REPORT_ID, command)
+
+      if (response.length >= 4 && response[2] === 0x01) {
+        showStatus(`输入模式已设置为: ${getInputModeLabel(mode)}`, 'success', configOperationStatus)
+        showConfigLog(`输入模式设置成功: ${getInputModeLabel(mode)} (${mode})`)
+      } else {
+        throw new Error(`设备返回错误状态: ${response[2] ? response[2].toString(16) : '未知'}`)
+      }
+    } catch (error) {
+      showStatus(`设置输入模式失败: ${error.message}`, 'error', configOperationStatus)
+      showConfigLog(`设置输入模式失败: ${error.message}`)
+    }
+  }
+
   const readDeviceStat = async () => {
     if (!configDevice || !configDevice.opened) {
       showConfigLog('设备未连接')
@@ -175,7 +266,7 @@ export const createConfigController = ({
       showStatus('正在重置摇杆...', 'info', configOperationStatus)
       showConfigLog('开始重置设备摇杆...')
 
-      const command = [0x00, 0xa0, 0x00]
+      const command = [0x00, CONFIG_COMMANDS.ROLLER_SET_OFFSET, 0x00]
       while (command.length < 63) {
         command.push(0x00)
       }
@@ -202,7 +293,18 @@ export const createConfigController = ({
   }
 
   const sendLedCommand = async (r, g, b) => {
-    const command = [0x00, 0xb0, 0x00, 0xff, 0xff, 0x01, 0xff, r, g, b]
+    const command = [
+      0x00,
+      CONFIG_COMMANDS.LED_SET_MODE,
+      0x00,
+      0xff,
+      0xff,
+      0x01,
+      0xff,
+      r,
+      g,
+      b,
+    ]
     while (command.length < 63) {
       command.push(0x00)
     }
@@ -263,7 +365,7 @@ export const createConfigController = ({
       showStatus('正在保存配置...', 'info', configOperationStatus)
       showConfigLog('开始保存设备配置...')
 
-      const command = [0x00, 0x81, 0x00]
+      const command = [0x00, CONFIG_COMMANDS.SAVE_DATA, 0x00]
       while (command.length < 63) {
         command.push(0x00)
       }
@@ -297,7 +399,7 @@ export const createConfigController = ({
       showStatus('正在放弃配置...', 'info', configOperationStatus)
       showConfigLog('开始放弃未保存的配置更改...')
 
-      const command = [0x00, 0x80, 0x00]
+      const command = [0x00, CONFIG_COMMANDS.RELOAD_DATA, 0x00]
       while (command.length < 63) {
         command.push(0x00)
       }
@@ -385,6 +487,12 @@ export const createConfigController = ({
     connectConfigBtn.addEventListener('click', connectConfigDevice)
     resetLeverBtn.addEventListener('click', resetLever)
     readLeverInfoBtn.addEventListener('click', readLeverInfo)
+    if (readInputModeBtn) {
+      readInputModeBtn.addEventListener('click', readInputMode)
+    }
+    if (setInputModeBtn) {
+      setInputModeBtn.addEventListener('click', setInputMode)
+    }
     toggleMonitorBtn.addEventListener('click', toggleLeverMonitoring)
     lightTestBtn.addEventListener('click', runLightTest)
     saveConfigBtn.addEventListener('click', saveConfig)
