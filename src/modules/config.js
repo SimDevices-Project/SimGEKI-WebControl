@@ -34,9 +34,9 @@ export const createConfigController = ({
       case 1:
         return 'IO4兼容'
       case 2:
-        return '键盘输入'
-      case 3:
         return 'DLL输入'
+      case 3:
+        return '模拟键盘'
       default:
         return '未知'
     }
