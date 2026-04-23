@@ -2,6 +2,7 @@ import {
   allButtons,
   configElements,
   firmwareElements,
+  inputTestElements,
   tabElements,
 } from './modules/domElements'
 import {
@@ -15,6 +16,7 @@ import { HIDCommunicator } from './modules/communicator'
 import { createTabController } from './modules/tabs'
 import { createFirmwareController } from './modules/firmware'
 import { createConfigController } from './modules/config'
+import { createInputTestController } from './modules/inputTest'
 
 const initialize = () => {
   const showStatus = createStatusDisplay()
@@ -26,6 +28,7 @@ const initialize = () => {
 
   const firmwareCommunicator = new HIDCommunicator()
   const configCommunicator = new HIDCommunicator()
+  const inputTestCommunicator = new HIDCommunicator()
 
   const tabs = createTabController(tabElements)
 
@@ -49,18 +52,29 @@ const initialize = () => {
     delay,
   })
 
+  const inputTestController = createInputTestController({
+    elements: inputTestElements,
+    communicator: inputTestCommunicator,
+    showStatus,
+    showInputTestLog: (message) => appendLog(inputTestElements.inputTestLogBox, message),
+    renderList: renderDeviceList,
+  })
+
   tabs.bind()
   firmwareController.bindEvents()
   configController.bindEvents()
+  inputTestController.bindEvents()
   firmwareController.fetchVersionInfo()
 
   window.getHIDDebugInfo = () => ({
     firmware: firmwareCommunicator.getDebugInfo(),
     config: configCommunicator.getDebugInfo(),
+    inputTest: inputTestCommunicator.getDebugInfo(),
   })
 
   window.addEventListener('beforeunload', () => {
     configController.stopMonitoring()
+    inputTestController.stopTest()
   })
 }
 

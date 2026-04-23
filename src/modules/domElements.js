@@ -42,6 +42,40 @@ export const configElements = {
   configLogBox: document.getElementById('ConfigLogBox'),
 }
 
+export const inputTestElements = {
+  connectInputTestBtn: document.getElementById('ConnectInputTestDevice'),
+  inputTestConnectList: document.getElementById('InputTestConnectedList'),
+  inputTestConnectionStatus: document.getElementById('InputTestConnectionStatus'),
+  startInputTestBtn: document.getElementById('StartInputTestBtn'),
+  stopInputTestBtn: document.getElementById('StopInputTestBtn'),
+  inputTestStatus: document.getElementById('InputTestStatus'),
+  joystickDot: document.getElementById('JoystickDot'),
+  joystickX: document.getElementById('JoystickX'),
+  joystickY: document.getElementById('JoystickY'),
+  joystickRaw: document.getElementById('JoystickRaw'),
+  rawInputStatus: document.getElementById('RawInputStatus'),
+  rawButtons: document.getElementById('RawButtons'),
+  inputTestLogBox: document.getElementById('InputTestLogBox'),
+  arcadeButtons: {
+    LA: document.getElementById('btn-LA'),
+    LB: document.getElementById('btn-LB'),
+    LC: document.getElementById('btn-LC'),
+    RA: document.getElementById('btn-RA'),
+    RB: document.getElementById('btn-RB'),
+    RC: document.getElementById('btn-RC'),
+    LSIDE: document.getElementById('btn-LSide'),
+    RSIDE: document.getElementById('btn-RSide'),
+    LMENU: document.getElementById('btn-LMenu'),
+    RMENU: document.getElementById('btn-RMenu'),
+    TEST: document.getElementById('btn-Test'),
+    SERVICE: document.getElementById('btn-Service'),
+  },
+  coin1Condition: document.getElementById('Coin1Condition'),
+  coin1Count: document.getElementById('Coin1Count'),
+  coin2Condition: document.getElementById('Coin2Condition'),
+  coin2Count: document.getElementById('Coin2Count'),
+}
+
 export const allButtons = [
   firmwareElements.connectAndInitBtn,
   firmwareElements.downloadLatestBtn,
@@ -58,4 +92,7 @@ export const allButtons = [
   configElements.lightTestBtn,
   configElements.saveConfigBtn,
   configElements.cancelConfigBtn,
+  inputTestElements.connectInputTestBtn,
+  inputTestElements.startInputTestBtn,
+  inputTestElements.stopInputTestBtn,
 ]

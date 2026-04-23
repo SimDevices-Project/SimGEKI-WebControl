@@ -31,3 +31,51 @@ export const CONFIG_COMMANDS = {
   UPDATE_FIRMWARE: 0xf1,
   CMD_NOT_SUPPORT: 0xff,
 }
+
+export const BUTTON_MAP = {
+  LA: { byte: 0, mask: 0x01 },
+  LB: { byte: 0, mask: 0x20 },
+  LC: { byte: 0, mask: 0x10 },
+  RSIDE: { byte: 1, mask: 0x40 },
+  RA: { byte: 0, mask: 0x02 },
+  RB: { byte: 2, mask: 0x01 },
+  RC: { byte: 1, mask: 0x80 },
+  LSIDE: { byte: 3, mask: 0x80 },
+  LMENU: { byte: 3, mask: 0x40 },
+  RMENU: { byte: 1, mask: 0x20 },
+  SERVICE: { byte: 0, mask: 0x40 },
+  TEST: { byte: 1, mask: 0x02 },
+}
+
+export const INVERTED_BUTTONS = ['LSIDE', 'RSIDE']
+
+export const BUTTON_LABELS = {
+  LA: 'LA',
+  LB: 'LB',
+  LC: 'LC',
+  RSIDE: 'RSide',
+  RA: 'RA',
+  RB: 'RB',
+  RC: 'RC',
+  LSIDE: 'LSide',
+  LMENU: 'LMenu',
+  RMENU: 'RMenu',
+  SERVICE: 'Service',
+  TEST: 'Test',
+}
+
+export const ROLLER_CENTER = 0x8000
+
+export const COIN_OFFSETS = {
+  COIN1_CONDITION: 24,
+  COIN1_COUNT: 25,
+  COIN2_CONDITION: 26,
+  COIN2_COUNT: 27,
+}
+
+export const COIN_CONDITIONS = {
+  0x00: 'NORMAL',
+  0x01: 'JAM',
+  0x02: 'DISCONNECT',
+  0x03: 'BUSY',
+}

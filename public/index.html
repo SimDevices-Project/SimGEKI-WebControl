@@ -383,6 +383,307 @@
           font-size: 14px;
         }
       }
+
+      .arcade-panel {
+        background: #1a1a2e;
+        border-radius: 15px;
+        padding: 20px;
+        margin: 20px 0;
+        min-width: 500px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .panel-row {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 8px;
+      }
+
+      .panel-spacer-large {
+        flex: 1;
+      }
+
+      .panel-spacer {
+        width: 40px;
+      }
+
+      .button-group-left,
+      .button-group-right {
+        display: flex;
+        gap: 8px;
+      }
+
+      .arcade-button {
+        background: linear-gradient(135deg, #2d2d44 0%, #1f1f33 100%);
+        border: 2px solid #4a4a6a;
+        border-radius: 8px;
+        padding: 12px 16px;
+        color: #aaa;
+        font-weight: 600;
+        font-size: 14px;
+        text-align: center;
+        min-width: 60px;
+        transition: all 0.1s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      .arcade-button.main-btn {
+        background: linear-gradient(135deg, #3d3d5c 0%, #2a2a44 100%);
+        border-color: #5a5a7a;
+        min-width: 70px;
+      }
+
+      .arcade-button.side-btn {
+        background: linear-gradient(135deg, #444455 0%, #333344 100%);
+        border-color: #6a6a7a;
+      }
+
+      .arcade-button.coin-btn {
+        background: linear-gradient(135deg, #4a3a2a 0%, #3a2a1a 100%);
+        border-color: #6a5a4a;
+      }
+
+      .arcade-button.pressed {
+        background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+        border-color: #00ffff;
+        color: #fff;
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+        transform: scale(0.95);
+      }
+
+      .arcade-button.main-btn.pressed {
+        background: linear-gradient(135deg, #ff3366 0%, #cc2255 100%);
+        border-color: #ff6699;
+        box-shadow: 0 0 20px rgba(255, 51, 102, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      .arcade-button.side-btn.pressed {
+        background: linear-gradient(135deg, #33ff66 0%, #22cc55 100%);
+        border-color: #66ff99;
+        box-shadow: 0 0 20px rgba(51, 255, 102, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      .arcade-button.coin-btn.pressed {
+        background: linear-gradient(135deg, #ffcc00 0%, #cc9900 100%);
+        border-color: #ffdd33;
+        box-shadow: 0 0 20px rgba(255, 204, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      #btn-LSide.pressed,
+      #btn-RSide.pressed {
+        background: linear-gradient(135deg, #ff00ff 0%, #cc00cc 100%);
+        border-color: #ff88ff;
+        box-shadow: 0 0 20px rgba(255, 0, 255, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      #btn-LA.pressed,
+      #btn-RA.pressed {
+        background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+        border-color: #ff4444;
+        box-shadow: 0 0 20px rgba(255, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      #btn-LB.pressed,
+      #btn-RB.pressed {
+        background: linear-gradient(135deg, #00ff00 0%, #00cc00 100%);
+        border-color: #44ff44;
+        box-shadow: 0 0 20px rgba(0, 255, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      #btn-LC.pressed,
+      #btn-RC.pressed {
+        background: linear-gradient(135deg, #0000ff 0%, #0000cc 100%);
+        border-color: #4444ff;
+        box-shadow: 0 0 20px rgba(0, 0, 255, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      #btn-LMenu.pressed {
+        background: linear-gradient(135deg, #880000 0%, #660000 100%);
+        border-color: #aa2222;
+        box-shadow: 0 0 20px rgba(136, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      #btn-RMenu.pressed {
+        background: linear-gradient(135deg, #888800 0%, #666600 100%);
+        border-color: #aaaa22;
+        box-shadow: 0 0 20px rgba(136, 136, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      #btn-Test.pressed,
+      #btn-Service.pressed {
+        background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+        border-color: #00ffff;
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+      }
+
+      .coin-info {
+        background: linear-gradient(135deg, #2d2d44 0%, #1f1f33 100%);
+        border-radius: 10px;
+        padding: 15px;
+        margin: 15px 0;
+        border: 2px solid #4a4a6a;
+      }
+
+      .coin-row {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 8px 0;
+        font-size: 14px;
+      }
+
+      .coin-row:not(:last-child) {
+        border-bottom: 1px solid #3a3a5a;
+      }
+
+      .coin-label {
+        color: #aaa;
+        min-width: 70px;
+        font-weight: 600;
+      }
+
+      .coin-status {
+        background: linear-gradient(135deg, #3d3d5c 0%, #2a2a44 100%);
+        border: 1px solid #5a5a7a;
+        border-radius: 5px;
+        padding: 4px 12px;
+        color: #00d4ff;
+        font-family: 'Courier New', monospace;
+        min-width: 100px;
+        text-align: center;
+      }
+
+      .coin-count {
+        color: #ffcc00;
+        font-weight: 600;
+      }
+
+      .coin-count span {
+        font-family: 'Courier New', monospace;
+        background: #1a1a2e;
+        padding: 2px 8px;
+        border-radius: 4px;
+        margin-left: 5px;
+      }
+
+      .joystick-container {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        margin: 20px 0;
+        flex-wrap: wrap;
+      }
+
+      .joystick-area {
+        width: 200px;
+        height: 200px;
+        background: linear-gradient(135deg, #2d2d44 0%, #1f1f33 100%);
+        border-radius: 50%;
+        border: 3px solid #4a4a6a;
+        position: relative;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .joystick-crosshair {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        height: 100%;
+      }
+
+      .joystick-crosshair::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: rgba(100, 100, 120, 0.5);
+      }
+
+      .joystick-crosshair::after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(100, 100, 120, 0.5);
+      }
+
+      .joystick-dot {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+        border-radius: 50%;
+        border: 2px solid #00ffff;
+        box-shadow: 0 0 15px rgba(0, 212, 255, 0.6);
+        transform: translate(-50%, -50%);
+      }
+
+      .joystick-values {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 10px;
+        border-left: 4px solid #4facfe;
+      }
+
+      .joystick-value-row {
+        display: flex;
+        gap: 10px;
+        font-family: 'Courier New', monospace;
+      }
+
+      .value-label {
+        color: #6c757d;
+        font-size: 14px;
+        min-width: 60px;
+      }
+
+      .value-text {
+        color: #495057;
+        font-size: 14px;
+        font-weight: 600;
+      }
+
+      .raw-data-container {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 10px;
+        border-left: 4px solid #4facfe;
+      }
+
+      .raw-data-row {
+        display: flex;
+        gap: 10px;
+        font-family: 'Courier New', monospace;
+        margin-bottom: 8px;
+      }
+
+      .raw-data-row:last-child {
+        margin-bottom: 0;
+      }
+
+      .raw-label {
+        color: #6c757d;
+        font-size: 14px;
+        min-width: 180px;
+      }
+
+      .raw-value {
+        color: #495057;
+        font-size: 14px;
+        font-weight: 600;
+      }
     </style>
   </head>
   <body>
@@ -395,9 +696,121 @@
       <div class="tab-container">
         <div class="tab-nav">
           <button class="tab-button active" data-tab="config">⚙️ 设备配置</button>
+          <button class="tab-button" data-tab="inputtest">
+            🎮 IO4测试
+          </button>
           <button class="tab-button" data-tab="firmware">
             🔧 固件刷入
           </button>
+        </div>
+
+        <div class="tab-content" id="inputtest-tab">
+          <div class="section">
+            <h3>🔗 设备连接</h3>
+            <div class="button-group">
+              <input type="button" value="连接设备" id="ConnectInputTestDevice" />
+            </div>
+            <ul id="InputTestConnectedList" class="connected-list"></ul>
+            <div id="InputTestConnectionStatus" class="status"></div>
+          </div>
+
+          <div class="section">
+            <h3>🎮 按键测试</h3>
+            <div class="button-group">
+              <input type="button" value="开始测试" id="StartInputTestBtn" />
+              <input type="button" value="停止测试" id="StopInputTestBtn" />
+            </div>
+            <div id="InputTestStatus" class="status"></div>
+            
+            <div class="arcade-panel" id="ArcadePanel">
+              <div class="panel-row test-service-row">
+                <div class="panel-spacer-large"></div>
+                <div class="arcade-button" id="btn-Test">Test</div>
+                <div class="arcade-button" id="btn-Service">Service</div>
+              </div>
+              <div class="panel-row menu-row">
+                <div class="arcade-button" id="btn-LMenu">LMenu</div>
+                <div class="panel-spacer-large"></div>
+                <div class="arcade-button" id="btn-RMenu">RMenu</div>
+              </div>
+              <div class="panel-row main-row">
+                <div class="arcade-button side-btn" id="btn-LSide">LSide</div>
+                <div class="button-group-left">
+                  <div class="arcade-button main-btn" id="btn-LA">LA</div>
+                  <div class="arcade-button main-btn" id="btn-LB">LB</div>
+                  <div class="arcade-button main-btn" id="btn-LC">LC</div>
+                </div>
+                <div class="panel-spacer"></div>
+                <div class="button-group-right">
+                  <div class="arcade-button main-btn" id="btn-RA">RA</div>
+                  <div class="arcade-button main-btn" id="btn-RB">RB</div>
+                  <div class="arcade-button main-btn" id="btn-RC">RC</div>
+                </div>
+                <div class="arcade-button side-btn" id="btn-RSide">RSide</div>
+              </div>
+            </div>
+
+            <div class="coin-info">
+              <div class="coin-row">
+                <span class="coin-label">投币器1:</span>
+                <span class="coin-status" id="Coin1Condition">-</span>
+                <span class="coin-count">计数: <span id="Coin1Count">0</span></span>
+              </div>
+              <div class="coin-row">
+                <span class="coin-label">投币器2:</span>
+                <span class="coin-status" id="Coin2Condition">-</span>
+                <span class="coin-count">计数: <span id="Coin2Count">0</span></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>🕹️ 摇杆测试</h3>
+            <div class="joystick-container" id="JoystickContainer">
+              <div class="joystick-area">
+                <div class="joystick-crosshair"></div>
+                <div class="joystick-dot" id="JoystickDot"></div>
+              </div>
+              <div class="joystick-values">
+                <div class="joystick-value-row">
+                  <span class="value-label">X轴:</span>
+                  <span class="value-text" id="JoystickX">0 (0x0000)</span>
+                </div>
+                <div class="joystick-value-row">
+                  <span class="value-label">Y轴:</span>
+                  <span class="value-text" id="JoystickY">-</span>
+                </div>
+                <div class="joystick-value-row">
+                  <span class="value-label">原始值:</span>
+                  <span class="value-text" id="JoystickRaw">0 (0x0000)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>📊 原始数据</h3>
+            <div class="raw-data-container">
+              <div class="raw-data-row">
+                <span class="raw-label">输入状态 (Input Status):</span>
+                <span class="raw-value" id="RawInputStatus">0x0000</span>
+              </div>
+              <div class="raw-data-row">
+                <span class="raw-label">按键字节 (Buttons):</span>
+                <span class="raw-value" id="RawButtons">00 00 00 00</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>📝 测试日志</h3>
+            <textarea
+              name="inputTestLog"
+              id="InputTestLogBox"
+              class="log-box"
+              readonly
+            ></textarea>
+          </div>
         </div>
 
         <div class="tab-content" id="firmware-tab">
