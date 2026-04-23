@@ -699,6 +699,9 @@
           <button class="tab-button" data-tab="inputtest">
             🎮 IO4测试
           </button>
+          <button class="tab-button" data-tab="cardreader">
+            💳 读卡器测试
+          </button>
           <button class="tab-button" data-tab="firmware">
             🔧 固件刷入
           </button>
@@ -807,6 +810,117 @@
             <textarea
               name="inputTestLog"
               id="InputTestLogBox"
+              class="log-box"
+              readonly
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="tab-content" id="cardreader-tab">
+          <div class="section">
+            <h3>🔗 设备连接</h3>
+            <div class="button-group">
+              <input type="button" value="连接读卡器" id="ConnectCardReader" />
+              <input type="button" value="断开连接" id="DisconnectCardReader" />
+            </div>
+            <div id="CardReaderConnectionStatus" class="status"></div>
+            <p style="margin-top: 10px; font-size: 13px; color: #6c757d;">
+              💡 提示: 读卡器使用 USB CDC 串口接口 (VID: 0x0CA3, PID: 0x0021)。需要 Chrome/Edge 浏览器支持 WebSerial API。
+            </p>
+          </div>
+
+          <div class="section">
+            <h3>📊 设备状态</h3>
+            <div class="button-group">
+              <input type="button" value="读取固件版本" id="GetCardFWVersion" />
+              <input type="button" value="读取硬件版本" id="GetCardHWVersion" />
+              <input type="button" value="读取设备信息" id="GetCardBoardInfo" />
+            </div>
+            <div
+              id="CardReaderDeviceStatus"
+              style="
+                background: #f8f9fa;
+                padding: 15px;
+                border-radius: 8px;
+                font-family: monospace;
+                font-size: 14px;
+                line-height: 1.6;
+              "
+            >
+              未连接设备
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>💳 卡片操作</h3>
+            <div class="button-group">
+              <input type="button" value="开始轮询" id="StartCardPolling" />
+              <input type="button" value="停止轮询" id="StopCardPolling" />
+              <input type="button" value="单次检测" id="DetectCard" />
+            </div>
+            <div id="CardReaderOperationStatus" class="status"></div>
+            
+            <div style="
+              background: #2d2d44;
+              border-radius: 15px;
+              padding: 20px;
+              margin: 20px 0;
+              color: #fff;
+            ">
+              <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 150px;">
+                  <div style="color: #aaa; font-size: 12px; margin-bottom: 5px;">轮询状态</div>
+                  <div id="CardPollingStatus" style="
+                    background: #3d3d5c;
+                    padding: 10px 15px;
+                    border-radius: 8px;
+                    font-family: monospace;
+                    font-size: 16px;
+                  ">-</div>
+                </div>
+                <div style="flex: 1; min-width: 150px;">
+                  <div style="color: #aaa; font-size: 12px; margin-bottom: 5px;">卡片类型</div>
+                  <div id="CardType" style="
+                    background: #3d3d5c;
+                    padding: 10px 15px;
+                    border-radius: 8px;
+                    font-family: monospace;
+                    font-size: 16px;
+                  ">-</div>
+                </div>
+                <div style="flex: 1; min-width: 200px;">
+                  <div style="color: #aaa; font-size: 12px; margin-bottom: 5px;">卡片 UID / IDm</div>
+                  <div id="CardUID" style="
+                    background: #3d3d5c;
+                    padding: 10px 15px;
+                    border-radius: 8px;
+                    font-family: monospace;
+                    font-size: 16px;
+                  ">-</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>💡 LED 控制</h3>
+            <div class="button-group">
+              <input type="color" id="CardLEDColor" value="#00d4ff" style="
+                width: 60px;
+                height: 40px;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+              " />
+              <input type="button" value="设置LED颜色" id="SetCardLED" />
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>📝 测试日志</h3>
+            <textarea
+              name="cardReaderLog"
+              id="CardReaderLogBox"
               class="log-box"
               readonly
             ></textarea>

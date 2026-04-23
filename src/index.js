@@ -3,6 +3,7 @@ import {
   configElements,
   firmwareElements,
   inputTestElements,
+  cardReaderTestElements,
   tabElements,
 } from './modules/domElements'
 import {
@@ -17,6 +18,7 @@ import { createTabController } from './modules/tabs'
 import { createFirmwareController } from './modules/firmware'
 import { createConfigController } from './modules/config'
 import { createInputTestController } from './modules/inputTest'
+import { createCardReaderTestController } from './modules/cardReaderTest'
 
 const initialize = () => {
   const showStatus = createStatusDisplay()
@@ -60,10 +62,18 @@ const initialize = () => {
     renderList: renderDeviceList,
   })
 
+  const cardReaderTestController = createCardReaderTestController({
+    elements: cardReaderTestElements,
+    showStatus,
+    showCardReaderLog: (message) => appendLog(cardReaderTestElements.logBox, message),
+    renderList: renderDeviceList,
+  })
+
   tabs.bind()
   firmwareController.bindEvents()
   configController.bindEvents()
   inputTestController.bindEvents()
+  cardReaderTestController.bindEvents()
   firmwareController.fetchVersionInfo()
 
   window.getHIDDebugInfo = () => ({
@@ -75,6 +85,7 @@ const initialize = () => {
   window.addEventListener('beforeunload', () => {
     configController.stopMonitoring()
     inputTestController.stopTest()
+    cardReaderTestController.stopTest()
   })
 }
 

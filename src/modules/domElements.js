@@ -76,6 +76,26 @@ export const inputTestElements = {
   coin2Count: document.getElementById('Coin2Count'),
 }
 
+export const cardReaderTestElements = {
+  connectBtn: document.getElementById('ConnectCardReader'),
+  disconnectBtn: document.getElementById('DisconnectCardReader'),
+  connectionStatus: document.getElementById('CardReaderConnectionStatus'),
+  deviceStatus: document.getElementById('CardReaderDeviceStatus'),
+  getFWVersionBtn: document.getElementById('GetCardFWVersion'),
+  getHWVersionBtn: document.getElementById('GetCardHWVersion'),
+  getBoardInfoBtn: document.getElementById('GetCardBoardInfo'),
+  startPollingBtn: document.getElementById('StartCardPolling'),
+  stopPollingBtn: document.getElementById('StopCardPolling'),
+  cardDetectBtn: document.getElementById('DetectCard'),
+  setLEDBtn: document.getElementById('SetCardLED'),
+  ledColorPicker: document.getElementById('CardLEDColor'),
+  operationStatus: document.getElementById('CardReaderOperationStatus'),
+  logBox: document.getElementById('CardReaderLogBox'),
+  cardTypeDisplay: document.getElementById('CardType'),
+  cardUidDisplay: document.getElementById('CardUID'),
+  pollingStatus: document.getElementById('CardPollingStatus'),
+}
+
 export const allButtons = [
   firmwareElements.connectAndInitBtn,
   firmwareElements.downloadLatestBtn,
@@ -95,4 +115,13 @@ export const allButtons = [
   inputTestElements.connectInputTestBtn,
   inputTestElements.startInputTestBtn,
   inputTestElements.stopInputTestBtn,
+  cardReaderTestElements.connectBtn,
+  cardReaderTestElements.disconnectBtn,
+  cardReaderTestElements.getFWVersionBtn,
+  cardReaderTestElements.getHWVersionBtn,
+  cardReaderTestElements.getBoardInfoBtn,
+  cardReaderTestElements.startPollingBtn,
+  cardReaderTestElements.stopPollingBtn,
+  cardReaderTestElements.cardDetectBtn,
+  cardReaderTestElements.setLEDBtn,
 ]
