@@ -6,6 +6,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SimGEKI-WebControl</title>
     <style type="text/css">
+      :root {
+        --colorNeutralBackground1: #ffffff;
+        --colorNeutralBackground2: #f0f0f0;
+        --colorNeutralBackground3: #faf9f8;
+        --colorNeutralForeground1: #242424;
+        --colorNeutralForeground2: #5c5c5c;
+        --colorNeutralForeground3: #8a8a8a;
+        --colorBrandBackground: #0078d4;
+        --colorBrandBackground2: #005a9e;
+        --colorBrandForeground1: #0078d4;
+        --colorNeutralStroke1: #d1d1d1;
+        --colorNeutralStroke2: #e9e9e9;
+        --colorStatusSuccessBackground1: #dff6dd;
+        --colorStatusSuccessForeground1: #0f7b0f;
+        --colorStatusWarningBackground1: #fff4ce;
+        --colorStatusWarningForeground1: #835d00;
+        --colorStatusDangerBackground1: #fde7e9;
+        --colorStatusDangerForeground1: #a80000;
+        --colorStatusInfoBackground1: #d6e7f5;
+        --colorStatusInfoForeground1: #005a9e;
+        --borderRadiusMedium: 8px;
+        --borderRadiusSmall: 4px;
+        --borderRadiusLarge: 12px;
+        --shadow2: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108);
+        --shadow4: 0 3.2px 7.2px 0 rgba(0,0,0,0.132), 0 0.6px 1.8px 0 rgba(0,0,0,0.108);
+        --shadow8: 0 6.4px 14.4px 0 rgba(0,0,0,0.132), 0 1.2px 3.6px 0 rgba(0,0,0,0.108);
+        --fontSizeBase300: 14px;
+        --fontSizeBase400: 16px;
+        --fontSizeBase500: 20px;
+        --fontSizeHero700: 28px;
+        --fontWeightRegular: 400;
+        --fontWeightSemibold: 600;
+        --spacingHorizontalXS: 4px;
+        --spacingHorizontalS: 8px;
+        --spacingHorizontalM: 12px;
+        --spacingHorizontalL: 16px;
+        --spacingHorizontalXL: 24px;
+        --spacingVerticalXS: 4px;
+        --spacingVerticalS: 8px;
+        --spacingVerticalM: 12px;
+        --spacingVerticalL: 16px;
+        --spacingVerticalXL: 24px;
+      }
+
       * {
         box-sizing: border-box;
         margin: 0;
@@ -13,162 +57,161 @@
       }
 
       body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-          sans-serif;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        background: var(--colorNeutralBackground2);
         min-height: 100vh;
-        padding: 20px;
-        color: #333;
+        padding: var(--spacingHorizontalXL);
+        color: var(--colorNeutralForeground1);
+        font-size: var(--fontSizeBase300);
+        line-height: 1.5;
       }
 
       .container {
-        max-width: 800px;
+        max-width: 960px;
         margin: 0 auto;
-        background: white;
-        border-radius: 15px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        background: var(--colorNeutralBackground1);
+        border-radius: var(--borderRadiusMedium);
+        box-shadow: var(--shadow8);
         overflow: hidden;
       }
 
       .header {
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        color: white;
-        padding: 30px;
+        background: var(--colorBrandBackground);
+        color: var(--colorNeutralBackground1);
+        padding: var(--spacingVerticalXL) var(--spacingHorizontalXL);
         text-align: center;
       }
 
       .header h1 {
-        font-size: 2.5em;
-        font-weight: 300;
-        margin-bottom: 10px;
+        font-size: var(--fontSizeHero700);
+        font-weight: var(--fontWeightSemibold);
+        margin-bottom: var(--spacingVerticalS);
       }
 
       .header p {
-        opacity: 0.9;
-        font-size: 1.1em;
+        font-size: var(--fontSizeBase400);
+        opacity: 0.95;
       }
 
       .content {
-        padding: 30px;
+        padding: var(--spacingHorizontalXL);
       }
 
       .section {
-        margin-bottom: 30px;
-        padding: 20px;
-        background: #f8f9fa;
-        border-radius: 10px;
-        border-left: 4px solid #4facfe;
+        margin-bottom: var(--spacingVerticalXL);
+        padding: var(--spacingHorizontalL);
+        background: var(--colorNeutralBackground3);
+        border-radius: var(--borderRadiusMedium);
+        border: 1px solid var(--colorNeutralStroke2);
       }
 
       .section h3 {
-        margin-bottom: 15px;
-        color: #2c3e50;
-        font-size: 1.3em;
+        margin-bottom: var(--spacingVerticalM);
+        color: var(--colorNeutralForeground1);
+        font-size: var(--fontSizeBase500);
+        font-weight: var(--fontWeightSemibold);
       }
 
       .button-group {
         display: flex;
-        gap: 10px;
+        gap: var(--spacingHorizontalS);
         flex-wrap: wrap;
-        margin-bottom: 15px;
+        margin-bottom: var(--spacingVerticalM);
       }
 
       button,
       input[type='button'] {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
+        background: var(--colorBrandBackground);
+        color: var(--colorNeutralBackground1);
         border: none;
-        padding: 12px 24px;
-        border-radius: 25px;
+        padding: var(--spacingVerticalS) var(--spacingHorizontalL);
+        border-radius: var(--borderRadiusSmall);
         cursor: pointer;
-        font-size: 14px;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        font-size: var(--fontSizeBase300);
+        font-weight: var(--fontWeightSemibold);
+        transition: background 0.1s ease;
+        min-height: 32px;
       }
 
       button:hover,
       input[type='button']:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        background: var(--colorBrandBackground2);
       }
 
       button:active,
       input[type='button']:active {
-        transform: translateY(0);
+        background: #004578;
       }
 
       button:disabled,
       input[type='button']:disabled {
-        opacity: 0.6;
+        background: var(--colorNeutralStroke1);
         cursor: not-allowed;
-        transform: none;
+        opacity: 0.7;
       }
 
       .download-btn {
-        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
-        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+        background: #d83b01;
       }
 
       .download-btn:hover {
-        box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+        background: #a72d01;
       }
 
       .download-notice {
-        margin-top: 15px;
-        padding: 10px;
-        background: #fff3cd;
-        border: 1px solid #ffeaa7;
-        border-radius: 5px;
-        color: #856404;
-        font-size: 13px;
+        margin-top: var(--spacingVerticalM);
+        padding: var(--spacingVerticalS) var(--spacingHorizontalM);
+        background: var(--colorStatusWarningBackground1);
+        border: 1px solid #e6d6a0;
+        border-radius: var(--borderRadiusSmall);
+        color: var(--colorStatusWarningForeground1);
+        font-size: var(--fontSizeBase300);
       }
 
       .version-info-container {
         display: flex;
-        gap: 15px;
-        margin-bottom: 20px;
+        gap: var(--spacingHorizontalM);
+        margin-bottom: var(--spacingVerticalL);
         flex-wrap: wrap;
       }
 
       .version-info {
         flex: 1;
         min-width: 200px;
-        background: #f8f9fa;
-        border: 1px solid #dee2e6;
-        border-radius: 8px;
-        padding: 12px;
+        background: var(--colorNeutralBackground3);
+        border: 1px solid var(--colorNeutralStroke1);
+        border-radius: var(--borderRadiusSmall);
+        padding: var(--spacingVerticalM) var(--spacingHorizontalM);
         text-align: center;
       }
 
       .version-label {
-        font-size: 12px;
-        color: #6c757d;
-        margin-bottom: 5px;
-        font-weight: 500;
+        font-size: var(--fontSizeBase300);
+        color: var(--colorNeutralForeground2);
+        margin-bottom: var(--spacingVerticalXS);
+        font-weight: var(--fontWeightSemibold);
       }
 
       .version-value {
-        font-size: 14px;
-        color: #495057;
-        font-weight: 600;
+        font-size: var(--fontSizeBase400);
+        color: var(--colorNeutralForeground1);
+        font-weight: var(--fontWeightSemibold);
         word-break: break-all;
       }
 
       .version-value.loading {
-        color: #6c757d;
-        font-style: italic;
+        color: var(--colorNeutralForeground3);
       }
 
       .version-value.error {
-        color: #dc3545;
-        font-size: 12px;
+        color: var(--colorStatusDangerForeground1);
+        font-size: var(--fontSizeBase300);
       }
 
       .file-input-wrapper {
         position: relative;
         display: inline-block;
-        margin-bottom: 15px;
+        margin-bottom: var(--spacingVerticalM);
       }
 
       input[type='file'] {
@@ -185,181 +228,165 @@
 
       .file-input-label {
         display: inline-block;
-        padding: 12px 24px;
-        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-        color: white;
-        border-radius: 25px;
+        padding: var(--spacingVerticalS) var(--spacingHorizontalL);
+        background: #107c10;
+        color: var(--colorNeutralBackground1);
+        border-radius: var(--borderRadiusSmall);
         cursor: pointer;
-        font-size: 14px;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);
+        font-size: var(--fontSizeBase300);
+        font-weight: var(--fontWeightSemibold);
+        transition: background 0.1s ease;
       }
 
       .file-input-label:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(17, 153, 142, 0.4);
-      }
-
-      .file-input-wrapper:hover {
-        transition: all 0.3s ease;
-        transform: translateY(-2px);
+        background: #0b6b0b;
       }
 
       .file-input-wrapper:has(input:disabled) .file-input-label {
-        opacity: 0.6;
+        background: var(--colorNeutralStroke1);
         cursor: not-allowed;
-        transform: none;
-        box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);
       }
 
       .progress-container {
-        margin: 20px 0;
+        margin: var(--spacingVerticalL) 0;
         display: none;
       }
 
       .progress-bar {
         width: 100%;
-        height: 20px;
-        background: #e9ecef;
-        border-radius: 10px;
+        height: 4px;
+        background: var(--colorNeutralStroke2);
+        border-radius: 2px;
         overflow: hidden;
-        margin-bottom: 10px;
+        margin-bottom: var(--spacingVerticalS);
       }
 
       .progress-fill {
         height: 100%;
-        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        background: var(--colorBrandBackground);
         width: 0%;
-        transition: width 0.3s ease;
-        border-radius: 10px;
+        transition: width 0.2s ease;
       }
 
       .progress-text {
         text-align: center;
-        font-size: 14px;
-        color: #666;
-        font-weight: 500;
+        font-size: var(--fontSizeBase300);
+        color: var(--colorNeutralForeground2);
       }
 
       .connected-list {
-        background: white;
-        border: 2px dashed #dee2e6;
-        border-radius: 10px;
-        padding: 15px;
-        margin: 15px 0;
+        background: var(--colorNeutralBackground1);
+        border: 1px solid var(--colorNeutralStroke1);
+        border-radius: var(--borderRadiusSmall);
+        padding: var(--spacingHorizontalM);
+        margin: var(--spacingVerticalM) 0;
         min-height: 60px;
       }
 
       .connected-list:empty::before {
         content: '未连接设备';
-        color: #999;
-        font-style: italic;
+        color: var(--colorNeutralForeground3);
       }
 
       .connected-list li {
-        background: #e3f2fd;
-        padding: 8px 15px;
-        margin: 5px 0;
-        border-radius: 20px;
-        border-left: 4px solid #2196f3;
+        background: var(--colorStatusInfoBackground1);
+        padding: var(--spacingVerticalXS) var(--spacingHorizontalM);
+        margin: var(--spacingVerticalXS) 0;
+        border-radius: var(--borderRadiusSmall);
+        color: var(--colorStatusInfoForeground1);
         list-style: none;
       }
 
       .log-box {
         width: 100%;
         height: 200px;
-        border: 2px solid #dee2e6;
-        border-radius: 10px;
-        padding: 15px;
-        font-family: 'Courier New', monospace;
-        font-size: 12px;
-        background: #f8f9fa;
+        border: 1px solid var(--colorNeutralStroke1);
+        border-radius: var(--borderRadiusSmall);
+        padding: var(--spacingHorizontalM);
+        font-family: 'Consolas', 'Courier New', monospace;
+        font-size: var(--fontSizeBase300);
+        background: var(--colorNeutralBackground3);
         resize: vertical;
         line-height: 1.4;
+        color: var(--colorNeutralForeground1);
       }
 
       .status {
-        padding: 10px 15px;
-        border-radius: 20px;
-        font-size: 14px;
-        font-weight: 500;
-        margin: 10px 0;
+        padding: var(--spacingVerticalS) var(--spacingHorizontalM);
+        border-radius: var(--borderRadiusSmall);
+        font-size: var(--fontSizeBase300);
+        font-weight: var(--fontWeightRegular);
+        margin: var(--spacingVerticalS) 0;
         display: none;
       }
 
       .status.success {
-        background: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
+        background: var(--colorStatusSuccessBackground1);
+        color: var(--colorStatusSuccessForeground1);
+        border: 1px solid #b8e8b8;
       }
 
       .status.error {
-        background: #f8d7da;
-        color: #721c24;
+        background: var(--colorStatusDangerBackground1);
+        color: var(--colorStatusDangerForeground1);
         border: 1px solid #f5c6cb;
       }
 
       .status.info {
-        background: #d1ecf1;
-        color: #0c5460;
+        background: var(--colorStatusInfoBackground1);
+        color: var(--colorStatusInfoForeground1);
         border: 1px solid #bee5eb;
       }
 
-      /* Tab styles */
       .tab-container {
-        background: white;
-        border-radius: 0 0 15px 15px;
+        background: var(--colorNeutralBackground1);
+        border-radius: 0 0 var(--borderRadiusMedium) var(--borderRadiusMedium);
         overflow: hidden;
       }
 
       .tab-nav {
         display: flex;
-        background: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
+        background: var(--colorNeutralBackground3);
+        border-bottom: 1px solid var(--colorNeutralStroke1);
       }
 
       .tab-button {
         flex: 1;
-        padding: 15px 20px;
+        padding: var(--spacingVerticalM) var(--spacingHorizontalL);
         background: none;
         border: none;
         cursor: pointer;
-        font-size: 16px;
-        font-weight: 500;
-        color: #6c757d;
-        transition: all 0.3s ease;
+        font-size: var(--fontSizeBase400);
+        font-weight: var(--fontWeightSemibold);
+        color: var(--colorNeutralForeground2);
+        transition: color 0.1s ease;
         border-radius: 0;
-        box-shadow: none;
         position: relative;
       }
 
       .tab-button:hover {
-        background: #e9ecef;
-        color: #495057;
-        transform: none;
-        box-shadow: none;
+        background: var(--colorNeutralBackground2);
+        color: var(--colorNeutralForeground1);
       }
 
       .tab-button.active {
-        background: white;
-        color: #4facfe;
-        /* border-bottom: 3px solid #4facfe; */
+        background: var(--colorNeutralBackground1);
+        color: var(--colorBrandForeground1);
       }
 
       .tab-button.active::after {
         content: '';
         position: absolute;
-        bottom: -2px;
+        bottom: -1px;
         left: 0;
         right: 0;
-        height: 3px;
-        background: #4facfe;
+        height: 2px;
+        background: var(--colorBrandBackground);
       }
 
       .tab-content {
         display: none;
-        padding: 30px;
+        padding: var(--spacingHorizontalXL);
       }
 
       .tab-content.active {
@@ -379,27 +406,28 @@
         }
 
         .tab-button {
-          padding: 12px 15px;
-          font-size: 14px;
+          padding: var(--spacingVerticalS) var(--spacingHorizontalM);
+          font-size: var(--fontSizeBase300);
         }
       }
 
       .arcade-panel {
-        background: #1a1a2e;
-        border-radius: 15px;
-        padding: 20px;
-        margin: 20px 0;
+        background: #1b1b19;
+        border-radius: var(--borderRadiusMedium);
+        padding: var(--spacingHorizontalL);
+        margin: var(--spacingVerticalL) 0;
         min-width: 500px;
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: var(--spacingVerticalS);
+        border: 1px solid #3d3d3d;
       }
 
       .panel-row {
         display: flex;
         align-items: center;
         justify-content: flex-start;
-        gap: 8px;
+        gap: var(--spacingHorizontalXS);
       }
 
       .panel-spacer-large {
@@ -408,183 +436,179 @@
 
       .panel-spacer {
         width: 40px;
-      }
-
-      .button-group-left,
-      .button-group-right {
-        display: flex;
-        gap: 8px;
+        flex-shrink: 0;
       }
 
       .arcade-button {
-        background: linear-gradient(135deg, #2d2d44 0%, #1f1f33 100%);
-        border: 2px solid #4a4a6a;
-        border-radius: 8px;
-        padding: 12px 16px;
-        color: #aaa;
-        font-weight: 600;
-        font-size: 14px;
+        background: #2d2d2b;
+        border: 1px solid #4d4d4d;
+        border-radius: var(--borderRadiusSmall);
+        padding: 0 var(--spacingHorizontalM);
+        color: #c4c4c4;
+        font-weight: var(--fontWeightSemibold);
+        font-size: var(--fontSizeBase300);
         text-align: center;
         min-width: 60px;
+        height: 40px;
+        line-height: 40px;
         transition: all 0.1s ease;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        display: inline-block;
+        flex-shrink: 0;
       }
 
       .arcade-button.main-btn {
-        background: linear-gradient(135deg, #3d3d5c 0%, #2a2a44 100%);
-        border-color: #5a5a7a;
+        background: #333331;
+        border-color: #5d5d5d;
         min-width: 70px;
       }
 
       .arcade-button.side-btn {
-        background: linear-gradient(135deg, #444455 0%, #333344 100%);
-        border-color: #6a6a7a;
+        background: #383836;
+        border-color: #5d5d5d;
       }
 
       .arcade-button.coin-btn {
-        background: linear-gradient(135deg, #4a3a2a 0%, #3a2a1a 100%);
-        border-color: #6a5a4a;
+        background: #3a3222;
+        border-color: #5d5d4d;
       }
 
       .arcade-button.pressed {
-        background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
-        border-color: #00ffff;
-        color: #fff;
-        box-shadow: 0 0 20px rgba(0, 212, 255, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
-        transform: scale(0.95);
+        background: var(--colorBrandBackground);
+        border-color: var(--colorBrandBackground);
+        color: var(--colorNeutralBackground1);
+        box-shadow: 0 0 16px rgba(0, 120, 212, 0.4);
       }
 
       .arcade-button.main-btn.pressed {
-        background: linear-gradient(135deg, #ff3366 0%, #cc2255 100%);
-        border-color: #ff6699;
-        box-shadow: 0 0 20px rgba(255, 51, 102, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+        background: #d83b01;
+        border-color: #d83b01;
+        box-shadow: 0 0 16px rgba(216, 59, 1, 0.4);
       }
 
       .arcade-button.side-btn.pressed {
-        background: linear-gradient(135deg, #33ff66 0%, #22cc55 100%);
-        border-color: #66ff99;
-        box-shadow: 0 0 20px rgba(51, 255, 102, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+        background: #107c10;
+        border-color: #107c10;
+        box-shadow: 0 0 16px rgba(16, 124, 16, 0.4);
       }
 
       .arcade-button.coin-btn.pressed {
-        background: linear-gradient(135deg, #ffcc00 0%, #cc9900 100%);
-        border-color: #ffdd33;
-        box-shadow: 0 0 20px rgba(255, 204, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+        background: #ffb900;
+        border-color: #ffb900;
+        box-shadow: 0 0 16px rgba(255, 185, 0, 0.4);
       }
 
       #btn-LSide.pressed,
       #btn-RSide.pressed {
-        background: linear-gradient(135deg, #ff00ff 0%, #cc00cc 100%);
-        border-color: #ff88ff;
-        box-shadow: 0 0 20px rgba(255, 0, 255, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+        background: #8764b8;
+        border-color: #8764b8;
+        box-shadow: 0 0 16px rgba(135, 100, 184, 0.4);
       }
 
       #btn-LA.pressed,
       #btn-RA.pressed {
-        background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
-        border-color: #ff4444;
-        box-shadow: 0 0 20px rgba(255, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+        background: #d83b01;
+        border-color: #d83b01;
+        box-shadow: 0 0 16px rgba(216, 59, 1, 0.4);
       }
 
       #btn-LB.pressed,
       #btn-RB.pressed {
-        background: linear-gradient(135deg, #00ff00 0%, #00cc00 100%);
-        border-color: #44ff44;
-        box-shadow: 0 0 20px rgba(0, 255, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+        background: #107c10;
+        border-color: #107c10;
+        box-shadow: 0 0 16px rgba(16, 124, 16, 0.4);
       }
 
       #btn-LC.pressed,
       #btn-RC.pressed {
-        background: linear-gradient(135deg, #0000ff 0%, #0000cc 100%);
-        border-color: #4444ff;
-        box-shadow: 0 0 20px rgba(0, 0, 255, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+        background: var(--colorBrandBackground);
+        border-color: var(--colorBrandBackground);
+        box-shadow: 0 0 16px rgba(0, 120, 212, 0.4);
       }
 
       #btn-LMenu.pressed {
-        background: linear-gradient(135deg, #880000 0%, #660000 100%);
-        border-color: #aa2222;
-        box-shadow: 0 0 20px rgba(136, 0, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+        background: #84292a;
+        border-color: #84292a;
+        box-shadow: 0 0 16px rgba(132, 41, 42, 0.4);
       }
 
       #btn-RMenu.pressed {
-        background: linear-gradient(135deg, #888800 0%, #666600 100%);
-        border-color: #aaaa22;
-        box-shadow: 0 0 20px rgba(136, 136, 0, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+        background: #737321;
+        border-color: #737321;
+        box-shadow: 0 0 16px rgba(115, 115, 33, 0.4);
       }
 
       #btn-Test.pressed,
       #btn-Service.pressed {
-        background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
-        border-color: #00ffff;
-        box-shadow: 0 0 20px rgba(0, 212, 255, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+        background: var(--colorBrandBackground);
+        border-color: var(--colorBrandBackground);
+        box-shadow: 0 0 16px rgba(0, 120, 212, 0.4);
       }
 
       .coin-info {
-        background: linear-gradient(135deg, #2d2d44 0%, #1f1f33 100%);
-        border-radius: 10px;
-        padding: 15px;
-        margin: 15px 0;
-        border: 2px solid #4a4a6a;
+        background: #1b1b19;
+        border-radius: var(--borderRadiusSmall);
+        padding: var(--spacingHorizontalM);
+        margin: var(--spacingVerticalM) 0;
+        border: 1px solid #3d3d3d;
       }
 
       .coin-row {
         display: flex;
         align-items: center;
-        gap: 15px;
-        padding: 8px 0;
-        font-size: 14px;
+        gap: var(--spacingHorizontalM);
+        padding: var(--spacingVerticalXS) 0;
+        font-size: var(--fontSizeBase300);
       }
 
       .coin-row:not(:last-child) {
-        border-bottom: 1px solid #3a3a5a;
+        border-bottom: 1px solid #3d3d3d;
       }
 
       .coin-label {
-        color: #aaa;
+        color: #c4c4c4;
         min-width: 70px;
-        font-weight: 600;
+        font-weight: var(--fontWeightSemibold);
       }
 
       .coin-status {
-        background: linear-gradient(135deg, #3d3d5c 0%, #2a2a44 100%);
-        border: 1px solid #5a5a7a;
-        border-radius: 5px;
-        padding: 4px 12px;
-        color: #00d4ff;
-        font-family: 'Courier New', monospace;
+        background: #2d2d2b;
+        border: 1px solid #4d4d4d;
+        border-radius: var(--borderRadiusSmall);
+        padding: var(--spacingVerticalXS) var(--spacingHorizontalM);
+        color: var(--colorBrandBackground);
+        font-family: 'Consolas', 'Courier New', monospace;
         min-width: 100px;
         text-align: center;
       }
 
       .coin-count {
-        color: #ffcc00;
-        font-weight: 600;
+        color: #ffb900;
+        font-weight: var(--fontWeightSemibold);
       }
 
       .coin-count span {
-        font-family: 'Courier New', monospace;
-        background: #1a1a2e;
-        padding: 2px 8px;
-        border-radius: 4px;
-        margin-left: 5px;
+        font-family: 'Consolas', 'Courier New', monospace;
+        background: #1b1b19;
+        padding: 2px var(--spacingHorizontalXS);
+        border-radius: var(--borderRadiusSmall);
+        margin-left: var(--spacingHorizontalXS);
       }
 
       .joystick-container {
         display: flex;
         align-items: center;
-        gap: 30px;
-        margin: 20px 0;
+        gap: var(--spacingHorizontalXL);
+        margin: var(--spacingVerticalL) 0;
         flex-wrap: wrap;
       }
 
       .joystick-area {
         width: 200px;
         height: 200px;
-        background: linear-gradient(135deg, #2d2d44 0%, #1f1f33 100%);
+        background: #1b1b19;
         border-radius: 50%;
-        border: 3px solid #4a4a6a;
+        border: 2px solid #3d3d3d;
         position: relative;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
       }
 
       .joystick-crosshair {
@@ -603,7 +627,7 @@
         left: 0;
         right: 0;
         height: 2px;
-        background: rgba(100, 100, 120, 0.5);
+        background: rgba(61, 61, 61, 0.6);
       }
 
       .joystick-crosshair::after {
@@ -613,60 +637,60 @@
         top: 0;
         bottom: 0;
         width: 2px;
-        background: rgba(100, 100, 120, 0.5);
+        background: rgba(61, 61, 61, 0.6);
       }
 
       .joystick-dot {
         position: absolute;
         width: 30px;
         height: 30px;
-        background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+        background: var(--colorBrandBackground);
         border-radius: 50%;
-        border: 2px solid #00ffff;
-        box-shadow: 0 0 15px rgba(0, 212, 255, 0.6);
+        border: 2px solid var(--colorBrandBackground);
+        box-shadow: 0 0 12px rgba(0, 120, 212, 0.5);
         transform: translate(-50%, -50%);
       }
 
       .joystick-values {
         display: flex;
         flex-direction: column;
-        gap: 10px;
-        background: #f8f9fa;
-        padding: 15px;
-        border-radius: 10px;
-        border-left: 4px solid #4facfe;
+        gap: var(--spacingVerticalS);
+        background: var(--colorNeutralBackground3);
+        padding: var(--spacingHorizontalM);
+        border-radius: var(--borderRadiusSmall);
+        border: 1px solid var(--colorNeutralStroke1);
       }
 
       .joystick-value-row {
         display: flex;
-        gap: 10px;
-        font-family: 'Courier New', monospace;
+        gap: var(--spacingHorizontalS);
+        font-family: 'Consolas', 'Courier New', monospace;
       }
 
       .value-label {
-        color: #6c757d;
-        font-size: 14px;
+        color: var(--colorNeutralForeground2);
+        font-size: var(--fontSizeBase300);
         min-width: 60px;
       }
 
       .value-text {
-        color: #495057;
-        font-size: 14px;
-        font-weight: 600;
+        color: var(--colorNeutralForeground1);
+        font-size: var(--fontSizeBase300);
+        font-weight: var(--fontWeightSemibold);
       }
 
       .raw-data-container {
-        background: #f8f9fa;
-        padding: 15px;
-        border-radius: 10px;
-        border-left: 4px solid #4facfe;
+        background: var(--colorNeutralBackground3);
+        padding: var(--spacingHorizontalM);
+        border-radius: var(--borderRadiusSmall);
+        border: 1px solid var(--colorNeutralStroke1);
       }
 
       .raw-data-row {
         display: flex;
-        gap: 10px;
-        font-family: 'Courier New', monospace;
-        margin-bottom: 8px;
+        gap: var(--spacingHorizontalS);
+        font-family: 'Consolas', 'Courier New', monospace;
+        margin-bottom: var(--spacingVerticalXS);
       }
 
       .raw-data-row:last-child {
@@ -674,15 +698,39 @@
       }
 
       .raw-label {
-        color: #6c757d;
-        font-size: 14px;
+        color: var(--colorNeutralForeground2);
+        font-size: var(--fontSizeBase300);
         min-width: 180px;
       }
 
       .raw-value {
-        color: #495057;
-        font-size: 14px;
-        font-weight: 600;
+        color: var(--colorNeutralForeground1);
+        font-size: var(--fontSizeBase300);
+        font-weight: var(--fontWeightSemibold);
+      }
+
+      select {
+        padding: var(--spacingVerticalXS) var(--spacingHorizontalM);
+        border-radius: var(--borderRadiusSmall);
+        border: 1px solid var(--colorNeutralStroke1);
+        font-size: var(--fontSizeBase300);
+        background: var(--colorNeutralBackground1);
+        color: var(--colorNeutralForeground1);
+        min-height: 32px;
+      }
+
+      select:focus {
+        outline: 2px solid var(--colorBrandBackground);
+        outline-offset: -2px;
+      }
+
+      input[type='color'] {
+        width: 60px;
+        height: 32px;
+        border: 1px solid var(--colorNeutralStroke1);
+        border-radius: var(--borderRadiusSmall);
+        cursor: pointer;
+        padding: 2px;
       }
     </style>
   </head>
@@ -738,17 +786,13 @@
               </div>
               <div class="panel-row main-row">
                 <div class="arcade-button side-btn" id="btn-LSide">LSide</div>
-                <div class="button-group-left">
-                  <div class="arcade-button main-btn" id="btn-LA">LA</div>
-                  <div class="arcade-button main-btn" id="btn-LB">LB</div>
-                  <div class="arcade-button main-btn" id="btn-LC">LC</div>
-                </div>
-                <div class="panel-spacer"></div>
-                <div class="button-group-right">
-                  <div class="arcade-button main-btn" id="btn-RA">RA</div>
-                  <div class="arcade-button main-btn" id="btn-RB">RB</div>
-                  <div class="arcade-button main-btn" id="btn-RC">RC</div>
-                </div>
+                <div class="arcade-button main-btn" id="btn-LA">LA</div>
+                <div class="arcade-button main-btn" id="btn-LB">LB</div>
+                <div class="arcade-button main-btn" id="btn-LC">LC</div>
+                <div class="panel-spacer-large"></div>
+                <div class="arcade-button main-btn" id="btn-RA">RA</div>
+                <div class="arcade-button main-btn" id="btn-RB">RB</div>
+                <div class="arcade-button main-btn" id="btn-RC">RC</div>
                 <div class="arcade-button side-btn" id="btn-RSide">RSide</div>
               </div>
             </div>
@@ -824,7 +868,7 @@
               <input type="button" value="断开连接" id="DisconnectCardReader" />
             </div>
             <div id="CardReaderConnectionStatus" class="status"></div>
-            <p style="margin-top: 10px; font-size: 13px; color: #6c757d;">
+            <p style="margin-top: var(--spacingVerticalS); font-size: var(--fontSizeBase300); color: var(--colorNeutralForeground2);">
               💡 提示: 读卡器使用 USB CDC 串口接口 (VID: 0x0CA3, PID: 0x0021)。需要 Chrome/Edge 浏览器支持 WebSerial API。
             </p>
           </div>
@@ -839,12 +883,13 @@
             <div
               id="CardReaderDeviceStatus"
               style="
-                background: #f8f9fa;
-                padding: 15px;
-                border-radius: 8px;
-                font-family: monospace;
-                font-size: 14px;
+                background: var(--colorNeutralBackground3);
+                padding: var(--spacingHorizontalM);
+                border-radius: var(--borderRadiusSmall);
+                font-family: 'Consolas', monospace;
+                font-size: var(--fontSizeBase300);
                 line-height: 1.6;
+                border: 1px solid var(--colorNeutralStroke1);
               "
             >
               未连接设备
@@ -861,41 +906,45 @@
             <div id="CardReaderOperationStatus" class="status"></div>
             
             <div style="
-              background: #2d2d44;
-              border-radius: 15px;
-              padding: 20px;
-              margin: 20px 0;
-              color: #fff;
+              background: #1b1b19;
+              border-radius: var(--borderRadiusMedium);
+              padding: var(--spacingHorizontalL);
+              margin: var(--spacingVerticalL) 0;
+              color: var(--colorNeutralBackground1);
+              border: 1px solid #3d3d3d;
             ">
-              <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+              <div style="display: flex; gap: var(--spacingHorizontalL); flex-wrap: wrap;">
                 <div style="flex: 1; min-width: 150px;">
-                  <div style="color: #aaa; font-size: 12px; margin-bottom: 5px;">轮询状态</div>
+                  <div style="color: #c4c4c4; font-size: var(--fontSizeBase300); margin-bottom: var(--spacingVerticalXS);">轮询状态</div>
                   <div id="CardPollingStatus" style="
-                    background: #3d3d5c;
-                    padding: 10px 15px;
-                    border-radius: 8px;
-                    font-family: monospace;
-                    font-size: 16px;
+                    background: #2d2d2b;
+                    padding: var(--spacingVerticalS) var(--spacingHorizontalM);
+                    border-radius: var(--borderRadiusSmall);
+                    font-family: 'Consolas', monospace;
+                    font-size: var(--fontSizeBase400);
+                    border: 1px solid #4d4d4d;
                   ">-</div>
                 </div>
                 <div style="flex: 1; min-width: 150px;">
-                  <div style="color: #aaa; font-size: 12px; margin-bottom: 5px;">卡片类型</div>
+                  <div style="color: #c4c4c4; font-size: var(--fontSizeBase300); margin-bottom: var(--spacingVerticalXS);">卡片类型</div>
                   <div id="CardType" style="
-                    background: #3d3d5c;
-                    padding: 10px 15px;
-                    border-radius: 8px;
-                    font-family: monospace;
-                    font-size: 16px;
+                    background: #2d2d2b;
+                    padding: var(--spacingVerticalS) var(--spacingHorizontalM);
+                    border-radius: var(--borderRadiusSmall);
+                    font-family: 'Consolas', monospace;
+                    font-size: var(--fontSizeBase400);
+                    border: 1px solid #4d4d4d;
                   ">-</div>
                 </div>
                 <div style="flex: 1; min-width: 200px;">
-                  <div style="color: #aaa; font-size: 12px; margin-bottom: 5px;">卡片 UID / IDm</div>
+                  <div style="color: #c4c4c4; font-size: var(--fontSizeBase300); margin-bottom: var(--spacingVerticalXS);">卡片 UID / IDm</div>
                   <div id="CardUID" style="
-                    background: #3d3d5c;
-                    padding: 10px 15px;
-                    border-radius: 8px;
-                    font-family: monospace;
-                    font-size: 16px;
+                    background: #2d2d2b;
+                    padding: var(--spacingVerticalS) var(--spacingHorizontalM);
+                    border-radius: var(--borderRadiusSmall);
+                    font-family: 'Consolas', monospace;
+                    font-size: var(--fontSizeBase400);
+                    border: 1px solid #4d4d4d;
                   ">-</div>
                 </div>
               </div>
@@ -905,13 +954,7 @@
           <div class="section">
             <h3>💡 LED 控制</h3>
             <div class="button-group">
-              <input type="color" id="CardLEDColor" value="#00d4ff" style="
-                width: 60px;
-                height: 40px;
-                border: none;
-                border-radius: 8px;
-                cursor: pointer;
-              " />
+              <input type="color" id="CardLEDColor" value="#0078d4" />
               <input type="button" value="设置LED颜色" id="SetCardLED" />
             </div>
           </div>
@@ -1050,7 +1093,7 @@
               <input type="button" value="读取当前输入模式" id="ReadInputModeBtn" />
             </div>
             <div class="button-group">
-              <select id="InputModeSelect" style="padding: 10px 14px; border-radius: 20px; border: 1px solid #dee2e6; font-size: 14px;">
+              <select id="InputModeSelect">
                 <option value="0">未知</option>
                 <option value="1">IO4兼容</option>
                 <option value="2">DLL输入</option>
@@ -1085,12 +1128,13 @@
             <div
               id="DeviceStatus"
               style="
-                background: #f8f9fa;
-                padding: 15px;
-                border-radius: 8px;
-                font-family: monospace;
-                font-size: 14px;
+                background: var(--colorNeutralBackground3);
+                padding: var(--spacingHorizontalM);
+                border-radius: var(--borderRadiusSmall);
+                font-family: 'Consolas', monospace;
+                font-size: var(--fontSizeBase300);
                 line-height: 1.6;
+                border: 1px solid var(--colorNeutralStroke1);
               "
             >
               未连接设备
