@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-hans">
   <head>
     <meta charset="UTF-8" />
@@ -29,9 +29,15 @@
         --borderRadiusMedium: 8px;
         --borderRadiusSmall: 4px;
         --borderRadiusLarge: 12px;
-        --shadow2: 0 1.6px 3.6px 0 rgba(0,0,0,0.132), 0 0.3px 0.9px 0 rgba(0,0,0,0.108);
-        --shadow4: 0 3.2px 7.2px 0 rgba(0,0,0,0.132), 0 0.6px 1.8px 0 rgba(0,0,0,0.108);
-        --shadow8: 0 6.4px 14.4px 0 rgba(0,0,0,0.132), 0 1.2px 3.6px 0 rgba(0,0,0,0.108);
+        --shadow2:
+          0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132),
+          0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108);
+        --shadow4:
+          0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132),
+          0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108);
+        --shadow8:
+          0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132),
+          0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108);
         --fontSizeBase300: 14px;
         --fontSizeBase400: 16px;
         --fontSizeBase500: 20px;
@@ -57,7 +63,18 @@
       }
 
       body {
-        font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+        font-family:
+          'Segoe UI',
+          -apple-system,
+          BlinkMacSystemFont,
+          'Roboto',
+          'Oxygen',
+          'Ubuntu',
+          'Cantarell',
+          'Fira Sans',
+          'Droid Sans',
+          'Helvetica Neue',
+          sans-serif;
         background: var(--colorNeutralBackground2);
         min-height: 100vh;
         padding: var(--spacingHorizontalXL);
@@ -88,8 +105,10 @@
         margin-bottom: var(--spacingVerticalS);
       }
 
-      .header p {
+      .header p, .header a {
         font-size: var(--fontSizeBase400);
+        color: var(--colorNeutralBackground1);
+        text-decoration-color: var(--colorNeutralBackground1);
         opacity: 0.95;
       }
 
@@ -739,27 +758,30 @@
       <div class="header">
         <h1>SimGEKI WebControl</h1>
         <p>设备固件管理与配置工具</p>
+        <a href="https://sim.bysb.net/"><p>-点此了解SimDevices和SimGEKI-</p></a>
       </div>
 
       <div class="tab-container">
         <div class="tab-nav">
-          <button class="tab-button active" data-tab="config">⚙️ 设备配置</button>
-          <button class="tab-button" data-tab="inputtest">
-            🎮 IO4测试
+          <button class="tab-button active" data-tab="config">
+            ⚙️ 设备配置
           </button>
+          <button class="tab-button" data-tab="inputtest">🎮 IO4测试</button>
           <button class="tab-button" data-tab="cardreader">
             💳 读卡器测试
           </button>
-          <button class="tab-button" data-tab="firmware">
-            🔧 固件刷入
-          </button>
+          <button class="tab-button" data-tab="firmware">🔧 固件刷入</button>
         </div>
 
         <div class="tab-content" id="inputtest-tab">
           <div class="section">
             <h3>🔗 设备连接</h3>
             <div class="button-group">
-              <input type="button" value="连接设备" id="ConnectInputTestDevice" />
+              <input
+                type="button"
+                value="连接设备"
+                id="ConnectInputTestDevice"
+              />
             </div>
             <ul id="InputTestConnectedList" class="connected-list"></ul>
             <div id="InputTestConnectionStatus" class="status"></div>
@@ -772,7 +794,7 @@
               <input type="button" value="停止测试" id="StopInputTestBtn" />
             </div>
             <div id="InputTestStatus" class="status"></div>
-            
+
             <div class="arcade-panel" id="ArcadePanel">
               <div class="panel-row test-service-row">
                 <div class="panel-spacer-large"></div>
@@ -801,12 +823,16 @@
               <div class="coin-row">
                 <span class="coin-label">投币器1:</span>
                 <span class="coin-status" id="Coin1Condition">-</span>
-                <span class="coin-count">计数: <span id="Coin1Count">0</span></span>
+                <span class="coin-count"
+                  >计数: <span id="Coin1Count">0</span></span
+                >
               </div>
               <div class="coin-row">
                 <span class="coin-label">投币器2:</span>
                 <span class="coin-status" id="Coin2Condition">-</span>
-                <span class="coin-count">计数: <span id="Coin2Count">0</span></span>
+                <span class="coin-count"
+                  >计数: <span id="Coin2Count">0</span></span
+                >
               </div>
             </div>
           </div>
@@ -868,8 +894,15 @@
               <input type="button" value="断开连接" id="DisconnectCardReader" />
             </div>
             <div id="CardReaderConnectionStatus" class="status"></div>
-            <p style="margin-top: var(--spacingVerticalS); font-size: var(--fontSizeBase300); color: var(--colorNeutralForeground2);">
-              💡 提示: 读卡器使用 USB CDC 串口接口 (VID: 0x0CA3, PID: 0x0021)。需要 Chrome/Edge 浏览器支持 WebSerial API。
+            <p
+              style="
+                margin-top: var(--spacingVerticalS);
+                font-size: var(--fontSizeBase300);
+                color: var(--colorNeutralForeground2);
+              "
+            >
+              💡 提示: 读卡器使用 USB CDC 串口接口 (VID: 0x0CA3, PID:
+              0x0021)。需要 Chrome/Edge 浏览器支持 WebSerial API。
             </p>
           </div>
 
@@ -904,48 +937,95 @@
               <input type="button" value="单次检测" id="DetectCard" />
             </div>
             <div id="CardReaderOperationStatus" class="status"></div>
-            
-            <div style="
-              background: #1b1b19;
-              border-radius: var(--borderRadiusMedium);
-              padding: var(--spacingHorizontalL);
-              margin: var(--spacingVerticalL) 0;
-              color: var(--colorNeutralBackground1);
-              border: 1px solid #3d3d3d;
-            ">
-              <div style="display: flex; gap: var(--spacingHorizontalL); flex-wrap: wrap;">
-                <div style="flex: 1; min-width: 150px;">
-                  <div style="color: #c4c4c4; font-size: var(--fontSizeBase300); margin-bottom: var(--spacingVerticalXS);">轮询状态</div>
-                  <div id="CardPollingStatus" style="
-                    background: #2d2d2b;
-                    padding: var(--spacingVerticalS) var(--spacingHorizontalM);
-                    border-radius: var(--borderRadiusSmall);
-                    font-family: 'Consolas', monospace;
-                    font-size: var(--fontSizeBase400);
-                    border: 1px solid #4d4d4d;
-                  ">-</div>
+
+            <div
+              style="
+                background: #1b1b19;
+                border-radius: var(--borderRadiusMedium);
+                padding: var(--spacingHorizontalL);
+                margin: var(--spacingVerticalL) 0;
+                color: var(--colorNeutralBackground1);
+                border: 1px solid #3d3d3d;
+              "
+            >
+              <div
+                style="
+                  display: flex;
+                  gap: var(--spacingHorizontalL);
+                  flex-wrap: wrap;
+                "
+              >
+                <div style="flex: 1; min-width: 150px">
+                  <div
+                    style="
+                      color: #c4c4c4;
+                      font-size: var(--fontSizeBase300);
+                      margin-bottom: var(--spacingVerticalXS);
+                    "
+                  >
+                    轮询状态
+                  </div>
+                  <div
+                    id="CardPollingStatus"
+                    style="
+                      background: #2d2d2b;
+                      padding: var(--spacingVerticalS) var(--spacingHorizontalM);
+                      border-radius: var(--borderRadiusSmall);
+                      font-family: 'Consolas', monospace;
+                      font-size: var(--fontSizeBase400);
+                      border: 1px solid #4d4d4d;
+                    "
+                  >
+                    -
+                  </div>
                 </div>
-                <div style="flex: 1; min-width: 150px;">
-                  <div style="color: #c4c4c4; font-size: var(--fontSizeBase300); margin-bottom: var(--spacingVerticalXS);">卡片类型</div>
-                  <div id="CardType" style="
-                    background: #2d2d2b;
-                    padding: var(--spacingVerticalS) var(--spacingHorizontalM);
-                    border-radius: var(--borderRadiusSmall);
-                    font-family: 'Consolas', monospace;
-                    font-size: var(--fontSizeBase400);
-                    border: 1px solid #4d4d4d;
-                  ">-</div>
+                <div style="flex: 1; min-width: 150px">
+                  <div
+                    style="
+                      color: #c4c4c4;
+                      font-size: var(--fontSizeBase300);
+                      margin-bottom: var(--spacingVerticalXS);
+                    "
+                  >
+                    卡片类型
+                  </div>
+                  <div
+                    id="CardType"
+                    style="
+                      background: #2d2d2b;
+                      padding: var(--spacingVerticalS) var(--spacingHorizontalM);
+                      border-radius: var(--borderRadiusSmall);
+                      font-family: 'Consolas', monospace;
+                      font-size: var(--fontSizeBase400);
+                      border: 1px solid #4d4d4d;
+                    "
+                  >
+                    -
+                  </div>
                 </div>
-                <div style="flex: 1; min-width: 200px;">
-                  <div style="color: #c4c4c4; font-size: var(--fontSizeBase300); margin-bottom: var(--spacingVerticalXS);">卡片 UID / IDm</div>
-                  <div id="CardUID" style="
-                    background: #2d2d2b;
-                    padding: var(--spacingVerticalS) var(--spacingHorizontalM);
-                    border-radius: var(--borderRadiusSmall);
-                    font-family: 'Consolas', monospace;
-                    font-size: var(--fontSizeBase400);
-                    border: 1px solid #4d4d4d;
-                  ">-</div>
+                <div style="flex: 1; min-width: 200px">
+                  <div
+                    style="
+                      color: #c4c4c4;
+                      font-size: var(--fontSizeBase300);
+                      margin-bottom: var(--spacingVerticalXS);
+                    "
+                  >
+                    卡片 UID / IDm
+                  </div>
+                  <div
+                    id="CardUID"
+                    style="
+                      background: #2d2d2b;
+                      padding: var(--spacingVerticalS) var(--spacingHorizontalM);
+                      border-radius: var(--borderRadiusSmall);
+                      font-family: 'Consolas', monospace;
+                      font-size: var(--fontSizeBase400);
+                      border: 1px solid #4d4d4d;
+                    "
+                  >
+                    -
+                  </div>
                 </div>
               </div>
             </div>
@@ -1077,12 +1157,8 @@
           <div class="section">
             <h3>🕹️ 摇杆配置</h3>
             <div class="button-group">
-                <input type="button" value="校准摇杆" id="ResetLeverBtn" />
-                <input
-                  type="button"
-                  value="读取摇杆信息"
-                  id="ReadLeverInfoBtn"
-                />
+              <input type="button" value="校准摇杆" id="ResetLeverBtn" />
+              <input type="button" value="读取摇杆信息" id="ReadLeverInfoBtn" />
             </div>
             <div id="ConfigOperationStatus" class="status"></div>
           </div>
@@ -1090,7 +1166,11 @@
           <div class="section">
             <h3>🎮 输入模式</h3>
             <div class="button-group">
-              <input type="button" value="读取当前输入模式" id="ReadInputModeBtn" />
+              <input
+                type="button"
+                value="读取当前输入模式"
+                id="ReadInputModeBtn"
+              />
             </div>
             <div class="button-group">
               <select id="InputModeSelect">
@@ -1106,20 +1186,16 @@
           <div class="section">
             <h3>🧪 调试</h3>
             <div class="button-group">
-                <input
-                  type="button"
-                  value="开启摇杆监控"
-                  id="ToggleMonitorBtn"
-                />
-                <input type="button" value="灯光测试" id="LightTestBtn" />
+              <input type="button" value="开启摇杆监控" id="ToggleMonitorBtn" />
+              <input type="button" value="灯光测试" id="LightTestBtn" />
             </div>
           </div>
 
           <div class="section">
             <h3>💾 保存或放弃</h3>
             <div class="button-group">
-                <input type="button" value="保存配置" id="SaveConfigBtn" />
-                <input type="button" value="放弃配置" id="CancelConfigBtn" />
+              <input type="button" value="保存配置" id="SaveConfigBtn" />
+              <input type="button" value="放弃配置" id="CancelConfigBtn" />
             </div>
           </div>
 
