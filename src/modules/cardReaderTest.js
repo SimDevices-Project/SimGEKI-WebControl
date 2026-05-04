@@ -92,6 +92,7 @@ export const createCardReaderTestController = ({
         case CARD_IO_COMMANDS.CMD_CARD_DETECT:
           if (frame.payloadLen >= 3 && frame.payload[1] !== 0x00) {
             const cardType = frame.payload[1]
+            const isKnownCardType = CARD_TYPE[cardType] !== undefined
             const cardTypeName = CARD_TYPE[cardType] || `未知类型(0x${cardType.toString(16).padStart(2, '0')})`
             showCardReaderLog(`检测到卡片: ${cardTypeName}`)
             cardTypeDisplay.textContent = cardTypeName
@@ -111,6 +112,24 @@ export const createCardReaderTestController = ({
             
             if (isPolling) {
               showCardReaderLog('检测到卡片，自动停止轮询')
+              
+              const ledFrame = isKnownCardType 
+                ? cardIOProtocol.buildSetLEDRGB(0x00, 0xFF, 0x00, 0x00, getNextSeqNo())
+                : cardIOProtocol.buildSetLEDRGB(0xFF, 0x00, 0x00, 0x00, getNextSeqNo())
+              
+              sendCommand(ledFrame).then(() => {
+                setTimeout(async () => {
+                  const whiteFrame = cardIOProtocol.buildSetLEDRGB(0xFF, 0xFF, 0xFF, 0x00, getNextSeqNo())
+                  try {
+                    await sendCommand(whiteFrame)
+                  } catch (e) {
+                    console.error('设置白灯错误:', e)
+                  }
+                }, 1000)
+              }).catch(e => {
+                console.error('设置LED错误:', e)
+              })
+              
               stopPollingInternal()
             }
           } else {

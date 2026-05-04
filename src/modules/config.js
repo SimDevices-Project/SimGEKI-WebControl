@@ -11,6 +11,7 @@ export const createConfigController = ({
   let configDevice = null
   let leverMonitorInterval = null
   let isMonitoring = false
+  let cachedSerialNumber = null
 
   const {
     connectConfigBtn,
@@ -121,7 +122,7 @@ export const createConfigController = ({
 
       const response = await sendConfigReportAndWait(CONFIG_REPORT_ID, command)
 
-      if (response.length >= 8 && response[2] === 0x01) {
+      if (response.length >= 7 && response[2] === 0x01) {
         const rollerValue = (response[4] << 8) | response[3]
         const rollerRawValue = (response[6] << 8) | response[5]
 
@@ -132,6 +133,7 @@ export const createConfigController = ({
         deviceStat.innerHTML = `
           <strong>设备名称:</strong> ${configDevice.productName || '未知'}<br>
           <strong>连接状态:</strong> 已连接<br>
+          <strong>序列号:</strong> ${cachedSerialNumber || '未读取'}<br>
           <hr style="margin: 10px 0;">
           <strong>摇杆状态:</strong><br>
           <div style="margin-left: 15px;">
@@ -151,7 +153,13 @@ export const createConfigController = ({
       }
     } catch (error) {
       showConfigLog(`读取摇杆信息失败: ${error.message}`)
-      deviceStat.innerHTML = `<br><strong style="color: #dc3545;">摇杆状态:</strong> 读取失败`
+      deviceStat.innerHTML = `
+        <strong>设备名称:</strong> ${configDevice.productName || '未知'}<br>
+        <strong>连接状态:</strong> 已连接<br>
+        <strong>序列号:</strong> ${cachedSerialNumber || '未读取'}<br>
+        <hr style="margin: 10px 0;">
+        <strong style="color: #dc3545;">摇杆状态:</strong> 读取失败
+      `
     }
   }
 
@@ -230,10 +238,46 @@ export const createConfigController = ({
     }
   }
 
+const getSerialNumber = async () => {
+    if (!configDevice || !configDevice.opened) {
+      showConfigLog('设备未连接，无法读取序列号')
+      return null
+    }
+
+    try {
+      showConfigLog('正在读取序列号...')
+
+      const command = [0x00, CONFIG_COMMANDS.GET_SERIAL_NUMBER, 0x00]
+      while (command.length < 63) {
+        command.push(0x00)
+      }
+
+      const response = await sendConfigReportAndWait(CONFIG_REPORT_ID, command)
+
+      if (response.length >= 15 && response[2] === 0x01) {
+        const serialBytes = response.slice(3, 15)
+        const serialNumber = Array.from(serialBytes)
+          .map((b) => b.toString(16).padStart(2, '0'))
+          .join('')
+          .toUpperCase()
+
+        cachedSerialNumber = serialNumber
+        showConfigLog(`序列号读取成功: ${serialNumber}`)
+        return serialNumber
+      } else {
+        throw new Error(`设备返回错误状态: ${response[2] ? response[2].toString(16) : '未知'}`)
+      }
+    } catch (error) {
+      showConfigLog(`读取序列号失败: ${error.message}`)
+      return null
+    }
+}
+
   const readDeviceStat = async () => {
     if (!configDevice || !configDevice.opened) {
       showConfigLog('设备未连接')
       stopLeverMonitoring()
+      cachedSerialNumber = null
       return
     }
 
@@ -243,6 +287,18 @@ export const createConfigController = ({
       deviceStat.innerHTML = `
         <strong>设备名称:</strong> ${configDevice.productName || '未知'}<br>
         <strong>连接状态:</strong> 已连接<br>
+        <strong>序列号:</strong> 正在读取...<br>
+        <hr style="margin: 10px 0;">
+        <strong>摇杆状态:</strong> 正在读取...
+      `
+
+      const serialNumber = await getSerialNumber()
+
+      deviceStat.innerHTML = `
+        <strong>设备名称:</strong> ${configDevice.productName || '未知'}<br>
+        <strong>连接状态:</strong> 已连接<br>
+        <strong>序列号:</strong> ${serialNumber || '读取失败'}<br>
+        <hr style="margin: 10px 0;">
         <strong>摇杆状态:</strong> 正在读取...
       `
 
@@ -432,6 +488,7 @@ export const createConfigController = ({
       showConfigLog('开始连接配置设备...')
 
       communicator.clearAllRequests()
+      cachedSerialNumber = null
 
       const devices = await navigator.hid.requestDevice({
         filters: [
@@ -476,6 +533,7 @@ export const createConfigController = ({
         }
       }
       configDevice = null
+      cachedSerialNumber = null
       communicator.clearAllRequests()
       stopLeverMonitoring()
     } finally {
