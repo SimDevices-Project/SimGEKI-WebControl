@@ -6,6 +6,8 @@ export const FIRMWARE_URLS = {
   nightly: 'https://simdevices.bysb.net/SimGEKI/nightly/SimGEKI-SimGETRO_Public.bin',
 }
 
+export const VERSION_INFO_URL = 'https://simdevices.bysb.net/SimGEKI/latest.json'
+
 export const API_URLS = {
   latest: 'https://api.github.com/repos/SimDevices-Project/SimGEKI/releases/latest',
   nightly: 'https://api.github.com/repos/SimDevices-Project/SimGEKI/releases/tags/nightly',

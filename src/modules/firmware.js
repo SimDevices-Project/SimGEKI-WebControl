@@ -4,6 +4,7 @@ import {
   FIRMWARE_URLS,
   HID_TIMEOUT,
   REPORT_ID,
+  VERSION_INFO_URL,
 } from '../constants'
 
 export const createFirmwareController = ({
@@ -63,13 +64,25 @@ export const createFirmwareController = ({
       latestVersionElement.className = 'version-value loading'
       latestVersionElement.textContent = '获取中...'
 
-      const response = await fetch(API_URLS.latest)
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`)
+      let version = null
+
+      try {
+        const response = await fetch(VERSION_INFO_URL)
+        if (response.ok) {
+          const data = await response.json()
+          version = data.stable?.tag_name
+        }
+      } catch (_) {
       }
 
-      const data = await response.json()
-      const version = data.tag_name || '未知版本'
+      if (!version) {
+        const response = await fetch(API_URLS.latest)
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`)
+        }
+        const data = await response.json()
+        version = data.tag_name || '未知版本'
+      }
 
       latestVersionElement.className = 'version-value'
       latestVersionElement.textContent = version
@@ -86,13 +99,25 @@ export const createFirmwareController = ({
       nightlyVersionElement.className = 'version-value loading'
       nightlyVersionElement.textContent = '获取中...'
 
-      const response = await fetch(API_URLS.nightly)
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`)
+      let publishedAt = null
+
+      try {
+        const response = await fetch(VERSION_INFO_URL)
+        if (response.ok) {
+          const data = await response.json()
+          publishedAt = data.nightly?.build_time
+        }
+      } catch (_) {
       }
 
-      const data = await response.json()
-      const publishedAt = data.published_at
+      if (!publishedAt) {
+        const response = await fetch(API_URLS.nightly)
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`)
+        }
+        const data = await response.json()
+        publishedAt = data.published_at
+      }
 
       if (publishedAt) {
         const date = new Date(publishedAt)
