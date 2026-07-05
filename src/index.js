@@ -4,6 +4,7 @@ import {
   firmwareElements,
   inputTestElements,
   cardReaderTestElements,
+  ledBoardTestElements,
   tabElements,
 } from './modules/domElements'
 import {
@@ -19,6 +20,7 @@ import { createFirmwareController } from './modules/firmware'
 import { createConfigController } from './modules/config'
 import { createInputTestController } from './modules/inputTest'
 import { createCardReaderTestController } from './modules/cardReaderTest'
+import { createLedBoardTestController } from './modules/ledBoardTest'
 
 const initialize = () => {
   const showStatus = createStatusDisplay()
@@ -69,11 +71,19 @@ const initialize = () => {
     renderList: renderDeviceList,
   })
 
+  const ledBoardTestController = createLedBoardTestController({
+    elements: ledBoardTestElements,
+    showStatus,
+    showLedBoardLog: (message) => appendLog(ledBoardTestElements.logBox, message),
+    renderList: renderDeviceList,
+  })
+
   tabs.bind()
   firmwareController.bindEvents()
   configController.bindEvents()
   inputTestController.bindEvents()
   cardReaderTestController.bindEvents()
+  ledBoardTestController.bindEvents()
   firmwareController.fetchVersionInfo()
 
   window.getHIDDebugInfo = () => ({
@@ -86,6 +96,7 @@ const initialize = () => {
     configController.stopMonitoring()
     inputTestController.stopTest()
     cardReaderTestController.stopTest()
+    ledBoardTestController.stopTest()
   })
 }
 

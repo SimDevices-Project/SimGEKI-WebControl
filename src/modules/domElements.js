@@ -96,6 +96,21 @@ export const cardReaderTestElements = {
   pollingStatus: document.getElementById('CardPollingStatus'),
 }
 
+export const ledBoardTestElements = {
+  connectBtn: document.getElementById('ConnectLedBoard'),
+  disconnectBtn: document.getElementById('DisconnectLedBoard'),
+  connectionStatus: document.getElementById('LedBoardConnectionStatus'),
+  deviceStatus: document.getElementById('LedBoardDeviceStatus'),
+  getBoardInfoBtn: document.getElementById('GetLedBoardInfo'),
+  wholeBoardBtn: document.getElementById('SetLedWholeBoard'),
+  leftKeysBtn: document.getElementById('SetLedLeftKeys'),
+  rightKeysBtn: document.getElementById('SetLedRightKeys'),
+  resetBoardBtn: document.getElementById('ResetLedBoard'),
+  colorPicker: document.getElementById('LedBoardColor'),
+  operationStatus: document.getElementById('LedBoardOperationStatus'),
+  logBox: document.getElementById('LedBoardLogBox'),
+}
+
 export const allButtons = [
   firmwareElements.connectAndInitBtn,
   firmwareElements.downloadLatestBtn,
@@ -124,4 +139,11 @@ export const allButtons = [
   cardReaderTestElements.stopPollingBtn,
   cardReaderTestElements.cardDetectBtn,
   cardReaderTestElements.setLEDBtn,
+  ledBoardTestElements.connectBtn,
+  ledBoardTestElements.disconnectBtn,
+  ledBoardTestElements.getBoardInfoBtn,
+  ledBoardTestElements.wholeBoardBtn,
+  ledBoardTestElements.leftKeysBtn,
+  ledBoardTestElements.rightKeysBtn,
+  ledBoardTestElements.resetBoardBtn,
 ]

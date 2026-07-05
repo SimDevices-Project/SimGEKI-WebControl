@@ -770,6 +770,9 @@
           <button class="tab-button" data-tab="cardreader">
             💳 读卡器测试
           </button>
+          <button class="tab-button" data-tab="ledboard">
+            💡 灯板测试
+          </button>
           <button class="tab-button" data-tab="firmware">🔧 固件刷入</button>
         </div>
 
@@ -1044,6 +1047,79 @@
             <textarea
               name="cardReaderLog"
               id="CardReaderLogBox"
+              class="log-box"
+              readonly
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="tab-content" id="ledboard-tab">
+          <div class="section">
+            <h3>🔗 设备连接</h3>
+            <div class="button-group">
+              <input type="button" value="连接灯板" id="ConnectLedBoard" />
+              <input type="button" value="断开连接" id="DisconnectLedBoard" />
+            </div>
+            <div id="LedBoardConnectionStatus" class="status"></div>
+            <p
+              style="
+                margin-top: var(--spacingVerticalS);
+                font-size: var(--fontSizeBase300);
+                color: var(--colorNeutralForeground2);
+              "
+            >
+              💡 提示: 灯板使用 USB CDC 串口接口 (VID: 0x0CA3, PID:
+              0x0021)。需要 Chrome/Edge 浏览器支持 WebSerial API。灯板与读卡器共享同一 USB 设备的不同 CDC 接口，请在弹窗中选择灯板对应的串口。
+            </p>
+          </div>
+
+          <div class="section">
+            <h3>📊 设备状态</h3>
+            <div class="button-group">
+              <input type="button" value="读取设备信息" id="GetLedBoardInfo" />
+            </div>
+            <div
+              id="LedBoardDeviceStatus"
+              style="
+                background: var(--colorNeutralBackground3);
+                padding: var(--spacingHorizontalM);
+                border-radius: var(--borderRadiusSmall);
+                font-family: 'Consolas', monospace;
+                font-size: var(--fontSizeBase300);
+                line-height: 1.6;
+                border: 1px solid var(--colorNeutralStroke1);
+              "
+            >
+              未连接设备
+            </div>
+          </div>
+
+          <div class="section">
+            <h3>💡 LED 颜色控制</h3>
+            <div class="button-group">
+              <input type="color" id="LedBoardColor" value="#0078d4" />
+              <input type="button" value="整个灯板颜色" id="SetLedWholeBoard" />
+              <input type="button" value="左侧键颜色" id="SetLedLeftKeys" />
+              <input type="button" value="右侧键颜色" id="SetLedRightKeys" />
+              <input type="button" value="重置灯板" id="ResetLedBoard" />
+            </div>
+            <p
+              style="
+                margin-top: var(--spacingVerticalS);
+                font-size: var(--fontSizeBase300);
+                color: var(--colorNeutralForeground2);
+              "
+            >
+              💡 提示: 颜色指令 (CMD_EXT_BOARD_SET_LED_RGB_DIRECT) 设备不会回复。左侧键修改前 6 字节，右侧键修改最后 6 字节，其他区域保留上次状态。
+            </p>
+            <div id="LedBoardOperationStatus" class="status"></div>
+          </div>
+
+          <div class="section">
+            <h3>📝 测试日志</h3>
+            <textarea
+              name="ledBoardLog"
+              id="LedBoardLogBox"
               class="log-box"
               readonly
             ></textarea>
