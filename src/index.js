@@ -21,8 +21,10 @@ import { createConfigController } from './modules/config'
 import { createInputTestController } from './modules/inputTest'
 import { createCardReaderTestController } from './modules/cardReaderTest'
 import { createLedBoardTestController } from './modules/ledBoardTest'
+import { createThemeController } from './modules/theme'
 
 const initialize = () => {
+  const theme = createThemeController()
   const showStatus = createStatusDisplay()
   const firmwareProgress = createProgressController(
     firmwareElements.progressContainer,
@@ -91,6 +93,8 @@ const initialize = () => {
     config: configCommunicator.getDebugInfo(),
     inputTest: inputTestCommunicator.getDebugInfo(),
   })
+
+  window.SimGEKITheme = theme
 
   window.addEventListener('beforeunload', () => {
     configController.stopMonitoring()

@@ -1,1310 +1,412 @@
 <!doctype html>
-<html lang="zh-hans">
+<html lang="zh-Hans">
   <head>
     <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SimGEKI-WebControl</title>
-    <style type="text/css">
+    <meta name="theme-color" content="#245dbf" />
+    <title>SimGEKI 控制中心</title>
+    <style>
       :root {
-        --colorNeutralBackground1: #ffffff;
-        --colorNeutralBackground2: #f0f0f0;
-        --colorNeutralBackground3: #faf9f8;
-        --colorNeutralForeground1: #242424;
-        --colorNeutralForeground2: #5c5c5c;
-        --colorNeutralForeground3: #8a8a8a;
-        --colorBrandBackground: #0078d4;
-        --colorBrandBackground2: #005a9e;
-        --colorBrandForeground1: #0078d4;
-        --colorNeutralStroke1: #d1d1d1;
-        --colorNeutralStroke2: #e9e9e9;
-        --colorStatusSuccessBackground1: #dff6dd;
-        --colorStatusSuccessForeground1: #0f7b0f;
-        --colorStatusWarningBackground1: #fff4ce;
-        --colorStatusWarningForeground1: #835d00;
-        --colorStatusDangerBackground1: #fde7e9;
-        --colorStatusDangerForeground1: #a80000;
-        --colorStatusInfoBackground1: #d6e7f5;
-        --colorStatusInfoForeground1: #005a9e;
-        --borderRadiusMedium: 8px;
-        --borderRadiusSmall: 4px;
-        --borderRadiusLarge: 12px;
-        --shadow2:
-          0 1.6px 3.6px 0 rgba(0, 0, 0, 0.132),
-          0 0.3px 0.9px 0 rgba(0, 0, 0, 0.108);
-        --shadow4:
-          0 3.2px 7.2px 0 rgba(0, 0, 0, 0.132),
-          0 0.6px 1.8px 0 rgba(0, 0, 0, 0.108);
-        --shadow8:
-          0 6.4px 14.4px 0 rgba(0, 0, 0, 0.132),
-          0 1.2px 3.6px 0 rgba(0, 0, 0, 0.108);
-        --fontSizeBase300: 14px;
-        --fontSizeBase400: 16px;
-        --fontSizeBase500: 20px;
-        --fontSizeHero700: 28px;
-        --fontWeightRegular: 400;
-        --fontWeightSemibold: 600;
-        --spacingHorizontalXS: 4px;
-        --spacingHorizontalS: 8px;
-        --spacingHorizontalM: 12px;
-        --spacingHorizontalL: 16px;
-        --spacingHorizontalXL: 24px;
-        --spacingVerticalXS: 4px;
-        --spacingVerticalS: 8px;
-        --spacingVerticalM: 12px;
-        --spacingVerticalL: 16px;
-        --spacingVerticalXL: 24px;
+        color-scheme: light;
+        --bg: #f4f7fd;
+        --shell: #ffffff;
+        --panel: #ffffff;
+        --panel-raised: #ffffff;
+        --panel-soft: #f7f9fe;
+        --line: #dbe5f6;
+        --line-strong: #9ab5e4;
+        --text: #202020;
+        --muted: #707070;
+        --faint: #9aa6b7;
+        --accent: #2f68cb;
+        --accent-strong: #245dbf;
+        --accent-light: #508aed;
+        --accent-soft: #eaf1fd;
+        --hover-bg: #dae7fc;
+        --green: #2f9c71;
+        --yellow: #a6770e;
+        --red: #c95d69;
+        --purple: #7c68c9;
+        --canvas-gradient: linear-gradient(-45deg, #245dbf 0%, #457fe3 100%);
+        --topbar-bg: rgba(36, 93, 191, 0.96);
+        --field-bg: #ffffff;
+        --button-bg: #ffffff;
+        --shadow: 0 8px 24px rgba(35, 73, 132, 0.14);
+        --radius: 10px;
+        --font: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
+        --mono: "Cascadia Code", Consolas, "Microsoft YaHei", monospace;
       }
 
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
+      /* Theme contract: future themes only need to override this token layer. */
+      body[data-theme="blue"] {
+        --bg: #f4f7fd;
+        --shell: #ffffff;
+        --panel: #ffffff;
+        --panel-raised: #ffffff;
+        --panel-soft: #f7f9fe;
+        --line: #dbe5f6;
+        --line-strong: #9ab5e4;
+        --text: #202020;
+        --muted: #707070;
+        --faint: #9aa6b7;
+        --accent: #2f68cb;
+        --accent-strong: #245dbf;
+        --accent-light: #508aed;
+        --accent-soft: #eaf1fd;
+        --hover-bg: #dae7fc;
+        --canvas-gradient: linear-gradient(-45deg, #245dbf 0%, #457fe3 100%);
+        --topbar-bg: rgba(36, 93, 191, 0.96);
+        --field-bg: #ffffff;
+        --button-bg: #ffffff;
       }
 
+      * { box-sizing: border-box; }
+      html, body { margin: 0; min-height: 100%; }
       body {
-        font-family:
-          'Segoe UI',
-          -apple-system,
-          BlinkMacSystemFont,
-          'Roboto',
-          'Oxygen',
-          'Ubuntu',
-          'Cantarell',
-          'Fira Sans',
-          'Droid Sans',
-          'Helvetica Neue',
-          sans-serif;
-        background: var(--colorNeutralBackground2);
+        min-width: 1040px;
         min-height: 100vh;
-        padding: var(--spacingHorizontalXL);
-        color: var(--colorNeutralForeground1);
-        font-size: var(--fontSizeBase300);
-        line-height: 1.5;
-      }
-
-      .container {
-        max-width: 960px;
-        margin: 0 auto;
-        background: var(--colorNeutralBackground1);
-        border-radius: var(--borderRadiusMedium);
-        box-shadow: var(--shadow8);
-        overflow: hidden;
-      }
-
-      .header {
-        background: var(--colorBrandBackground);
-        color: var(--colorNeutralBackground1);
-        padding: var(--spacingVerticalXL) var(--spacingHorizontalXL);
-        text-align: center;
-      }
-
-      .header h1 {
-        font-size: var(--fontSizeHero700);
-        font-weight: var(--fontWeightSemibold);
-        margin-bottom: var(--spacingVerticalS);
-      }
-
-      .header p, .header a {
-        font-size: var(--fontSizeBase400);
-        color: var(--colorNeutralBackground1);
-        text-decoration-color: var(--colorNeutralBackground1);
-        opacity: 0.95;
-      }
-
-      .content {
-        padding: var(--spacingHorizontalXL);
-      }
-
-      .section {
-        margin-bottom: var(--spacingVerticalXL);
-        padding: var(--spacingHorizontalL);
-        background: var(--colorNeutralBackground3);
-        border-radius: var(--borderRadiusMedium);
-        border: 1px solid var(--colorNeutralStroke2);
-      }
-
-      .section h3 {
-        margin-bottom: var(--spacingVerticalM);
-        color: var(--colorNeutralForeground1);
-        font-size: var(--fontSizeBase500);
-        font-weight: var(--fontWeightSemibold);
-      }
-
-      .button-group {
-        display: flex;
-        gap: var(--spacingHorizontalS);
-        flex-wrap: wrap;
-        margin-bottom: var(--spacingVerticalM);
-      }
-
-      button,
-      input[type='button'] {
-        background: var(--colorBrandBackground);
-        color: var(--colorNeutralBackground1);
-        border: none;
-        padding: var(--spacingVerticalS) var(--spacingHorizontalL);
-        border-radius: var(--borderRadiusSmall);
-        cursor: pointer;
-        font-size: var(--fontSizeBase300);
-        font-weight: var(--fontWeightSemibold);
-        transition: background 0.1s ease;
-        min-height: 32px;
-      }
-
-      button:hover,
-      input[type='button']:hover {
-        background: var(--colorBrandBackground2);
-      }
-
-      button:active,
-      input[type='button']:active {
-        background: #004578;
-      }
-
-      button:disabled,
-      input[type='button']:disabled {
-        background: var(--colorNeutralStroke1);
-        cursor: not-allowed;
-        opacity: 0.7;
-      }
-
-      .download-btn {
-        background: #d83b01;
-      }
-
-      .download-btn:hover {
-        background: #a72d01;
-      }
-
-      .download-notice {
-        margin-top: var(--spacingVerticalM);
-        padding: var(--spacingVerticalS) var(--spacingHorizontalM);
-        background: var(--colorStatusWarningBackground1);
-        border: 1px solid #e6d6a0;
-        border-radius: var(--borderRadiusSmall);
-        color: var(--colorStatusWarningForeground1);
-        font-size: var(--fontSizeBase300);
-      }
-
-      .version-info-container {
-        display: flex;
-        gap: var(--spacingHorizontalM);
-        margin-bottom: var(--spacingVerticalL);
-        flex-wrap: wrap;
-      }
-
-      .version-info {
-        flex: 1;
-        min-width: 200px;
-        background: var(--colorNeutralBackground3);
-        border: 1px solid var(--colorNeutralStroke1);
-        border-radius: var(--borderRadiusSmall);
-        padding: var(--spacingVerticalM) var(--spacingHorizontalM);
-        text-align: center;
-      }
-
-      .version-label {
-        font-size: var(--fontSizeBase300);
-        color: var(--colorNeutralForeground2);
-        margin-bottom: var(--spacingVerticalXS);
-        font-weight: var(--fontWeightSemibold);
-      }
-
-      .version-value {
-        font-size: var(--fontSizeBase400);
-        color: var(--colorNeutralForeground1);
-        font-weight: var(--fontWeightSemibold);
-        word-break: break-all;
-      }
-
-      .version-value.loading {
-        color: var(--colorNeutralForeground3);
-      }
-
-      .version-value.error {
-        color: var(--colorStatusDangerForeground1);
-        font-size: var(--fontSizeBase300);
-      }
-
-      .file-input-wrapper {
-        position: relative;
-        display: inline-block;
-        margin-bottom: var(--spacingVerticalM);
-      }
-
-      input[type='file'] {
-        position: absolute;
-        opacity: 0;
-        width: 100%;
-        height: 100%;
-        cursor: pointer;
-      }
-
-      input[type='file']:disabled {
-        cursor: not-allowed;
-      }
-
-      .file-input-label {
-        display: inline-block;
-        padding: var(--spacingVerticalS) var(--spacingHorizontalL);
-        background: #107c10;
-        color: var(--colorNeutralBackground1);
-        border-radius: var(--borderRadiusSmall);
-        cursor: pointer;
-        font-size: var(--fontSizeBase300);
-        font-weight: var(--fontWeightSemibold);
-        transition: background 0.1s ease;
-      }
-
-      .file-input-label:hover {
-        background: #0b6b0b;
-      }
-
-      .file-input-wrapper:has(input:disabled) .file-input-label {
-        background: var(--colorNeutralStroke1);
-        cursor: not-allowed;
-      }
-
-      .progress-container {
-        margin: var(--spacingVerticalL) 0;
-        display: none;
-      }
-
-      .progress-bar {
-        width: 100%;
-        height: 4px;
-        background: var(--colorNeutralStroke2);
-        border-radius: 2px;
-        overflow: hidden;
-        margin-bottom: var(--spacingVerticalS);
-      }
-
-      .progress-fill {
-        height: 100%;
-        background: var(--colorBrandBackground);
-        width: 0%;
-        transition: width 0.2s ease;
-      }
-
-      .progress-text {
-        text-align: center;
-        font-size: var(--fontSizeBase300);
-        color: var(--colorNeutralForeground2);
-      }
-
-      .connected-list {
-        background: var(--colorNeutralBackground1);
-        border: 1px solid var(--colorNeutralStroke1);
-        border-radius: var(--borderRadiusSmall);
-        padding: var(--spacingHorizontalM);
-        margin: var(--spacingVerticalM) 0;
-        min-height: 60px;
-      }
-
-      .connected-list:empty::before {
-        content: '未连接设备';
-        color: var(--colorNeutralForeground3);
-      }
-
-      .connected-list li {
-        background: var(--colorStatusInfoBackground1);
-        padding: var(--spacingVerticalXS) var(--spacingHorizontalM);
-        margin: var(--spacingVerticalXS) 0;
-        border-radius: var(--borderRadiusSmall);
-        color: var(--colorStatusInfoForeground1);
-        list-style: none;
-      }
-
-      .log-box {
-        width: 100%;
-        height: 200px;
-        border: 1px solid var(--colorNeutralStroke1);
-        border-radius: var(--borderRadiusSmall);
-        padding: var(--spacingHorizontalM);
-        font-family: 'Consolas', 'Courier New', monospace;
-        font-size: var(--fontSizeBase300);
-        background: var(--colorNeutralBackground3);
-        resize: vertical;
-        line-height: 1.4;
-        color: var(--colorNeutralForeground1);
-      }
-
-      .status {
-        padding: var(--spacingVerticalS) var(--spacingHorizontalM);
-        border-radius: var(--borderRadiusSmall);
-        font-size: var(--fontSizeBase300);
-        font-weight: var(--fontWeightRegular);
-        margin: var(--spacingVerticalS) 0;
-        display: none;
-      }
-
-      .status.success {
-        background: var(--colorStatusSuccessBackground1);
-        color: var(--colorStatusSuccessForeground1);
-        border: 1px solid #b8e8b8;
-      }
-
-      .status.error {
-        background: var(--colorStatusDangerBackground1);
-        color: var(--colorStatusDangerForeground1);
-        border: 1px solid #f5c6cb;
-      }
-
-      .status.info {
-        background: var(--colorStatusInfoBackground1);
-        color: var(--colorStatusInfoForeground1);
-        border: 1px solid #bee5eb;
-      }
-
-      .tab-container {
-        background: var(--colorNeutralBackground1);
-        border-radius: 0 0 var(--borderRadiusMedium) var(--borderRadiusMedium);
-        overflow: hidden;
-      }
-
-      .tab-nav {
-        display: flex;
-        background: var(--colorNeutralBackground3);
-        border-bottom: 1px solid var(--colorNeutralStroke1);
-      }
-
-      .tab-button {
-        flex: 1;
-        padding: var(--spacingVerticalM) var(--spacingHorizontalL);
-        background: none;
-        border: none;
-        cursor: pointer;
-        font-size: var(--fontSizeBase400);
-        font-weight: var(--fontWeightSemibold);
-        color: var(--colorNeutralForeground2);
-        transition: color 0.1s ease;
-        border-radius: 0;
-        position: relative;
-      }
-
-      .tab-button:hover {
-        background: var(--colorNeutralBackground2);
-        color: var(--colorNeutralForeground1);
-      }
-
-      .tab-button.active {
-        background: var(--colorNeutralBackground1);
-        color: var(--colorBrandForeground1);
-      }
-
-      .tab-button.active::after {
-        content: '';
-        position: absolute;
-        bottom: -1px;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: var(--colorBrandBackground);
-      }
-
-      .tab-content {
-        display: none;
-        padding: var(--spacingHorizontalXL);
-      }
-
-      .tab-content.active {
-        display: block;
-      }
-
-      @media (max-width: 600px) {
-        .button-group {
-          flex-direction: column;
-        }
-
-        button,
-        input[type='button'],
-        .file-input-label {
-          width: 100%;
-          text-align: center;
-        }
-
-        .tab-button {
-          padding: var(--spacingVerticalS) var(--spacingHorizontalM);
-          font-size: var(--fontSizeBase300);
-        }
-      }
-
-      .arcade-panel {
-        background: #1b1b19;
-        border-radius: var(--borderRadiusMedium);
-        padding: var(--spacingHorizontalL);
-        margin: var(--spacingVerticalL) 0;
-        min-width: 500px;
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacingVerticalS);
-        border: 1px solid #3d3d3d;
-      }
-
-      .panel-row {
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-        gap: var(--spacingHorizontalXS);
-      }
-
-      .panel-spacer-large {
-        flex: 1;
-      }
-
-      .panel-spacer {
-        width: 40px;
-        flex-shrink: 0;
-      }
-
-      .arcade-button {
-        background: #2d2d2b;
-        border: 1px solid #4d4d4d;
-        border-radius: var(--borderRadiusSmall);
-        padding: 0 var(--spacingHorizontalM);
-        color: #c4c4c4;
-        font-weight: var(--fontWeightSemibold);
-        font-size: var(--fontSizeBase300);
-        text-align: center;
-        min-width: 60px;
-        height: 40px;
-        line-height: 40px;
-        transition: all 0.1s ease;
-        display: inline-block;
-        flex-shrink: 0;
-      }
-
-      .arcade-button.main-btn {
-        background: #333331;
-        border-color: #5d5d5d;
-        min-width: 70px;
-      }
-
-      .arcade-button.side-btn {
-        background: #383836;
-        border-color: #5d5d5d;
-      }
-
-      .arcade-button.coin-btn {
-        background: #3a3222;
-        border-color: #5d5d4d;
-      }
-
-      .arcade-button.pressed {
-        background: var(--colorBrandBackground);
-        border-color: var(--colorBrandBackground);
-        color: var(--colorNeutralBackground1);
-        box-shadow: 0 0 16px rgba(0, 120, 212, 0.4);
-      }
-
-      .arcade-button.main-btn.pressed {
-        background: #d83b01;
-        border-color: #d83b01;
-        box-shadow: 0 0 16px rgba(216, 59, 1, 0.4);
-      }
-
-      .arcade-button.side-btn.pressed {
-        background: #107c10;
-        border-color: #107c10;
-        box-shadow: 0 0 16px rgba(16, 124, 16, 0.4);
-      }
-
-      .arcade-button.coin-btn.pressed {
-        background: #ffb900;
-        border-color: #ffb900;
-        box-shadow: 0 0 16px rgba(255, 185, 0, 0.4);
-      }
-
-      #btn-LSide.pressed,
-      #btn-RSide.pressed {
-        background: #8764b8;
-        border-color: #8764b8;
-        box-shadow: 0 0 16px rgba(135, 100, 184, 0.4);
-      }
-
-      #btn-LA.pressed,
-      #btn-RA.pressed {
-        background: #d83b01;
-        border-color: #d83b01;
-        box-shadow: 0 0 16px rgba(216, 59, 1, 0.4);
-      }
-
-      #btn-LB.pressed,
-      #btn-RB.pressed {
-        background: #107c10;
-        border-color: #107c10;
-        box-shadow: 0 0 16px rgba(16, 124, 16, 0.4);
-      }
-
-      #btn-LC.pressed,
-      #btn-RC.pressed {
-        background: var(--colorBrandBackground);
-        border-color: var(--colorBrandBackground);
-        box-shadow: 0 0 16px rgba(0, 120, 212, 0.4);
-      }
-
-      #btn-LMenu.pressed {
-        background: #84292a;
-        border-color: #84292a;
-        box-shadow: 0 0 16px rgba(132, 41, 42, 0.4);
-      }
-
-      #btn-RMenu.pressed {
-        background: #737321;
-        border-color: #737321;
-        box-shadow: 0 0 16px rgba(115, 115, 33, 0.4);
-      }
-
-      #btn-Test.pressed,
-      #btn-Service.pressed {
-        background: var(--colorBrandBackground);
-        border-color: var(--colorBrandBackground);
-        box-shadow: 0 0 16px rgba(0, 120, 212, 0.4);
-      }
-
-      .coin-info {
-        background: #1b1b19;
-        border-radius: var(--borderRadiusSmall);
-        padding: var(--spacingHorizontalM);
-        margin: var(--spacingVerticalM) 0;
-        border: 1px solid #3d3d3d;
-      }
-
-      .coin-row {
-        display: flex;
-        align-items: center;
-        gap: var(--spacingHorizontalM);
-        padding: var(--spacingVerticalXS) 0;
-        font-size: var(--fontSizeBase300);
-      }
-
-      .coin-row:not(:last-child) {
-        border-bottom: 1px solid #3d3d3d;
-      }
-
-      .coin-label {
-        color: #c4c4c4;
-        min-width: 70px;
-        font-weight: var(--fontWeightSemibold);
-      }
-
-      .coin-status {
-        background: #2d2d2b;
-        border: 1px solid #4d4d4d;
-        border-radius: var(--borderRadiusSmall);
-        padding: var(--spacingVerticalXS) var(--spacingHorizontalM);
-        color: var(--colorBrandBackground);
-        font-family: 'Consolas', 'Courier New', monospace;
-        min-width: 100px;
-        text-align: center;
-      }
-
-      .coin-count {
-        color: #ffb900;
-        font-weight: var(--fontWeightSemibold);
-      }
-
-      .coin-count span {
-        font-family: 'Consolas', 'Courier New', monospace;
-        background: #1b1b19;
-        padding: 2px var(--spacingHorizontalXS);
-        border-radius: var(--borderRadiusSmall);
-        margin-left: var(--spacingHorizontalXS);
-      }
-
-      .joystick-container {
-        display: flex;
-        align-items: center;
-        gap: var(--spacingHorizontalXL);
-        margin: var(--spacingVerticalL) 0;
-        flex-wrap: wrap;
-      }
-
-      .joystick-area {
-        width: 200px;
-        height: 200px;
-        background: #1b1b19;
-        border-radius: 50%;
-        border: 2px solid #3d3d3d;
-        position: relative;
-      }
-
-      .joystick-crosshair {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 100%;
-        height: 100%;
-      }
-
-      .joystick-crosshair::before {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: rgba(61, 61, 61, 0.6);
-      }
-
-      .joystick-crosshair::after {
-        content: '';
-        position: absolute;
-        left: 50%;
-        top: 0;
-        bottom: 0;
-        width: 2px;
-        background: rgba(61, 61, 61, 0.6);
-      }
-
-      .joystick-dot {
-        position: absolute;
-        width: 30px;
-        height: 30px;
-        background: var(--colorBrandBackground);
-        border-radius: 50%;
-        border: 2px solid var(--colorBrandBackground);
-        box-shadow: 0 0 12px rgba(0, 120, 212, 0.5);
-        transform: translate(-50%, -50%);
-      }
-
-      .joystick-values {
-        display: flex;
-        flex-direction: column;
-        gap: var(--spacingVerticalS);
-        background: var(--colorNeutralBackground3);
-        padding: var(--spacingHorizontalM);
-        border-radius: var(--borderRadiusSmall);
-        border: 1px solid var(--colorNeutralStroke1);
-      }
-
-      .joystick-value-row {
-        display: flex;
-        gap: var(--spacingHorizontalS);
-        font-family: 'Consolas', 'Courier New', monospace;
-      }
-
-      .value-label {
-        color: var(--colorNeutralForeground2);
-        font-size: var(--fontSizeBase300);
-        min-width: 60px;
-      }
-
-      .value-text {
-        color: var(--colorNeutralForeground1);
-        font-size: var(--fontSizeBase300);
-        font-weight: var(--fontWeightSemibold);
-      }
-
-      .raw-data-container {
-        background: var(--colorNeutralBackground3);
-        padding: var(--spacingHorizontalM);
-        border-radius: var(--borderRadiusSmall);
-        border: 1px solid var(--colorNeutralStroke1);
-      }
-
-      .raw-data-row {
-        display: flex;
-        gap: var(--spacingHorizontalS);
-        font-family: 'Consolas', 'Courier New', monospace;
-        margin-bottom: var(--spacingVerticalXS);
-      }
-
-      .raw-data-row:last-child {
-        margin-bottom: 0;
-      }
-
-      .raw-label {
-        color: var(--colorNeutralForeground2);
-        font-size: var(--fontSizeBase300);
-        min-width: 180px;
-      }
-
-      .raw-value {
-        color: var(--colorNeutralForeground1);
-        font-size: var(--fontSizeBase300);
-        font-weight: var(--fontWeightSemibold);
-      }
-
-      select {
-        padding: var(--spacingVerticalXS) var(--spacingHorizontalM);
-        border-radius: var(--borderRadiusSmall);
-        border: 1px solid var(--colorNeutralStroke1);
-        font-size: var(--fontSizeBase300);
-        background: var(--colorNeutralBackground1);
-        color: var(--colorNeutralForeground1);
-        min-height: 32px;
-      }
-
-      select:focus {
-        outline: 2px solid var(--colorBrandBackground);
-        outline-offset: -2px;
-      }
-
-      input[type='color'] {
-        width: 60px;
-        height: 32px;
-        border: 1px solid var(--colorNeutralStroke1);
-        border-radius: var(--borderRadiusSmall);
-        cursor: pointer;
-        padding: 2px;
+        overflow-x: auto;
+        background: var(--canvas-gradient);
+        color: var(--text);
+        font: 13px/1.5 var(--font);
+        letter-spacing: 0.01em;
+      }
+      button, input, select, textarea { font: inherit; }
+      button, input[type="button"], input[type="color"], label { -webkit-tap-highlight-color: transparent; }
+      button, input[type="button"], label { cursor: pointer; }
+      button:disabled, input[type="button"]:disabled, label:has(input:disabled) { cursor: not-allowed; }
+
+      .app-shell { min-height: 100vh; display: flex; flex-direction: column; background: rgba(255,255,255,0.94); }
+      .app-topbar { height: 68px; flex: 0 0 68px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; border-bottom: 1px solid rgba(255,255,255,0.34); background: var(--topbar-bg); box-shadow: 0 2px 12px rgba(36,93,191,0.22); color: #ffffff; }
+      .brand { display: flex; align-items: center; gap: 12px; min-width: 280px; }
+      .brand-mark { width: 34px; height: 34px; display: grid; place-items: center; color: var(--accent-strong); background: #ffffff; border-radius: 8px; font-size: 12px; font-weight: 800; letter-spacing: -0.08em; box-shadow: 0 3px 10px rgba(20,56,127,0.22); }
+      .brand-copy { display: grid; gap: 1px; }
+      .brand-title { font-size: 15px; font-weight: 700; letter-spacing: 0.04em; }
+      .brand-subtitle { color: rgba(255,255,255,0.72); font-size: 11px; }
+      .topbar-context { display: flex; align-items: center; gap: 12px; color: rgba(255,255,255,0.72); }
+      .context-label { color: rgba(255,255,255,0.58); font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; }
+      .context-value { color: #ffffff; font-family: var(--mono); font-size: 12px; }
+      .topbar-actions { display: flex; align-items: center; gap: 9px; min-width: 280px; justify-content: flex-end; }
+      .topbar-chip { display: inline-flex; align-items: center; gap: 7px; padding: 6px 10px; border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; color: rgba(255,255,255,0.84); font-size: 11px; }
+
+      .app-body { display: grid; grid-template-columns: 238px minmax(600px, 1fr) 278px; flex: 1; min-height: calc(100vh - 68px); }
+      .sidebar, .inspector { background: rgba(255,255,255,0.94); }
+      .sidebar { border-right: 1px solid var(--line); padding: 20px 12px 14px; display: flex; flex-direction: column; }
+      .inspector { border-left: 1px solid var(--line); padding: 20px 14px; }
+      .sidebar-heading, .section-kicker, .inspector-kicker { color: var(--faint); font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; }
+      .sidebar-heading { padding: 0 11px 10px; }
+      .nav-group { margin-bottom: 23px; }
+      .nav-group-label { padding: 0 11px 7px; color: var(--faint); font-size: 10px; }
+      .tab-nav { display: grid; gap: 3px; }
+      .tab-button { position: relative; display: grid; grid-template-columns: 30px 1fr auto; align-items: center; gap: 9px; width: 100%; min-height: 43px; padding: 8px 10px; border: 1px solid transparent; border-radius: 7px; color: var(--muted); background: transparent; text-align: left; transition: 140ms ease; }
+      .tab-button:hover { color: var(--accent-strong); background: var(--hover-bg); }
+      .tab-button.active { color: var(--accent-strong); background: var(--accent-soft); border-color: #b7cbed; }
+      .tab-button.active::before { content: ""; position: absolute; left: -13px; top: 8px; bottom: 8px; width: 2px; border-radius: 2px; background: var(--accent-light); box-shadow: 0 0 8px rgba(80,138,237,0.5); }
+      .nav-icon { width: 27px; height: 27px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 6px; color: var(--muted); font-size: 13px; }
+      .tab-button.active .nav-icon { border-color: #9ab5e4; color: var(--accent); background: #ffffff; }
+      .nav-copy { display: grid; gap: 1px; }
+      .nav-title { font-size: 12px; font-weight: 650; }
+      .nav-description { color: var(--faint); font-size: 10px; }
+      .nav-badge { color: var(--faint); font-family: var(--mono); font-size: 10px; }
+      .tab-button.active .nav-badge { color: var(--accent); }
+      .sidebar-footer { margin-top: auto; padding: 13px 11px 0; border-top: 1px solid var(--line); color: var(--faint); font-size: 10px; }
+      .sidebar-footer p { margin: 8px 0 0; line-height: 1.65; }
+      .capability-list { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 9px; }
+      .capability-list a { padding: 3px 6px; color: var(--accent-strong); border: 1px solid var(--line-strong); border-radius: 4px; background: var(--accent-soft); font-size: 10px; text-decoration: none; }
+      .capability-list a.github-link { display: inline-flex; align-items: center; gap: 4px; }
+      .github-logo { width: 12px; height: 12px; flex: 0 0 12px; fill: currentColor; }
+      .capability-list a:hover { color: #ffffff; border-color: var(--accent); background: var(--accent-light); }
+
+      .workspace { min-width: 0; background: rgba(247,249,254,0.78); }
+      .tab-container { height: 100%; min-height: 0; }
+      .tab-content { display: none; padding: 28px 30px 36px; max-width: 1120px; margin: 0 auto; }
+      .tab-content.active { display: block; animation: page-in 150ms ease-out; }
+      @keyframes page-in { from { opacity: 0.4; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+      .page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 22px; margin-bottom: 24px; }
+      .eyebrow { display: flex; align-items: center; gap: 8px; color: var(--accent); font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; }
+      .eyebrow::before { content: ""; width: 17px; height: 1px; background: var(--accent); }
+      .page-title { margin: 7px 0 4px; font-size: 26px; line-height: 1.15; letter-spacing: -0.03em; }
+      .page-description { max-width: 620px; margin: 0; color: var(--muted); font-size: 12px; }
+      .page-meta { display: flex; align-items: center; gap: 7px; flex-shrink: 0; padding-top: 5px; }
+      .state-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--faint); }
+      .state-dot.live { background: var(--green); box-shadow: 0 0 9px rgba(71,209,140,0.8); }
+      .state-dot.warning { background: var(--yellow); }
+      .page-meta-text { color: var(--muted); font-size: 11px; }
+
+      .card { margin-bottom: 14px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); box-shadow: 0 5px 16px rgba(35,73,132,0.08); overflow: hidden; }
+      .card-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 18px 13px; border-bottom: 1px solid var(--line); }
+      .card-heading { display: flex; align-items: center; gap: 10px; }
+      .card-icon { width: 26px; height: 26px; display: grid; place-items: center; color: var(--accent); border: 1px solid #b9cdec; border-radius: 6px; background: var(--accent-soft); font-size: 12px; }
+      .card-title { margin: 0; font-size: 13px; font-weight: 700; }
+      .card-subtitle { margin: 2px 0 0; color: var(--muted); font-size: 11px; }
+      .card-body { padding: 17px 18px; }
+      .card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+      .workspace-grid { display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(280px, 0.82fr); gap: 14px; align-items: start; }
+
+      .button-group { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+      button, input[type="button"] { min-height: 32px; padding: 7px 12px; border: 1px solid var(--line-strong); border-radius: 6px; color: var(--accent-strong); background: var(--button-bg); font-size: 11px; font-weight: 650; transition: 140ms ease; }
+      button:hover, input[type="button"]:hover { border-color: var(--accent); color: var(--accent-strong); background: var(--hover-bg); }
+      button:active, input[type="button"]:active { transform: translateY(1px); }
+      button:disabled, input[type="button"]:disabled { opacity: 0.5; color: var(--faint); border-color: var(--line); background: #f3f6fb; }
+      .btn-primary { color: #ffffff !important; border-color: var(--accent-light) !important; background: var(--accent-light) !important; box-shadow: 0 3px 8px rgba(47,104,203,0.18); }
+      .btn-primary:hover { color: #ffffff !important; border-color: var(--accent-strong) !important; background: var(--accent-strong) !important; }
+      button.btn-success, input[type="button"].btn-success { border-color: #8dc8ac; color: #267b59; background: #f2fbf6; }
+      button.btn-danger, input[type="button"].btn-danger { border-color: #e2a3ac; color: #b64e5d; background: #fff7f8; }
+      button.btn-quiet, input[type="button"].btn-quiet { border-color: transparent; background: transparent; color: var(--muted); }
+      .btn-quiet:hover { border-color: var(--line); background: var(--hover-bg); }
+      .button-note { color: var(--faint); font-size: 10px; }
+
+      .connection-card { border-color: #b9cdec; background: linear-gradient(120deg, #f0f5ff 0%, #ffffff 72%); }
+      .connection-row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 20px; }
+      .device-identity { display: flex; gap: 12px; align-items: center; }
+      .device-avatar { width: 42px; height: 42px; display: grid; place-items: center; color: var(--accent); border: 1px solid #b9cdec; border-radius: 9px; background: var(--accent-soft); font-size: 20px; }
+      .device-name { font-size: 14px; font-weight: 700; }
+      .device-caption { margin-top: 2px; color: var(--muted); font-size: 11px; }
+      .device-caption code, code { color: var(--accent); font-family: var(--mono); font-size: 10px; }
+      .connection-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+      .connected-list { display: flex; flex-wrap: wrap; gap: 7px; min-height: 0; margin: 14px 0 0; padding: 0; list-style: none; }
+      .connected-list:empty { display: none; }
+      .connected-list li { padding: 5px 8px; border: 1px solid #b9cdec; border-radius: 5px; color: var(--accent-strong); background: var(--accent-soft); font-family: var(--mono); font-size: 10px; }
+      .status { display: none; margin: 12px 0 0; padding: 8px 10px; border: 1px solid var(--line); border-radius: 5px; font-size: 11px; }
+      .status.success { display: block; color: #267b59; border-color: #b5dec4; background: #f2fbf6; }
+      .status.error { display: block; color: #b64e5d; border-color: #e7b5bc; background: #fff7f8; }
+      .status.info { display: block; color: var(--accent-strong); border-color: #b9cdec; background: var(--accent-soft); }
+      .metric-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+      .metric { padding: 11px 12px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel-soft); }
+      .metric-label { color: var(--faint); font-size: 10px; }
+      .metric-value { margin-top: 4px; color: var(--text); font-family: var(--mono); font-size: 13px; }
+      .metric-value.good { color: var(--green); }
+      .metric-value.accent { color: var(--accent); }
+
+      .setting-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 42px; padding: 9px 0; border-bottom: 1px solid rgba(64,84,98,0.42); }
+      .setting-row:first-child { padding-top: 0; }
+      .setting-row:last-child { padding-bottom: 0; border-bottom: 0; }
+      .setting-label { display: grid; gap: 2px; }
+      .setting-title { font-size: 12px; }
+      .setting-help { color: var(--faint); font-size: 10px; }
+      .setting-row:has(#InputModeSelect) { align-items: center; }
+      .setting-row:has(#InputModeSelect) .setting-label { flex: 0 0 145px; }
+      .setting-row:has(#InputModeSelect) .setting-help { white-space: nowrap; }
+      .setting-row:has(#InputModeSelect) .button-group { flex-wrap: nowrap; flex-shrink: 0; }
+      select, input[type="text"] { min-height: 32px; padding: 6px 9px; color: var(--text); border: 1px solid var(--line-strong); border-radius: 5px; outline: none; background: var(--field-bg); }
+      select:focus, input[type="text"]:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(72,200,255,0.12); }
+      select { min-width: 142px; }
+      input[type="color"] { width: 42px; height: 32px; padding: 3px; border: 1px solid var(--line-strong); border-radius: 5px; background: var(--field-bg); }
+
+      .inspector-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 17px; }
+      .inspector-title { margin: 0; font-size: 13px; }
+      .inspector-card { margin-bottom: 12px; padding: 13px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); box-shadow: 0 4px 13px rgba(35,73,132,0.05); }
+      .inspector-card h3 { margin: 0 0 10px; font-size: 11px; }
+      .inspector-card p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.7; }
+      .inspector-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+      .inspector-list li { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 10px; }
+      .inspector-list strong { color: var(--text); font-family: var(--mono); font-weight: 500; }
+      .flow-step { display: flex; gap: 9px; padding: 6px 0; color: var(--muted); font-size: 10px; }
+      .flow-number { width: 18px; height: 18px; display: grid; place-items: center; flex: 0 0 18px; color: var(--faint); border: 1px solid var(--line-strong); border-radius: 50%; font-family: var(--mono); font-size: 9px; }
+      .flow-step.current { color: var(--text); }
+      .flow-step.current .flow-number { color: var(--accent); border-color: var(--accent); }
+
+      .device-status { min-height: 100px; padding: 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel-soft); color: var(--muted); font-family: var(--mono); font-size: 10px; line-height: 1.75; overflow: auto; }
+      .device-status strong { color: var(--text); font-weight: 600; }
+      .device-status hr { border: 0; border-top: 1px solid var(--line); }
+      .joystick-layout { display: grid; grid-template-columns: minmax(180px, 240px) 1fr; align-items: center; gap: 22px; }
+      .joystick-area { position: relative; width: 210px; height: 210px; margin: 0 auto; border: 1px solid #9ab5e4; border-radius: 50%; background: radial-gradient(circle, rgba(80,138,237,0.13) 0 2px, transparent 3px 30%, rgba(80,138,237,0.05) 31% 54%, transparent 55%), #ffffff; box-shadow: inset 0 0 35px rgba(35,73,132,0.08), 0 0 0 7px rgba(80,138,237,0.06); }
+      .joystick-area::before, .joystick-area::after { content: ""; position: absolute; background: rgba(47,104,203,0.2); }
+      .joystick-area::before { left: 10%; right: 10%; top: calc(50% - 1px); height: 1px; }
+      .joystick-area::after { top: 10%; bottom: 10%; left: calc(50% - 1px); width: 1px; }
+      .joystick-crosshair { position: absolute; inset: 18%; border: 1px dashed rgba(47,104,203,0.2); border-radius: 50%; }
+      .joystick-dot { position: absolute; left: 50%; top: 50%; width: 22px; height: 22px; transform: translate(-50%, -50%); border: 2px solid #ffffff; border-radius: 50%; background: var(--accent-light); box-shadow: 0 0 0 6px rgba(80,138,237,0.14), 0 0 18px rgba(47,104,203,0.35); }
+      .joystick-values { display: grid; gap: 8px; }
+      .joystick-value-row { display: flex; align-items: baseline; justify-content: space-between; gap: 15px; padding: 9px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel-soft); }
+      .value-label { color: var(--muted); font-size: 10px; }
+      .value-text { color: var(--accent); font-family: var(--mono); font-size: 11px; }
+      .raw-input-status { margin-top: 11px; color: var(--faint); font-family: var(--mono); font-size: 10px; }
+      .arcade-panel { display: grid; gap: 8px; padding: 14px; border: 1px solid var(--line); border-radius: 8px; background: #f7f9fe; }
+      .panel-row { display: flex; align-items: center; justify-content: center; gap: 6px; }
+      .panel-spacer { width: 33px; flex: 0 0 33px; }
+      .panel-spacer-large { flex: 1; }
+      .arcade-button { min-width: 54px; height: 34px; padding: 7px; display: grid; place-items: center; border: 1px solid #b3c5e5; border-radius: 5px; color: #5d6d82; background: #ffffff; font-family: var(--mono); font-size: 10px; transition: 80ms ease; }
+      .arcade-button.main-btn { min-width: 57px; color: #b15d43; border-color: #e3b2a2; background: #fff8f5; }
+      .arcade-button.side-btn { color: #6f5cab; border-color: #c3b9e7; background: #faf8ff; }
+      .arcade-button.coin-btn { color: #977019; border-color: #dfc987; background: #fffdf5; }
+      .arcade-button.pressed { color: #ffffff; border-color: var(--accent); background: var(--accent-light); box-shadow: 0 0 12px rgba(47,104,203,0.25); }
+      .arcade-button.main-btn.pressed { background: #d9795b; border-color: #d9795b; box-shadow: 0 0 12px rgba(217,121,91,0.25); }
+      .arcade-button.side-btn.pressed { background: var(--purple); border-color: var(--purple); box-shadow: 0 0 12px rgba(124,104,201,0.25); }
+      .arcade-button.coin-btn.pressed { background: #c4962c; border-color: #c4962c; box-shadow: 0 0 12px rgba(196,150,44,0.25); }
+      .coin-info { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+      .coin-row { display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; padding: 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel-soft); }
+      .coin-label { grid-column: 1 / -1; color: var(--muted); font-size: 10px; }
+      .coin-status { color: var(--accent); font-family: var(--mono); font-size: 10px; }
+      .coin-count { color: var(--yellow); font-family: var(--mono); font-size: 10px; }
+      .coin-count span { margin-left: 4px; }
+
+      .data-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+      .data-item { padding: 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel-soft); }
+      .data-label { display: block; margin-bottom: 4px; color: var(--faint); font-size: 10px; }
+      .data-value { display: block; overflow: hidden; color: var(--text); font-family: var(--mono); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+      .data-value.emphasis { color: var(--accent); }
+      .led-preview { display: grid; grid-template-columns: repeat(12, 1fr); gap: 6px; padding: 14px; margin-bottom: 13px; border: 1px solid var(--line); border-radius: 7px; background: #f7f9fe; }
+      .led-preview span { height: 12px; border-radius: 3px; background: #b9cdec; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.6); }
+      .led-preview span:nth-child(3n) { background: #79a4e8; }
+      .led-preview span:nth-child(4n) { background: #aca0df; }
+      .color-control { display: flex; align-items: center; gap: 9px; }
+      .color-label { color: var(--muted); font-size: 11px; }
+
+      .version-info-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; margin-bottom: 13px; }
+      .version-info { padding: 12px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel-soft); }
+      .version-label { color: var(--muted); font-size: 10px; }
+      .version-value { display: block; margin-top: 4px; color: var(--accent); font-family: var(--mono); font-size: 12px; font-weight: 650; word-break: break-all; }
+      .version-value.loading { color: var(--muted); }
+      .version-value.error { color: var(--red); }
+      .download-notice { margin-top: 12px; padding: 9px 10px; border-left: 2px solid var(--yellow); color: var(--muted); background: rgba(244,189,84,0.07); font-size: 10px; }
+      .download-notice strong { color: var(--yellow); }
+      .file-input-wrapper { position: relative; display: inline-flex; }
+      input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+      .file-input-label { display: inline-flex; align-items: center; min-height: 32px; padding: 7px 12px; border: 1px dashed var(--line-strong); border-radius: 6px; color: var(--accent-strong); background: var(--accent-soft); font-size: 11px; font-weight: 650; }
+      .file-input-label:hover { border-color: var(--accent); background: var(--accent-soft); }
+      .selected-file { display: inline-block; margin-left: 10px; color: var(--muted); font-family: var(--mono); font-size: 10px; }
+      .operation-bar { display: flex; align-items: center; justify-content: space-between; gap: 15px; }
+      .operation-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+      .progress-container { display: none; margin-top: 15px; }
+      .progress-bar { height: 6px; overflow: hidden; border-radius: 3px; background: #e5edf9; }
+      .progress-fill { width: 0%; height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent-strong), var(--accent-light)); transition: width 160ms ease; }
+      .progress-text { margin-top: 7px; color: var(--muted); font-family: var(--mono); font-size: 10px; text-align: right; }
+
+      .log-drawer { margin-top: 14px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); }
+      .log-drawer summary { display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; cursor: pointer; color: var(--muted); font-size: 11px; list-style: none; }
+      .log-drawer summary::-webkit-details-marker { display: none; }
+      .log-drawer summary::after { content: "+"; color: var(--accent); font-family: var(--mono); font-size: 14px; }
+      .log-drawer[open] summary::after { content: "−"; }
+      .log-hint { color: var(--faint); font-size: 10px; }
+      .log-box { display: block; width: calc(100% - 30px); min-height: 150px; margin: 0 15px 15px; padding: 11px; resize: vertical; border: 1px solid var(--line); border-radius: 6px; outline: none; color: #5d6d82; background: #f7f9fe; font-family: var(--mono); font-size: 10px; line-height: 1.6; }
+      .save-bar { position: sticky; bottom: 14px; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 13px; border: 1px solid #b9cdec; border-radius: 8px; background: rgba(255,255,255,0.96); box-shadow: var(--shadow); backdrop-filter: blur(12px); }
+      .save-message { color: var(--muted); font-size: 10px; }
+      .save-message strong { color: var(--yellow); }
+      .hint-line { margin-top: 10px; color: var(--faint); font-size: 10px; }
+
+      @media (max-width: 1600px) and (min-width: 901px) {
+        .app-body { grid-template-columns: 238px minmax(0, 1fr); }
+        .inspector { display: none; }
+      }
+
+      @media (max-width: 1200px) and (min-width: 901px) {
+        .workspace-grid { grid-template-columns: minmax(0, 1fr); }
+      }
+
+      @media (max-width: 1240px) {
+        body { min-width: 900px; }
+        .app-body { grid-template-columns: 210px minmax(580px, 1fr); }
+        .inspector { display: none; }
+      }
+      @media (max-width: 900px) {
+        body { min-width: 0; }
+        .app-body { display: block; }
+        .app-topbar { padding: 0 14px; }
+        .topbar-context, .topbar-chip { display: none; }
+        .sidebar { border-right: 0; border-bottom: 1px solid var(--line); padding: 10px; }
+        .sidebar-heading, .nav-group-label, .sidebar-footer { display: none; }
+        .nav-group { margin: 0; }
+        .tab-nav { display: flex; overflow-x: auto; }
+        .tab-button { min-width: 150px; }
+        .tab-button.active::before { left: 8px; right: 8px; bottom: -10px; top: auto; width: auto; height: 2px; }
+        .tab-button .nav-description, .tab-button .nav-badge { display: none; }
+        .tab-content { padding: 22px 15px 30px; }
+        .page-head, .connection-row, .operation-bar { align-items: flex-start; flex-direction: column; }
+        .connection-actions { justify-content: flex-start; }
+        .workspace-grid, .card-grid { grid-template-columns: 1fr; }
+        .joystick-layout { grid-template-columns: 1fr; }
+        .joystick-area { width: 190px; height: 190px; }
+        .save-bar { position: static; flex-direction: column; align-items: stretch; }
+        .setting-row:has(#InputModeSelect) { align-items: flex-start; flex-direction: column; }
+        .setting-row:has(#InputModeSelect) .setting-label { flex-basis: auto; }
+        .setting-row:has(#InputModeSelect) .setting-help { white-space: normal; }
+        .setting-row:has(#InputModeSelect) .button-group { flex-wrap: wrap; }
       }
     </style>
   </head>
-  <body>
-    <div class="container">
-      <div class="header">
-        <h1>SimGEKI WebControl</h1>
-        <p>设备固件管理与配置工具</p>
-        <a href="https://sim.bysb.net/"><p>-点此了解SimDevices和SimGEKI-</p></a>
-      </div>
+  <body data-theme="blue" data-active-tab="config">
+    <div class="app-shell">
+      <header class="app-topbar">
+        <div class="brand"><div class="brand-mark">SG</div><div class="brand-copy"><div class="brand-title">SimGEKI 控制中心</div><div class="brand-subtitle">USB 驱动与设备诊断工作台</div></div></div>
+        <div class="topbar-context"><span class="context-label">工作区</span><span class="context-value">LOCAL / HARDWARE</span></div>
+        <div class="topbar-actions"><span class="topbar-chip"><span class="state-dot"></span>等待设备连接</span><span class="topbar-chip">Web HID / Serial</span></div>
+      </header>
 
-      <div class="tab-container">
-        <div class="tab-nav">
-          <button class="tab-button active" data-tab="config">
-            ⚙️ 设备配置
-          </button>
-          <button class="tab-button" data-tab="inputtest">🎮 IO4测试</button>
-          <button class="tab-button" data-tab="cardreader">
-            💳 读卡器测试
-          </button>
-          <button class="tab-button" data-tab="ledboard">
-            💡 灯板测试
-          </button>
-          <button class="tab-button" data-tab="firmware">🔧 固件刷入</button>
-        </div>
+      <div class="app-body">
+        <aside class="sidebar">
+          <div class="sidebar-heading">设备工作区</div>
+          <div class="nav-group"><div class="nav-group-label">主控设备</div><nav class="tab-nav" aria-label="主控设备功能">
+            <button class="tab-button active" type="button" data-tab="config" role="tab" aria-selected="true"><span class="nav-icon">⌘</span><span class="nav-copy"><span class="nav-title">配置中心</span><span class="nav-description">设备参数与校准</span></span><span class="nav-badge">01</span></button>
+            <button class="tab-button" type="button" data-tab="inputtest" role="tab" aria-selected="false"><span class="nav-icon">⌁</span><span class="nav-copy"><span class="nav-title">输入诊断</span><span class="nav-description">摇杆、按键与投币</span></span><span class="nav-badge">02</span></button>
+          </nav></div>
+          <div class="nav-group"><div class="nav-group-label">扩展设备</div><nav class="tab-nav" aria-label="扩展设备功能">
+            <button class="tab-button" type="button" data-tab="cardreader" role="tab" aria-selected="false"><span class="nav-icon">▣</span><span class="nav-copy"><span class="nav-title">读卡器</span><span class="nav-description">卡片检测与状态</span></span><span class="nav-badge">03</span></button>
+            <button class="tab-button" type="button" data-tab="ledboard" role="tab" aria-selected="false"><span class="nav-icon">✦</span><span class="nav-copy"><span class="nav-title">灯板</span><span class="nav-description">灯光与板卡信息</span></span><span class="nav-badge">04</span></button>
+          </nav></div>
+          <div class="nav-group"><div class="nav-group-label">维护工具</div><nav class="tab-nav" aria-label="维护工具">
+            <button class="tab-button" type="button" data-tab="firmware" role="tab" aria-selected="false"><span class="nav-icon">⇧</span><span class="nav-copy"><span class="nav-title">固件维护</span><span class="nav-description">下载、烧入与验证</span></span><span class="nav-badge">05</span></button>
+          </nav></div>
+          <div class="sidebar-footer"><div class="section-kicker">相关入口</div><p>访问项目文档、购买页面或源码仓库，获取设备与软件的最新信息。</p><div class="capability-list"><a href="https://sim.bysb.net" target="_blank" rel="noopener noreferrer">Wiki</a><a href="https://item.taobao.com/item.htm?id=807658111168" target="_blank" rel="noopener noreferrer">购买</a><a class="github-link" href="https://github.com/SimDevices-Project/SimGEKI-WebControl" target="_blank" rel="noopener noreferrer"><svg class="github-logo" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.64 0 8.13c0 3.59 2.29 6.64 5.47 7.71.4.08.55-.18.55-.39 0-.19-.01-.83-.01-1.5-2.01.45-2.53-.5-2.69-.96-.09-.23-.48-.96-.82-1.15-.28-.16-.68-.56-.01-.57.63-.01 1.08.6 1.23.85.72 1.24 1.87.89 2.33.68.07-.53.28-.89.51-1.1-1.78-.21-3.64-.92-3.64-4.1 0-.91.32-1.65.82-2.23-.08-.2-.36-1.06.08-2.2 0 0 .67-.22 2.2.85a7.41 7.41 0 0 1 4 0c1.53-1.07 2.2-.85 2.2-.85.44 1.14.16 2 .08 2.2.51.58.82 1.32.82 2.23 0 3.19-1.87 3.89-3.65 4.1.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.47.55.39A8.13 8.13 0 0 0 16 8.13C16 3.64 12.42 0 8 0Z" /></svg>Github</a></div></div>
+        </aside>
 
-        <div class="tab-content" id="inputtest-tab">
-          <div class="section">
-            <h3>🔗 设备连接</h3>
-            <div class="button-group">
-              <input
-                type="button"
-                value="连接设备"
-                id="ConnectInputTestDevice"
-              />
-            </div>
-            <ul id="InputTestConnectedList" class="connected-list"></ul>
-            <div id="InputTestConnectionStatus" class="status"></div>
-          </div>
+        <main class="workspace"><div class="tab-container">
+          <section class="tab-content active" id="config-tab" role="tabpanel">
+            <div class="page-head"><div><div class="eyebrow">MAIN DEVICE / CONFIGURATION</div><h1 class="page-title">设备配置中心</h1><p class="page-description">连接主控设备，校准摇杆并管理输入模式。修改后的参数需要明确保存，避免误操作直接写入设备。</p></div><div class="page-meta"><span class="state-dot"></span><span class="page-meta-text">未连接主控设备</span></div></div>
+            <div class="card connection-card"><div class="card-body"><div class="connection-row"><div class="device-identity"><div class="device-avatar">⌘</div><div><div class="device-name">主控设备 / SimGEKI</div><div class="device-caption">HID 配置通道 · <code>VID 0x8088 / PID 0x00FE</code></div></div></div><div class="connection-actions"><input class="btn-primary" type="button" value="连接主控设备" id="ConnectConfigDevice" /></div></div><ul id="ConfigConnectedList" class="connected-list"></ul><div id="ConfigConnectionStatus" class="status"></div></div></div>
+            <div class="metric-row"><div class="metric"><div class="metric-label">连接状态</div><div class="metric-value" id="config-state-value">OFFLINE</div></div><div class="metric"><div class="metric-label">配置通道</div><div class="metric-value accent">HID / 0xAA</div></div><div class="metric"><div class="metric-label">保存策略</div><div class="metric-value good">手动提交</div></div></div>
+            <div class="workspace-grid"><div>
+              <div class="card"><div class="card-header"><div class="card-heading"><span class="card-icon">◉</span><div><h2 class="card-title">摇杆与输入模式</h2><p class="card-subtitle">先读取当前值，再进行校准或模式切换。</p></div></div><span class="button-note">配置项 01</span></div><div class="card-body">
+                <div class="setting-row"><div class="setting-label"><span class="setting-title">摇杆校准</span><span class="setting-help">将当前位置设为设备参考中心</span></div><div class="button-group"><input type="button" value="校准摇杆" id="ResetLeverBtn" /><input type="button" value="读取摇杆信息" id="ReadLeverInfoBtn" /></div></div>
+                <div class="setting-row"><div class="setting-label"><span class="setting-title">输入模式</span><span class="setting-help">决定主控设备向上层输出的协议</span></div><div class="button-group"><select id="InputModeSelect" aria-label="输入模式"><option value="0">未知</option><option value="1">IO4兼容</option><option value="2">DLL输入</option><option value="3">模拟键盘</option></select><input type="button" value="读取当前模式" id="ReadInputModeBtn" /><input class="btn-primary" type="button" value="应用模式" id="SetInputModeBtn" /></div></div>
+                <div id="ConfigOperationStatus" class="status"></div>
+              </div></div>
+              <div class="card"><div class="card-header"><div class="card-heading"><span class="card-icon">✦</span><div><h2 class="card-title">调试工具</h2><p class="card-subtitle">实时查看摇杆变化并触发灯光检查。</p></div></div><span class="button-note">辅助功能</span></div><div class="card-body"><div class="setting-row"><div class="setting-label"><span class="setting-title">摇杆实时监控</span><span class="setting-help">持续读取设备当前处理值</span></div><input type="button" value="开启实时监控" id="ToggleMonitorBtn" /></div><div class="setting-row"><div class="setting-label"><span class="setting-title">灯光测试</span><span class="setting-help">向主控发送一次灯光测试命令</span></div><input type="button" value="运行灯光测试" id="LightTestBtn" /></div></div></div>
+            </div><div>
+              <div class="card"><div class="card-header"><div class="card-heading"><span class="card-icon">▤</span><div><h2 class="card-title">设备检查器</h2><p class="card-subtitle">读取数据后在此查看原始值与偏移。</p></div></div></div><div class="card-body"><div id="DeviceStatus" class="device-status">未连接设备<br /><span class="hint-line">连接后点击“读取摇杆信息”查看设备数据。</span></div></div></div>
+              <div class="save-bar"><div class="save-message"><strong>未保存的更改</strong><br />保存前请确认输入模式与校准值。</div><div class="button-group"><input class="btn-quiet" type="button" value="放弃更改" id="CancelConfigBtn" /><input class="btn-primary" type="button" value="保存配置" id="SaveConfigBtn" /></div></div>
+            </div></div>
+            <details class="log-drawer"><summary><span>配置通信日志</span><span class="log-hint">默认折叠 · 调试时展开</span></summary><textarea id="ConfigLogBox" class="log-box" readonly></textarea></details>
+          </section>
 
-          <div class="section">
-            <h3>🎮 按键测试</h3>
-            <div class="button-group">
-              <input type="button" value="开始测试" id="StartInputTestBtn" />
-              <input type="button" value="停止测试" id="StopInputTestBtn" />
-            </div>
-            <div id="InputTestStatus" class="status"></div>
+          <section class="tab-content" id="inputtest-tab" role="tabpanel">
+            <div class="page-head"><div><div class="eyebrow">MAIN DEVICE / INPUT DIAGNOSTICS</div><h1 class="page-title">输入诊断</h1><p class="page-description">像检查街机控制面板一样逐项确认摇杆、按钮和投币器的输入状态。</p></div><div class="page-meta"><span class="state-dot"></span><span class="page-meta-text">测试未启动</span></div></div>
+            <div class="card connection-card"><div class="card-body"><div class="connection-row"><div class="device-identity"><div class="device-avatar">⌁</div><div><div class="device-name">输入测试通道</div><div class="device-caption">读取主控原始输入报告 · <code>HID input report</code></div></div></div><div class="connection-actions"><input class="btn-primary" type="button" value="连接测试设备" id="ConnectInputTestDevice" /><input class="btn-danger" type="button" value="停止测试" id="StopInputTestBtn" /></div></div><ul id="InputTestConnectedList" class="connected-list"></ul><div id="InputTestConnectionStatus" class="status"></div></div></div>
+            <div class="card"><div class="card-header"><div class="card-heading"><span class="card-icon">◌</span><div><h2 class="card-title">测试控制台</h2><p class="card-subtitle">启动后会持续显示设备上报的输入变化。</p></div></div><input class="btn-success" type="button" value="开始输入测试" id="StartInputTestBtn" /></div><div class="card-body"><div id="InputTestStatus" class="status"></div><div class="joystick-layout"><div class="joystick-area"><div class="joystick-crosshair"></div><div class="joystick-dot" id="JoystickDot"></div></div><div class="joystick-values"><div class="joystick-value-row"><span class="value-label">处理值 / X</span><span class="value-text" id="JoystickX">32768 (0x8000)</span></div><div class="joystick-value-row"><span class="value-label">Y 轴</span><span class="value-text" id="JoystickY">- (无Y轴)</span></div><div class="joystick-value-row"><span class="value-label">原始值</span><span class="value-text" id="JoystickRaw">32768 (0x8000)</span></div><div id="RawInputStatus" class="raw-input-status">等待输入报告…</div></div></div></div></div>
+            <div class="card"><div class="card-header"><div class="card-heading"><span class="card-icon">▦</span><div><h2 class="card-title">按键矩阵</h2><p class="card-subtitle">按下设备按钮时，对应按键会高亮。</p></div></div><span class="button-note">12 inputs</span></div><div class="card-body"><div class="arcade-panel"><div class="panel-row"><div class="arcade-button coin-btn" id="btn-Test">Test</div><div class="arcade-button coin-btn" id="btn-Service">Service</div><div class="panel-spacer-large"></div><div class="arcade-button" id="btn-LMenu">LMenu</div><div class="arcade-button" id="btn-RMenu">RMenu</div></div><div class="panel-row"><div class="arcade-button side-btn" id="btn-LSide">LSide</div><div class="arcade-button main-btn" id="btn-LA">LA</div><div class="arcade-button main-btn" id="btn-LB">LB</div><div class="arcade-button main-btn" id="btn-LC">LC</div><div class="panel-spacer"></div><div class="arcade-button main-btn" id="btn-RA">RA</div><div class="arcade-button main-btn" id="btn-RB">RB</div><div class="arcade-button main-btn" id="btn-RC">RC</div><div class="arcade-button side-btn" id="btn-RSide">RSide</div></div></div><div class="coin-info"><div class="coin-row"><span class="coin-label">投币器 1</span><span class="coin-status" id="Coin1Condition">-</span><span class="coin-count">计数 <span id="Coin1Count">0</span></span></div><div class="coin-row"><span class="coin-label">投币器 2</span><span class="coin-status" id="Coin2Condition">-</span><span class="coin-count">计数 <span id="Coin2Count">0</span></span></div></div></div></div>
+            <details class="log-drawer"><summary><span>输入报告日志</span><span class="log-hint">原始报文与状态信息</span></summary><textarea id="InputTestLogBox" class="log-box" readonly></textarea><div id="RawButtons" class="hint-line" style="padding: 0 15px 15px;"></div></details>
+          </section>
 
-            <div class="arcade-panel" id="ArcadePanel">
-              <div class="panel-row test-service-row">
-                <div class="panel-spacer-large"></div>
-                <div class="arcade-button" id="btn-Test">Test</div>
-                <div class="arcade-button" id="btn-Service">Service</div>
-              </div>
-              <div class="panel-row menu-row">
-                <div class="arcade-button" id="btn-LMenu">LMenu</div>
-                <div class="panel-spacer-large"></div>
-                <div class="arcade-button" id="btn-RMenu">RMenu</div>
-              </div>
-              <div class="panel-row main-row">
-                <div class="arcade-button side-btn" id="btn-LSide">LSide</div>
-                <div class="arcade-button main-btn" id="btn-LA">LA</div>
-                <div class="arcade-button main-btn" id="btn-LB">LB</div>
-                <div class="arcade-button main-btn" id="btn-LC">LC</div>
-                <div class="panel-spacer-large"></div>
-                <div class="arcade-button main-btn" id="btn-RA">RA</div>
-                <div class="arcade-button main-btn" id="btn-RB">RB</div>
-                <div class="arcade-button main-btn" id="btn-RC">RC</div>
-                <div class="arcade-button side-btn" id="btn-RSide">RSide</div>
-              </div>
-            </div>
+          <section class="tab-content" id="cardreader-tab" role="tabpanel">
+            <div class="page-head"><div><div class="eyebrow">EXTENSION / CARD READER</div><h1 class="page-title">读卡器</h1><p class="page-description">连接 Web Serial 读卡器，读取板卡信息、管理轮询并确认卡片 UID。</p></div><div class="page-meta"><span class="state-dot"></span><span class="page-meta-text">读卡器未连接</span></div></div>
+            <div class="card connection-card"><div class="card-body"><div class="connection-row"><div class="device-identity"><div class="device-avatar">▣</div><div><div class="device-name">NFC / IC 读卡器</div><div class="device-caption">USB CDC 串口 · <code>VID 0x0CA3 / PID 0x0021</code> · 115200 baud</div></div></div><div class="connection-actions"><input class="btn-primary" type="button" value="连接读卡器" id="ConnectCardReader" /><input class="btn-danger" type="button" value="断开连接" id="DisconnectCardReader" /></div></div><div id="CardReaderConnectionStatus" class="status"></div></div></div>
+            <div class="workspace-grid"><div><div class="card"><div class="card-header"><div class="card-heading"><span class="card-icon">▤</span><div><h2 class="card-title">读卡器信息</h2><p class="card-subtitle">查询硬件、固件和当前串口状态。</p></div></div></div><div class="card-body"><div id="CardReaderDeviceStatus" class="device-status">未连接设备</div><div class="button-group" style="margin-top: 12px;"><input type="button" value="读取固件版本" id="GetCardFWVersion" /><input type="button" value="读取硬件版本" id="GetCardHWVersion" /><input type="button" value="读取设备信息" id="GetCardBoardInfo" /></div></div></div><div class="card"><div class="card-header"><div class="card-heading"><span class="card-icon">◎</span><div><h2 class="card-title">轮询与检测</h2><p class="card-subtitle">轮询会每 200ms 发送一次检测请求。</p></div></div><span class="button-note" id="CardPollingStatus">未启动</span></div><div class="card-body"><div class="button-group"><input class="btn-success" type="button" value="开始轮询" id="StartCardPolling" /><input class="btn-danger" type="button" value="停止轮询" id="StopCardPolling" /><input type="button" value="单次检测" id="DetectCard" /></div><div class="data-grid" style="margin-top: 13px;"><div class="data-item"><span class="data-label">卡片类型</span><span class="data-value emphasis" id="CardType">-</span></div><div class="data-item"><span class="data-label">卡片 UID / IDm</span><span class="data-value emphasis" id="CardUID">-</span></div></div><div id="CardReaderOperationStatus" class="status"></div></div></div></div><div><div class="card"><div class="card-header"><div class="card-heading"><span class="card-icon">●</span><div><h2 class="card-title">读卡器 LED</h2><p class="card-subtitle">设置外壳指示灯颜色。</p></div></div></div><div class="card-body"><div class="color-control"><input type="color" id="CardLEDColor" value="#48c8ff" /><span class="color-label">当前颜色</span><input type="button" value="应用颜色" id="SetCardLED" /></div></div></div><div class="inspector-card"><h3>操作顺序</h3><div class="flow-step current"><span class="flow-number">1</span><span>连接读卡器并进入正常模式</span></div><div class="flow-step"><span class="flow-number">2</span><span>读取板卡信息确认通信</span></div><div class="flow-step"><span class="flow-number">3</span><span>按需启动轮询或单次检测</span></div></div></div></div>
+            <details class="log-drawer"><summary><span>读卡器通信日志</span><span class="log-hint">串口帧与响应</span></summary><textarea id="CardReaderLogBox" class="log-box" readonly></textarea></details>
+          </section>
 
-            <div class="coin-info">
-              <div class="coin-row">
-                <span class="coin-label">投币器1:</span>
-                <span class="coin-status" id="Coin1Condition">-</span>
-                <span class="coin-count"
-                  >计数: <span id="Coin1Count">0</span></span
-                >
-              </div>
-              <div class="coin-row">
-                <span class="coin-label">投币器2:</span>
-                <span class="coin-status" id="Coin2Condition">-</span>
-                <span class="coin-count"
-                  >计数: <span id="Coin2Count">0</span></span
-                >
-              </div>
-            </div>
-          </div>
+          <section class="tab-content" id="ledboard-tab" role="tabpanel">
+            <div class="page-head"><div><div class="eyebrow">EXTENSION / LED BOARD</div><h1 class="page-title">灯板控制</h1><p class="page-description">单独连接灯板，查询板卡信息并对整板、左侧键或右侧键进行分区点亮。</p></div><div class="page-meta"><span class="state-dot"></span><span class="page-meta-text">灯板未连接</span></div></div>
+            <div class="card connection-card"><div class="card-body"><div class="connection-row"><div class="device-identity"><div class="device-avatar">✦</div><div><div class="device-name">扩展灯板</div><div class="device-caption">USB CDC 串口 · <code>RGB direct / 183 bytes</code></div></div></div><div class="connection-actions"><input class="btn-primary" type="button" value="连接灯板" id="ConnectLedBoard" /><input class="btn-danger" type="button" value="断开连接" id="DisconnectLedBoard" /></div></div><div id="LedBoardConnectionStatus" class="status"></div></div></div>
+            <div class="workspace-grid"><div><div class="card"><div class="card-header"><div class="card-heading"><span class="card-icon">▤</span><div><h2 class="card-title">灯板信息</h2><p class="card-subtitle">确认型号与修订号，排查串口通信。</p></div></div><input type="button" value="读取设备信息" id="GetLedBoardInfo" /></div><div class="card-body"><div id="LedBoardDeviceStatus" class="device-status">未连接设备</div></div></div><div class="card"><div class="card-header"><div class="card-heading"><span class="card-icon">◈</span><div><h2 class="card-title">颜色分区</h2><p class="card-subtitle">颜色指令发送后设备不会回复确认帧。</p></div></div><div class="color-control"><input type="color" id="LedBoardColor" value="#48c8ff" /></div></div><div class="card-body"><div class="led-preview" aria-label="灯板预览">
+                <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+                <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+              </div><div class="button-group"><input class="btn-primary" type="button" value="整板应用" id="SetLedWholeBoard" /><input type="button" value="左侧键" id="SetLedLeftKeys" /><input type="button" value="右侧键" id="SetLedRightKeys" /><input class="btn-quiet" type="button" value="重置灯板" id="ResetLedBoard" /></div><div id="LedBoardOperationStatus" class="status"></div></div></div></div><div><div class="inspector-card"><h3>分区说明</h3><ul class="inspector-list"><li><span>整板</span><strong>183 bytes</strong></li><li><span>左侧键</span><strong>前 6 bytes</strong></li><li><span>右侧键</span><strong>后 6 bytes</strong></li><li><span>协议</span><strong>RGB direct</strong></li></ul></div><div class="inspector-card"><h3>提示</h3><p>左、右侧按键操作会保留其他区域上一次的颜色状态。需要清空全部状态时使用“重置灯板”。</p></div></div></div>
+            <details class="log-drawer"><summary><span>灯板通信日志</span><span class="log-hint">串口帧与 ACK</span></summary><textarea id="LedBoardLogBox" class="log-box" readonly></textarea></details>
+          </section>
 
-          <div class="section">
-            <h3>🕹️ 摇杆测试</h3>
-            <div class="joystick-container" id="JoystickContainer">
-              <div class="joystick-area">
-                <div class="joystick-crosshair"></div>
-                <div class="joystick-dot" id="JoystickDot"></div>
-              </div>
-              <div class="joystick-values">
-                <div class="joystick-value-row">
-                  <span class="value-label">X轴:</span>
-                  <span class="value-text" id="JoystickX">0 (0x0000)</span>
-                </div>
-                <div class="joystick-value-row">
-                  <span class="value-label">Y轴:</span>
-                  <span class="value-text" id="JoystickY">-</span>
-                </div>
-                <div class="joystick-value-row">
-                  <span class="value-label">原始值:</span>
-                  <span class="value-text" id="JoystickRaw">0 (0x0000)</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          <section class="tab-content" id="firmware-tab">
+            <div class="page-head"><div><div class="eyebrow">MAINTENANCE / FIRMWARE</div><h1 class="page-title">固件维护</h1><p class="page-description">选择稳定版或每日构建，准备本地固件后执行烧入、验证或跳转程序。刷写过程中请勿断开 USB。</p></div><div class="page-meta"><span class="state-dot warning"></span><span class="page-meta-text">维护模式</span></div></div>
+            <div class="card connection-card"><div class="card-body"><div class="connection-row"><div class="device-identity"><div class="device-avatar">⇧</div><div><div class="device-name">IAP 固件通道</div><div class="device-caption">主控设备引导程序 · <code>REPORT ID 0xAA</code></div></div></div><div class="connection-actions"><input class="btn-primary" type="button" value="连接并初始化" id="ConnectAndInit" /></div></div><ul id="ConnectedList" class="connected-list"></ul><div id="ConnectionStatus" class="status"></div></div></div>
+            <div class="card"><div class="card-header"><div class="card-heading"><span class="card-icon">↓</span><div><h2 class="card-title">固件来源</h2><p class="card-subtitle">在线下载后会自动作为当前刷写文件。</p></div></div><span class="button-note">版本信息自动获取</span></div><div class="card-body"><div class="version-info-container"><div class="version-info" id="LatestVersionInfo"><div class="version-label">稳定版 / latest</div><span class="version-value loading" id="LatestVersion">获取中...</span></div><div class="version-info" id="NightlyVersionInfo"><div class="version-label">每日构建 / nightly</div><span class="version-value loading" id="NightlyVersion">获取中...</span></div></div><div class="button-group"><input class="btn-primary" type="button" value="下载稳定版" id="DownloadLatest" /><input type="button" value="下载每日构建" id="DownloadNightly" /></div><div id="DownloadStatus" class="status"></div><div class="download-notice"><strong>下载提示</strong> 如果浏览器拦截跨域下载，请手动保存 .bin 文件并从下方选择。</div></div></div>
+            <div class="card"><div class="card-header"><div class="card-heading"><span class="card-icon">□</span><div><h2 class="card-title">本地固件文件</h2><p class="card-subtitle">仅接受设备对应的二进制文件。</p></div></div></div><div class="card-body"><div class="file-input-wrapper"><input type="file" name="fileInput" id="FileInput" accept=".bin" /><label class="file-input-label" for="FileInput">选择 .bin 固件文件</label></div><span class="selected-file" id="SelectedFile">尚未选择文件</span></div></div>
+            <div class="card"><div class="card-header"><div class="card-heading"><span class="card-icon">⚡</span><div><h2 class="card-title">执行维护操作</h2><p class="card-subtitle">烧入会写入设备，验证用于检查完整性，跳转程序会退出 IAP。</p></div></div></div><div class="card-body"><div class="operation-bar"><div class="operation-actions"><input class="btn-primary" type="button" value="烧入固件" id="WriteFirmeware" /><input type="button" value="验证固件" id="VerifyFirmeware" /><input class="btn-success" type="button" value="跳转程序" id="RunFirmeware" /></div><span class="button-note">建议顺序：烧入 → 验证 → 跳转</span></div><div class="progress-container" id="ProgressContainer"><div class="progress-bar"><div class="progress-fill" id="ProgressFill"></div></div><div class="progress-text" id="ProgressText">0%</div></div><div id="OperationStatus" class="status"></div></div></div>
+            <details class="log-drawer"><summary><span>固件维护日志</span><span class="log-hint">刷写进度与设备响应</span></summary><textarea id="LogBox" class="log-box" readonly></textarea></details>
+          </section>
+        </div></main>
 
-          <div class="section">
-            <h3>📊 原始数据</h3>
-            <div class="raw-data-container">
-              <div class="raw-data-row">
-                <span class="raw-label">输入状态 (Input Status):</span>
-                <span class="raw-value" id="RawInputStatus">0x0000</span>
-              </div>
-              <div class="raw-data-row">
-                <span class="raw-label">按键字节 (Buttons):</span>
-                <span class="raw-value" id="RawButtons">00 00 00 00</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="section">
-            <h3>📝 测试日志</h3>
-            <textarea
-              name="inputTestLog"
-              id="InputTestLogBox"
-              class="log-box"
-              readonly
-            ></textarea>
-          </div>
-        </div>
-
-        <div class="tab-content" id="cardreader-tab">
-          <div class="section">
-            <h3>🔗 设备连接</h3>
-            <div class="button-group">
-              <input type="button" value="连接读卡器" id="ConnectCardReader" />
-              <input type="button" value="断开连接" id="DisconnectCardReader" />
-            </div>
-            <div id="CardReaderConnectionStatus" class="status"></div>
-            <p
-              style="
-                margin-top: var(--spacingVerticalS);
-                font-size: var(--fontSizeBase300);
-                color: var(--colorNeutralForeground2);
-              "
-            >
-              💡 提示: 读卡器使用 USB CDC 串口接口 (VID: 0x0CA3, PID:
-              0x0021)。需要 Chrome/Edge 浏览器支持 WebSerial API。
-            </p>
-          </div>
-
-          <div class="section">
-            <h3>📊 设备状态</h3>
-            <div class="button-group">
-              <input type="button" value="读取固件版本" id="GetCardFWVersion" />
-              <input type="button" value="读取硬件版本" id="GetCardHWVersion" />
-              <input type="button" value="读取设备信息" id="GetCardBoardInfo" />
-            </div>
-            <div
-              id="CardReaderDeviceStatus"
-              style="
-                background: var(--colorNeutralBackground3);
-                padding: var(--spacingHorizontalM);
-                border-radius: var(--borderRadiusSmall);
-                font-family: 'Consolas', monospace;
-                font-size: var(--fontSizeBase300);
-                line-height: 1.6;
-                border: 1px solid var(--colorNeutralStroke1);
-              "
-            >
-              未连接设备
-            </div>
-          </div>
-
-          <div class="section">
-            <h3>💳 卡片操作</h3>
-            <div class="button-group">
-              <input type="button" value="开始轮询" id="StartCardPolling" />
-              <input type="button" value="停止轮询" id="StopCardPolling" />
-              <input type="button" value="单次检测" id="DetectCard" />
-            </div>
-            <div id="CardReaderOperationStatus" class="status"></div>
-
-            <div
-              style="
-                background: #1b1b19;
-                border-radius: var(--borderRadiusMedium);
-                padding: var(--spacingHorizontalL);
-                margin: var(--spacingVerticalL) 0;
-                color: var(--colorNeutralBackground1);
-                border: 1px solid #3d3d3d;
-              "
-            >
-              <div
-                style="
-                  display: flex;
-                  gap: var(--spacingHorizontalL);
-                  flex-wrap: wrap;
-                "
-              >
-                <div style="flex: 1; min-width: 150px">
-                  <div
-                    style="
-                      color: #c4c4c4;
-                      font-size: var(--fontSizeBase300);
-                      margin-bottom: var(--spacingVerticalXS);
-                    "
-                  >
-                    轮询状态
-                  </div>
-                  <div
-                    id="CardPollingStatus"
-                    style="
-                      background: #2d2d2b;
-                      padding: var(--spacingVerticalS) var(--spacingHorizontalM);
-                      border-radius: var(--borderRadiusSmall);
-                      font-family: 'Consolas', monospace;
-                      font-size: var(--fontSizeBase400);
-                      border: 1px solid #4d4d4d;
-                    "
-                  >
-                    -
-                  </div>
-                </div>
-                <div style="flex: 1; min-width: 150px">
-                  <div
-                    style="
-                      color: #c4c4c4;
-                      font-size: var(--fontSizeBase300);
-                      margin-bottom: var(--spacingVerticalXS);
-                    "
-                  >
-                    卡片类型
-                  </div>
-                  <div
-                    id="CardType"
-                    style="
-                      background: #2d2d2b;
-                      padding: var(--spacingVerticalS) var(--spacingHorizontalM);
-                      border-radius: var(--borderRadiusSmall);
-                      font-family: 'Consolas', monospace;
-                      font-size: var(--fontSizeBase400);
-                      border: 1px solid #4d4d4d;
-                    "
-                  >
-                    -
-                  </div>
-                </div>
-                <div style="flex: 1; min-width: 200px">
-                  <div
-                    style="
-                      color: #c4c4c4;
-                      font-size: var(--fontSizeBase300);
-                      margin-bottom: var(--spacingVerticalXS);
-                    "
-                  >
-                    卡片 UID / IDm
-                  </div>
-                  <div
-                    id="CardUID"
-                    style="
-                      background: #2d2d2b;
-                      padding: var(--spacingVerticalS) var(--spacingHorizontalM);
-                      border-radius: var(--borderRadiusSmall);
-                      font-family: 'Consolas', monospace;
-                      font-size: var(--fontSizeBase400);
-                      border: 1px solid #4d4d4d;
-                    "
-                  >
-                    -
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="section">
-            <h3>💡 LED 控制</h3>
-            <div class="button-group">
-              <input type="color" id="CardLEDColor" value="#0078d4" />
-              <input type="button" value="设置LED颜色" id="SetCardLED" />
-            </div>
-          </div>
-
-          <div class="section">
-            <h3>📝 测试日志</h3>
-            <textarea
-              name="cardReaderLog"
-              id="CardReaderLogBox"
-              class="log-box"
-              readonly
-            ></textarea>
-          </div>
-        </div>
-
-        <div class="tab-content" id="ledboard-tab">
-          <div class="section">
-            <h3>🔗 设备连接</h3>
-            <div class="button-group">
-              <input type="button" value="连接灯板" id="ConnectLedBoard" />
-              <input type="button" value="断开连接" id="DisconnectLedBoard" />
-            </div>
-            <div id="LedBoardConnectionStatus" class="status"></div>
-            <p
-              style="
-                margin-top: var(--spacingVerticalS);
-                font-size: var(--fontSizeBase300);
-                color: var(--colorNeutralForeground2);
-              "
-            >
-              💡 提示: 灯板使用 USB CDC 串口接口 (VID: 0x0CA3, PID:
-              0x0021)。需要 Chrome/Edge 浏览器支持 WebSerial API。灯板与读卡器共享同一 USB 设备的不同 CDC 接口，请在弹窗中选择灯板对应的串口。
-            </p>
-          </div>
-
-          <div class="section">
-            <h3>📊 设备状态</h3>
-            <div class="button-group">
-              <input type="button" value="读取设备信息" id="GetLedBoardInfo" />
-            </div>
-            <div
-              id="LedBoardDeviceStatus"
-              style="
-                background: var(--colorNeutralBackground3);
-                padding: var(--spacingHorizontalM);
-                border-radius: var(--borderRadiusSmall);
-                font-family: 'Consolas', monospace;
-                font-size: var(--fontSizeBase300);
-                line-height: 1.6;
-                border: 1px solid var(--colorNeutralStroke1);
-              "
-            >
-              未连接设备
-            </div>
-          </div>
-
-          <div class="section">
-            <h3>💡 LED 颜色控制</h3>
-            <div class="button-group">
-              <input type="color" id="LedBoardColor" value="#0078d4" />
-              <input type="button" value="整个灯板颜色" id="SetLedWholeBoard" />
-              <input type="button" value="左侧键颜色" id="SetLedLeftKeys" />
-              <input type="button" value="右侧键颜色" id="SetLedRightKeys" />
-              <input type="button" value="重置灯板" id="ResetLedBoard" />
-            </div>
-            <p
-              style="
-                margin-top: var(--spacingVerticalS);
-                font-size: var(--fontSizeBase300);
-                color: var(--colorNeutralForeground2);
-              "
-            >
-              💡 提示: 颜色指令 (CMD_EXT_BOARD_SET_LED_RGB_DIRECT) 设备不会回复。左侧键修改前 6 字节，右侧键修改最后 6 字节，其他区域保留上次状态。
-            </p>
-            <div id="LedBoardOperationStatus" class="status"></div>
-          </div>
-
-          <div class="section">
-            <h3>📝 测试日志</h3>
-            <textarea
-              name="ledBoardLog"
-              id="LedBoardLogBox"
-              class="log-box"
-              readonly
-            ></textarea>
-          </div>
-        </div>
-
-        <div class="tab-content" id="firmware-tab">
-          <div class="section">
-            <h3>🔗 设备连接</h3>
-            <div class="button-group">
-              <input
-                type="button"
-                value="连接设备并初始化"
-                id="ConnectAndInit"
-              />
-            </div>
-            <ul id="ConnectedList" class="connected-list"></ul>
-            <div id="ConnectionStatus" class="status"></div>
-          </div>
-
-          <div class="section">
-            <h3>📥 固件下载</h3>
-            <div class="version-info-container">
-              <div class="version-info" id="LatestVersionInfo">
-                <div class="version-label">最新版本</div>
-                <div class="version-value" id="LatestVersion">获取中...</div>
-              </div>
-              <div class="version-info" id="NightlyVersionInfo">
-                <div class="version-label">每日构建</div>
-                <div class="version-value" id="NightlyVersion">获取中...</div>
-              </div>
-            </div>
-            <div class="button-group">
-              <input
-                type="button"
-                value="下载最新固件"
-                id="DownloadLatest"
-                class="download-btn"
-              />
-              <input
-                type="button"
-                value="下载每日构建"
-                id="DownloadNightly"
-                class="download-btn"
-              />
-            </div>
-            <div id="DownloadStatus" class="status"></div>
-            <div class="download-notice">
-              💡
-              <strong>提示：</strong
-              >如果下载失败（CORS错误），请手动下载固件文件后使用"选择固件文件"功能。
-            </div>
-          </div>
-
-          <div class="section">
-            <h3>📁 本地固件文件</h3>
-            <div class="file-input-wrapper">
-              <input
-                type="file"
-                name="fileInput"
-                id="FileInput"
-                accept=".bin"
-              />
-              <label for="FileInput" class="file-input-label"
-                >选择固件文件</label
-              >
-            </div>
-            <div
-              id="SelectedFile"
-              style="margin-top: 10px; font-size: 14px; color: #666"
-            ></div>
-          </div>
-
-          <div class="section">
-            <h3>⚡ 固件操作</h3>
-            <div class="button-group">
-              <input type="button" value="烧入固件" id="WriteFirmeware" />
-              <input type="button" value="验证固件" id="VerifyFirmeware" />
-              <input type="button" value="跳转程序" id="RunFirmeware" />
-            </div>
-            <div class="progress-container" id="ProgressContainer">
-              <div class="progress-bar">
-                <div class="progress-fill" id="ProgressFill"></div>
-              </div>
-              <div class="progress-text" id="ProgressText">0%</div>
-            </div>
-            <div id="OperationStatus" class="status"></div>
-          </div>
-
-          <div class="section">
-            <h3>📝 操作日志</h3>
-            <textarea
-              name="log"
-              id="LogBox"
-              class="log-box"
-              readonly
-            ></textarea>
-          </div>
-        </div>
-
-        <div class="tab-content active" id="config-tab">
-          <div class="section">
-            <h3>🔗 设备连接</h3>
-            <div class="button-group">
-              <input type="button" value="连接设备" id="ConnectConfigDevice" />
-            </div>
-            <ul id="ConfigConnectedList" class="connected-list"></ul>
-            <div id="ConfigConnectionStatus" class="status"></div>
-          </div>
-
-          <div class="section">
-            <h3>🕹️ 摇杆配置</h3>
-            <div class="button-group">
-              <input type="button" value="校准摇杆" id="ResetLeverBtn" />
-              <input type="button" value="读取摇杆信息" id="ReadLeverInfoBtn" />
-            </div>
-            <div id="ConfigOperationStatus" class="status"></div>
-          </div>
-
-          <div class="section">
-            <h3>🎮 输入模式</h3>
-            <div class="button-group">
-              <input
-                type="button"
-                value="读取当前输入模式"
-                id="ReadInputModeBtn"
-              />
-            </div>
-            <div class="button-group">
-              <select id="InputModeSelect">
-                <option value="0">未知</option>
-                <option value="1">IO4兼容</option>
-                <option value="2">DLL输入</option>
-                <option value="3">模拟键盘</option>
-              </select>
-              <input type="button" value="设置输入模式" id="SetInputModeBtn" />
-            </div>
-          </div>
-
-          <div class="section">
-            <h3>🧪 调试</h3>
-            <div class="button-group">
-              <input type="button" value="开启摇杆监控" id="ToggleMonitorBtn" />
-              <input type="button" value="灯光测试" id="LightTestBtn" />
-            </div>
-          </div>
-
-          <div class="section">
-            <h3>💾 保存或放弃</h3>
-            <div class="button-group">
-              <input type="button" value="保存配置" id="SaveConfigBtn" />
-              <input type="button" value="放弃配置" id="CancelConfigBtn" />
-            </div>
-          </div>
-
-          <div class="section">
-            <h3>📊 设备状态</h3>
-            <div
-              id="DeviceStatus"
-              style="
-                background: var(--colorNeutralBackground3);
-                padding: var(--spacingHorizontalM);
-                border-radius: var(--borderRadiusSmall);
-                font-family: 'Consolas', monospace;
-                font-size: var(--fontSizeBase300);
-                line-height: 1.6;
-                border: 1px solid var(--colorNeutralStroke1);
-              "
-            >
-              未连接设备
-            </div>
-          </div>
-
-          <div class="section">
-            <h3>📝 配置日志</h3>
-            <textarea
-              name="configLog"
-              id="ConfigLogBox"
-              class="log-box"
-              readonly
-            ></textarea>
-          </div>
-        </div>
+        <aside class="inspector"><div class="inspector-heading"><div><div class="inspector-kicker">SYSTEM INSPECTOR</div><h2 class="inspector-title">当前工作区</h2></div></div><div class="inspector-card"><h3>设备连接</h3><ul class="inspector-list"><li><span>主控 HID</span><strong>未连接</strong></li><li><span>读卡器 CDC</span><strong>未连接</strong></li><li><span>灯板 CDC</span><strong>未连接</strong></li></ul></div><div class="inspector-card"><h3>建议流程</h3><div class="flow-step current"><span class="flow-number">1</span><span>连接对应设备</span></div><div class="flow-step"><span class="flow-number">2</span><span>读取设备状态</span></div><div class="flow-step"><span class="flow-number">3</span><span>执行目标操作</span></div><div class="flow-step"><span class="flow-number">4</span><span>在日志中确认结果</span></div></div><div class="inspector-card"><h3>快速提示</h3><p>每个设备通道独立连接。切换工作区不会自动断开设备，也不会清除已读取的数据。</p></div></aside>
       </div>
     </div>
+    <script src="main.js"></script>
   </body>
-  <script src="main.js"></script>
 </html>
