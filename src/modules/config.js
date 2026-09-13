@@ -22,6 +22,9 @@ export const createConfigController = ({
     readInputModeBtn,
     setInputModeBtn,
     inputModeSelect,
+    readCardModeBtn,
+    setCardModeBtn,
+    cardModeSelect,
     toggleMonitorBtn,
     lightTestBtn,
     saveConfigBtn,
@@ -42,6 +45,9 @@ export const createConfigController = ({
         return '未知'
     }
   }
+
+  const getCardModeLabel = (mode) =>
+    mode === 1 ? '开启（本地读取卡号）' : '关闭（标准读卡流程）'
 
   const sendConfigReportAndWait = (reportId, data, timeout = HID_TIMEOUT) =>
     communicator.send(reportId, data, timeout)
@@ -235,6 +241,65 @@ export const createConfigController = ({
     } catch (error) {
       showStatus(`设置输入模式失败: ${error.message}`, 'error', configOperationStatus)
       showConfigLog(`设置输入模式失败: ${error.message}`)
+    }
+  }
+
+  const readCardMode = async () => {
+    if (!configDevice || !configDevice.opened) {
+      showStatus('设备未连接', 'error', configOperationStatus)
+      showConfigLog('设备未连接，无法读取真实卡号设置')
+      return
+    }
+
+    try {
+      showStatus('正在读取真实卡号设置...', 'info', configOperationStatus)
+      const command = [0x00, CONFIG_COMMANDS.CARD_READ_MODE_GET, 0x00]
+      while (command.length < 63) command.push(0x00)
+
+      const response = await sendConfigReportAndWait(CONFIG_REPORT_ID, command)
+      if (response.length < 4 || response[2] !== 0x01 || response[3] > 1) {
+        throw new Error(`设备返回错误状态: ${response[2]?.toString(16) || '未知'}`)
+      }
+
+      cardModeSelect.value = String(response[3])
+      const label = getCardModeLabel(response[3])
+      showStatus(`真实卡号读取已读取: ${label}`, 'success', configOperationStatus)
+      showConfigLog(`真实卡号读取设置读取成功: ${label}`)
+    } catch (error) {
+      showStatus(`读取真实卡号设置失败: ${error.message}`, 'error', configOperationStatus)
+      showConfigLog(`读取真实卡号设置失败: ${error.message}`)
+    }
+  }
+
+  const setCardMode = async () => {
+    if (!configDevice || !configDevice.opened) {
+      showStatus('设备未连接', 'error', configOperationStatus)
+      showConfigLog('设备未连接，无法设置真实卡号读取')
+      return
+    }
+
+    const mode = Number.parseInt(cardModeSelect.value, 10)
+    if (mode !== 0 && mode !== 1) {
+      showStatus('请选择有效的真实卡号读取模式', 'error', configOperationStatus)
+      return
+    }
+
+    try {
+      const label = getCardModeLabel(mode)
+      showStatus('正在设置真实卡号读取...', 'info', configOperationStatus)
+      const command = [0x00, CONFIG_COMMANDS.CARD_READ_MODE_SET, 0x00, mode]
+      while (command.length < 63) command.push(0x00)
+
+      const response = await sendConfigReportAndWait(CONFIG_REPORT_ID, command)
+      if (response.length < 3 || response[2] !== 0x01) {
+        throw new Error(`设备返回错误状态: ${response[2]?.toString(16) || '未知'}`)
+      }
+
+      showStatus(`真实卡号读取已设置: ${label}`, 'success', configOperationStatus)
+      showConfigLog(`真实卡号读取设置成功: ${label}`)
+    } catch (error) {
+      showStatus(`设置真实卡号读取失败: ${error.message}`, 'error', configOperationStatus)
+      showConfigLog(`设置真实卡号读取失败: ${error.message}`)
     }
   }
 
@@ -551,6 +616,8 @@ const getSerialNumber = async () => {
     if (setInputModeBtn) {
       setInputModeBtn.addEventListener('click', setInputMode)
     }
+    readCardModeBtn.addEventListener('click', readCardMode)
+    setCardModeBtn.addEventListener('click', setCardMode)
     toggleMonitorBtn.addEventListener('click', toggleLeverMonitoring)
     lightTestBtn.addEventListener('click', runLightTest)
     saveConfigBtn.addEventListener('click', saveConfig)

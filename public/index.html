@@ -8,333 +8,637 @@
     <style>
       :root {
         color-scheme: light;
-        --bg: #f4f7fd;
-        --shell: #ffffff;
-        --panel: #ffffff;
-        --panel-raised: #ffffff;
-        --panel-soft: #f7f9fe;
-        --line: #dbe5f6;
-        --line-strong: #9ab5e4;
-        --text: #202020;
-        --muted: #707070;
-        --faint: #9aa6b7;
-        --accent: #2f68cb;
-        --accent-strong: #245dbf;
-        --accent-light: #508aed;
-        --accent-soft: #eaf1fd;
-        --hover-bg: #dae7fc;
+        --bg: #edf3fb;
+        --surface: #ffffff;
+        --surface-soft: #f6f9fe;
+        --surface-blue: #eff5ff;
+        --line: #d8e3f3;
+        --line-strong: #a6bfe7;
+        --ink: #17233f;
+        --muted: #64728b;
+        --faint: #96a4b9;
+        --blue: #2f68cb;
+        --blue-dark: #245dbf;
+        --blue-bright: #508aed;
+        --blue-pale: #dae7fc;
         --green: #2f9c71;
-        --yellow: #a6770e;
-        --red: #c95d69;
+        --orange: #b37b24;
+        --red: #bd5968;
         --purple: #7c68c9;
-        --canvas-gradient: linear-gradient(-45deg, #245dbf 0%, #457fe3 100%);
-        --topbar-bg: rgba(36, 93, 191, 0.96);
-        --field-bg: #ffffff;
-        --button-bg: #ffffff;
-        --shadow: 0 8px 24px rgba(35, 73, 132, 0.14);
-        --radius: 10px;
+        --shadow: 0 12px 32px rgba(36, 75, 135, 0.11);
+        --shadow-small: 0 5px 16px rgba(36, 75, 135, 0.08);
+        --radius: 12px;
         --font: "Segoe UI", "Microsoft YaHei", system-ui, sans-serif;
         --mono: "Cascadia Code", Consolas, "Microsoft YaHei", monospace;
       }
 
       /* Theme contract: future themes only need to override this token layer. */
       body[data-theme="blue"] {
-        --bg: #f4f7fd;
-        --shell: #ffffff;
-        --panel: #ffffff;
-        --panel-raised: #ffffff;
-        --panel-soft: #f7f9fe;
-        --line: #dbe5f6;
-        --line-strong: #9ab5e4;
-        --text: #202020;
-        --muted: #707070;
-        --faint: #9aa6b7;
-        --accent: #2f68cb;
-        --accent-strong: #245dbf;
-        --accent-light: #508aed;
-        --accent-soft: #eaf1fd;
-        --hover-bg: #dae7fc;
-        --canvas-gradient: linear-gradient(-45deg, #245dbf 0%, #457fe3 100%);
-        --topbar-bg: rgba(36, 93, 191, 0.96);
-        --field-bg: #ffffff;
-        --button-bg: #ffffff;
+        --bg: #edf3fb;
+        --surface-blue: #eff5ff;
+        --blue: #2f68cb;
+        --blue-dark: #245dbf;
+        --blue-bright: #508aed;
+        --blue-pale: #dae7fc;
       }
 
       * { box-sizing: border-box; }
-      html, body { margin: 0; min-height: 100%; }
+      html, body { margin: 0; min-width: 0; min-height: 100%; }
       body {
-        min-width: 1040px;
         min-height: 100vh;
-        overflow-x: auto;
-        background: var(--canvas-gradient);
-        color: var(--text);
+        overflow-x: hidden;
+        color: var(--ink);
+        background: var(--bg);
         font: 13px/1.5 var(--font);
         letter-spacing: 0.01em;
       }
       button, input, select, textarea { font: inherit; }
-      button, input[type="button"], input[type="color"], label { -webkit-tap-highlight-color: transparent; }
+      button, input[type="button"], label { -webkit-tap-highlight-color: transparent; }
       button, input[type="button"], label { cursor: pointer; }
-      button:disabled, input[type="button"]:disabled, label:has(input:disabled) { cursor: not-allowed; }
+      button:disabled, input[type="button"]:disabled { cursor: not-allowed; }
+      [hidden] { display: none !important; }
+      code, .mono { color: var(--blue); font-family: var(--mono); font-size: 0.88em; }
 
-      .app-shell { min-height: 100vh; display: flex; flex-direction: column; background: rgba(255,255,255,0.94); }
-      .app-topbar { height: 68px; flex: 0 0 68px; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; border-bottom: 1px solid rgba(255,255,255,0.34); background: var(--topbar-bg); box-shadow: 0 2px 12px rgba(36,93,191,0.22); color: #ffffff; }
-      .brand { display: flex; align-items: center; gap: 12px; min-width: 280px; }
-      .brand-mark { width: 34px; height: 34px; display: grid; place-items: center; color: var(--accent-strong); background: #ffffff; border-radius: 8px; font-size: 12px; font-weight: 800; letter-spacing: -0.08em; box-shadow: 0 3px 10px rgba(20,56,127,0.22); }
-      .brand-copy { display: grid; gap: 1px; }
-      .brand-title { font-size: 15px; font-weight: 700; letter-spacing: 0.04em; }
-      .brand-subtitle { color: rgba(255,255,255,0.72); font-size: 11px; }
-      .topbar-context { display: flex; align-items: center; gap: 12px; color: rgba(255,255,255,0.72); }
-      .context-label { color: rgba(255,255,255,0.58); font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; }
-      .context-value { color: #ffffff; font-family: var(--mono); font-size: 12px; }
-      .topbar-actions { display: flex; align-items: center; gap: 9px; min-width: 280px; justify-content: flex-end; }
-      .topbar-chip { display: inline-flex; align-items: center; gap: 7px; padding: 6px 10px; border: 1px solid rgba(255,255,255,0.3); border-radius: 6px; color: rgba(255,255,255,0.84); font-size: 11px; }
+      .device-picker {
+        min-height: 100vh;
+        padding: 30px 28px;
+        background:
+          radial-gradient(circle at 12% 8%, rgba(80,138,237,0.16), transparent 30%),
+          linear-gradient(135deg, #245dbf 0%, #457fe3 100%);
+      }
+      .picker-frame { width: min(1080px, 100%); margin: 0 auto; }
+      .picker-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; color: #fff; }
+      .brand-lockup { display: flex; align-items: center; gap: 14px; }
+      .brand-mark { width: 48px; height: 48px; display: grid; place-items: center; flex: 0 0 48px; color: var(--blue-dark); border-radius: 13px; background: #fff; box-shadow: 0 9px 22px rgba(20,55,125,0.24); font-size: 14px; font-weight: 800; letter-spacing: -0.08em; }
+      .brand-title { font-size: 20px; font-weight: 760; letter-spacing: 0.02em; }
+      .brand-subtitle { margin-top: 3px; color: rgba(255,255,255,0.74); font-size: 12px; }
+      .picker-meta { color: rgba(255,255,255,0.72); font-family: var(--mono); font-size: 11px; text-align: right; }
+      .picker-meta strong { display: block; margin-bottom: 4px; color: #fff; font-family: var(--font); font-size: 13px; }
+      .picker-card { margin-top: 28px; padding: clamp(22px, 4vw, 42px); border: 1px solid rgba(255,255,255,0.45); border-radius: 18px; background: rgba(255,255,255,0.98); box-shadow: 0 24px 60px rgba(22,57,125,0.24); }
+      .picker-intro { max-width: 700px; }
+      .eyebrow { display: inline-flex; align-items: center; gap: 8px; color: var(--blue); font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; }
+      .eyebrow::before { content: ""; width: 18px; height: 1px; background: currentColor; }
+      .picker-title { margin: 10px 0 8px; font-size: clamp(27px, 4vw, 40px); line-height: 1.12; letter-spacing: -0.04em; }
+      .picker-description { margin: 0; color: var(--muted); font-size: 14px; }
+      .flow-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 30px 0 25px; }
+      .flow-node { display: flex; align-items: center; gap: 10px; padding: 11px 13px; border: 1px solid var(--line); border-radius: 9px; color: var(--muted); background: var(--surface-soft); }
+      .flow-node.is-active { color: var(--blue-dark); border-color: var(--line-strong); background: var(--surface-blue); }
+      .flow-number { width: 24px; height: 24px; display: grid; place-items: center; flex: 0 0 24px; border: 1px solid var(--line-strong); border-radius: 50%; color: var(--blue); font-family: var(--mono); font-size: 11px; }
+      .flow-copy { display: grid; gap: 1px; }
+      .flow-copy strong { font-size: 12px; }
+      .flow-copy span { color: var(--faint); font-size: 10px; }
+      .device-choice-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+      .device-choice { position: relative; display: grid; grid-template-columns: 42px minmax(0, 1fr) auto; align-items: center; gap: 12px; min-width: 0; padding: 16px; border: 1px solid var(--line); border-radius: 11px; color: var(--ink); background: var(--surface); text-align: left; transition: 150ms ease; }
+      .device-choice:hover { border-color: var(--blue-bright); background: var(--surface-blue); transform: translateY(-1px); box-shadow: var(--shadow-small); }
+      .device-choice.is-selected { border-color: var(--blue-bright); background: var(--surface-blue); box-shadow: 0 0 0 3px rgba(80,138,237,0.13); }
+      .device-choice.is-selected::after { content: "✓"; position: absolute; top: 8px; right: 10px; color: var(--blue); font-size: 12px; font-weight: 700; }
+      .choice-icon, .workspace-icon { width: 42px; height: 42px; display: grid; place-items: center; color: var(--blue); border: 1px solid #b8cdec; border-radius: 10px; background: var(--surface-blue); font-size: 19px; }
+      .choice-copy { min-width: 0; }
+      .choice-title { display: block; font-size: 14px; font-weight: 720; }
+      .choice-description { display: block; margin-top: 3px; overflow: hidden; color: var(--muted); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+      .choice-transport { color: var(--faint); font-family: var(--mono); font-size: 10px; white-space: nowrap; }
+      .picker-footer { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-top: 25px; padding-top: 18px; border-top: 1px solid var(--line); }
+      .picker-selected { display: grid; gap: 3px; min-width: 0; }
+      .picker-selected-pill { color: var(--blue); font-family: var(--mono); font-size: 10px; }
+      .picker-selected-name { overflow: hidden; font-size: 15px; font-weight: 720; text-overflow: ellipsis; white-space: nowrap; }
+      .picker-selected-detail { color: var(--muted); font-size: 11px; }
 
-      .app-body { display: grid; grid-template-columns: 238px minmax(600px, 1fr) 278px; flex: 1; min-height: calc(100vh - 68px); }
-      .sidebar, .inspector { background: rgba(255,255,255,0.94); }
-      .sidebar { border-right: 1px solid var(--line); padding: 20px 12px 14px; display: flex; flex-direction: column; }
-      .inspector { border-left: 1px solid var(--line); padding: 20px 14px; }
-      .sidebar-heading, .section-kicker, .inspector-kicker { color: var(--faint); font-size: 10px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; }
-      .sidebar-heading { padding: 0 11px 10px; }
-      .nav-group { margin-bottom: 23px; }
-      .nav-group-label { padding: 0 11px 7px; color: var(--faint); font-size: 10px; }
+      .app-shell { min-height: 100vh; background: var(--surface); }
+      .app-topbar { min-height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 18px; padding: 12px 24px; color: #fff; background: linear-gradient(112deg, #245dbf 0%, #457fe3 100%); box-shadow: 0 4px 16px rgba(36,93,191,0.2); }
+      .topbar-brand { display: flex; align-items: center; gap: 11px; min-width: 245px; }
+      .topbar-brand .brand-mark { width: 38px; height: 38px; flex-basis: 38px; border-radius: 10px; font-size: 12px; }
+      .topbar-brand .brand-title { font-size: 15px; }
+      .topbar-brand .brand-subtitle { font-size: 10px; }
+      .topbar-context { display: flex; align-items: center; gap: 10px; color: rgba(255,255,255,0.72); font-size: 11px; }
+      .context-divider { color: rgba(255,255,255,0.42); }
+      .context-value { color: #fff; font-family: var(--mono); }
+      .topbar-actions { display: flex; align-items: center; justify-content: flex-end; gap: 8px; min-width: 245px; }
+      .topbar-chip, .topbar-action { display: inline-flex; align-items: center; gap: 7px; min-height: 32px; padding: 6px 10px; border: 1px solid rgba(255,255,255,0.28); border-radius: 7px; color: rgba(255,255,255,0.86); background: rgba(255,255,255,0.08); font-size: 11px; }
+      .topbar-action { color: #fff; background: rgba(255,255,255,0.16); }
+      .topbar-action:hover { background: rgba(255,255,255,0.25); }
+      .topbar-dot { width: 7px; height: 7px; border-radius: 50%; background: #b8c5d8; }
+
+      .app-body { display: grid; grid-template-columns: 246px minmax(0, 1fr) 270px; min-height: calc(100vh - 72px); }
+      .sidebar, .inspector { background: var(--surface); }
+      .sidebar { display: flex; flex-direction: column; padding: 18px 12px 14px; border-right: 1px solid var(--line); }
+      .inspector { padding: 19px 14px; border-left: 1px solid var(--line); }
+      .sidebar-kicker, .section-kicker, .inspector-kicker { color: var(--faint); font-size: 10px; font-weight: 750; letter-spacing: 0.15em; text-transform: uppercase; }
+      .sidebar-kicker { padding: 0 10px 9px; }
+      .sidebar-device { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 9px; align-items: center; margin: 0 2px 20px; padding: 11px 10px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface-soft); }
+      .sidebar-device-icon { width: 32px; height: 32px; display: grid; place-items: center; color: var(--blue); border: 1px solid var(--line-strong); border-radius: 8px; background: var(--surface-blue); }
+      .sidebar-device-copy { min-width: 0; }
+      .sidebar-device-name { overflow: hidden; color: var(--ink); font-size: 11px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+      .sidebar-device-transport { overflow: hidden; margin-top: 2px; color: var(--faint); font-family: var(--mono); font-size: 9px; text-overflow: ellipsis; white-space: nowrap; }
+      .nav-group { margin-bottom: 20px; }
+      .nav-group-label { padding: 0 10px 7px; color: var(--faint); font-size: 10px; }
       .tab-nav { display: grid; gap: 3px; }
-      .tab-button { position: relative; display: grid; grid-template-columns: 30px 1fr auto; align-items: center; gap: 9px; width: 100%; min-height: 43px; padding: 8px 10px; border: 1px solid transparent; border-radius: 7px; color: var(--muted); background: transparent; text-align: left; transition: 140ms ease; }
-      .tab-button:hover { color: var(--accent-strong); background: var(--hover-bg); }
-      .tab-button.active { color: var(--accent-strong); background: var(--accent-soft); border-color: #b7cbed; }
-      .tab-button.active::before { content: ""; position: absolute; left: -13px; top: 8px; bottom: 8px; width: 2px; border-radius: 2px; background: var(--accent-light); box-shadow: 0 0 8px rgba(80,138,237,0.5); }
-      .nav-icon { width: 27px; height: 27px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 6px; color: var(--muted); font-size: 13px; }
-      .tab-button.active .nav-icon { border-color: #9ab5e4; color: var(--accent); background: #ffffff; }
-      .nav-copy { display: grid; gap: 1px; }
-      .nav-title { font-size: 12px; font-weight: 650; }
-      .nav-description { color: var(--faint); font-size: 10px; }
+      .tab-button { position: relative; display: grid; grid-template-columns: 31px minmax(0, 1fr) auto; align-items: center; gap: 9px; width: 100%; min-height: 45px; padding: 8px 10px; border: 1px solid transparent; border-radius: 8px; color: var(--muted); background: transparent; text-align: left; transition: 140ms ease; }
+      .tab-button:hover { color: var(--blue-dark); background: var(--blue-pale); }
+      .tab-button.active { color: var(--blue-dark); border-color: #b9cdec; background: var(--surface-blue); }
+      .tab-button.active::before { content: ""; position: absolute; left: -13px; top: 8px; bottom: 8px; width: 2px; border-radius: 2px; background: var(--blue-bright); box-shadow: 0 0 8px rgba(80,138,237,0.5); }
+      .nav-icon { width: 28px; height: 28px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 7px; color: var(--muted); font-size: 13px; }
+      .tab-button.active .nav-icon { border-color: var(--line-strong); color: var(--blue); background: #fff; }
+      .nav-copy { display: grid; min-width: 0; gap: 1px; }
+      .nav-title { font-size: 12px; font-weight: 700; }
+      .nav-description { overflow: hidden; color: var(--faint); font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
       .nav-badge { color: var(--faint); font-family: var(--mono); font-size: 10px; }
-      .tab-button.active .nav-badge { color: var(--accent); }
-      .sidebar-footer { margin-top: auto; padding: 13px 11px 0; border-top: 1px solid var(--line); color: var(--faint); font-size: 10px; }
+      .tab-button.active .nav-badge { color: var(--blue); }
+      .sidebar-footer { margin-top: auto; padding: 13px 10px 0; border-top: 1px solid var(--line); color: var(--faint); font-size: 10px; }
       .sidebar-footer p { margin: 8px 0 0; line-height: 1.65; }
       .capability-list { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 9px; }
-      .capability-list a { padding: 3px 6px; color: var(--accent-strong); border: 1px solid var(--line-strong); border-radius: 4px; background: var(--accent-soft); font-size: 10px; text-decoration: none; }
-      .capability-list a.github-link { display: inline-flex; align-items: center; gap: 4px; }
-      .github-logo { width: 12px; height: 12px; flex: 0 0 12px; fill: currentColor; }
-      .capability-list a:hover { color: #ffffff; border-color: var(--accent); background: var(--accent-light); }
+      .capability-list a { display: inline-flex; align-items: center; gap: 4px; padding: 3px 6px; border: 1px solid var(--line-strong); border-radius: 5px; color: var(--blue-dark); background: var(--surface-blue); font-size: 10px; text-decoration: none; }
+      .capability-list a:hover { color: #fff; background: var(--blue-bright); }
 
-      .workspace { min-width: 0; background: rgba(247,249,254,0.78); }
-      .tab-container { height: 100%; min-height: 0; }
-      .tab-content { display: none; padding: 28px 30px 36px; max-width: 1120px; margin: 0 auto; }
+      .workspace { min-width: 0; background: var(--bg); }
+      .tab-container { min-height: 100%; }
+      .tab-content { display: none; width: min(1160px, 100%); margin: 0 auto; padding: 30px 32px 42px; }
       .tab-content.active { display: block; animation: page-in 150ms ease-out; }
-      @keyframes page-in { from { opacity: 0.4; transform: translateY(3px); } to { opacity: 1; transform: none; } }
-      .page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 22px; margin-bottom: 24px; }
-      .eyebrow { display: flex; align-items: center; gap: 8px; color: var(--accent); font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; }
-      .eyebrow::before { content: ""; width: 17px; height: 1px; background: var(--accent); }
-      .page-title { margin: 7px 0 4px; font-size: 26px; line-height: 1.15; letter-spacing: -0.03em; }
-      .page-description { max-width: 620px; margin: 0; color: var(--muted); font-size: 12px; }
-      .page-meta { display: flex; align-items: center; gap: 7px; flex-shrink: 0; padding-top: 5px; }
-      .state-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--faint); }
-      .state-dot.live { background: var(--green); box-shadow: 0 0 9px rgba(71,209,140,0.8); }
-      .state-dot.warning { background: var(--yellow); }
-      .page-meta-text { color: var(--muted); font-size: 11px; }
+      @keyframes page-in { from { opacity: 0.45; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+      .mobile-unsupported { min-height: 100vh; display: grid; place-items: center; padding: 24px; background: linear-gradient(135deg, #245dbf 0%, #457fe3 100%); }
+      .mobile-unsupported-card { width: min(470px, 100%); padding: 28px; border: 1px solid rgba(255,255,255,0.5); border-radius: 16px; color: var(--ink); background: rgba(255,255,255,0.98); box-shadow: 0 22px 55px rgba(22,57,125,0.25); text-align: center; }
+      .mobile-unsupported-card .brand-mark { margin: 0 auto 16px; }
+      .mobile-unsupported-card h1 { margin: 0 0 9px; font-size: 24px; }
+      .mobile-unsupported-card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.75; }
+      .mobile-unsupported-card .capability-list { justify-content: center; margin-top: 18px; }
+      .page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; margin-bottom: 23px; }
+      .page-title { margin: 8px 0 5px; font-size: clamp(25px, 3vw, 32px); line-height: 1.12; letter-spacing: -0.04em; }
+      .page-description { max-width: 700px; margin: 0; color: var(--muted); font-size: 12px; }
+      .page-meta { display: flex; align-items: center; flex-shrink: 0; gap: 7px; padding-top: 5px; color: var(--muted); font-size: 11px; }
+      .state-dot { width: 7px; height: 7px; flex: 0 0 7px; border-radius: 50%; background: var(--faint); }
+      .state-dot.live { background: var(--green); box-shadow: 0 0 9px rgba(47,156,113,0.7); }
+      .state-dot.warning { background: var(--orange); }
 
-      .card { margin-bottom: 14px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); box-shadow: 0 5px 16px rgba(35,73,132,0.08); overflow: hidden; }
+      .card { margin-bottom: 14px; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow-small); }
       .card-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 18px 13px; border-bottom: 1px solid var(--line); }
-      .card-heading { display: flex; align-items: center; gap: 10px; }
-      .card-icon { width: 26px; height: 26px; display: grid; place-items: center; color: var(--accent); border: 1px solid #b9cdec; border-radius: 6px; background: var(--accent-soft); font-size: 12px; }
-      .card-title { margin: 0; font-size: 13px; font-weight: 700; }
+      .card-heading { display: flex; align-items: center; gap: 10px; min-width: 0; }
+      .workspace-icon { width: 30px; height: 30px; flex-basis: 30px; border-radius: 8px; font-size: 13px; }
+      .card-title { margin: 0; font-size: 13px; font-weight: 750; }
       .card-subtitle { margin: 2px 0 0; color: var(--muted); font-size: 11px; }
       .card-body { padding: 17px 18px; }
-      .card-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-      .workspace-grid { display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(280px, 0.82fr); gap: 14px; align-items: start; }
-
-      .button-group { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-      button, input[type="button"] { min-height: 32px; padding: 7px 12px; border: 1px solid var(--line-strong); border-radius: 6px; color: var(--accent-strong); background: var(--button-bg); font-size: 11px; font-weight: 650; transition: 140ms ease; }
-      button:hover, input[type="button"]:hover { border-color: var(--accent); color: var(--accent-strong); background: var(--hover-bg); }
+      .button-group, .connection-actions, .operation-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+      button, input[type="button"] { min-height: 32px; padding: 7px 12px; border: 1px solid var(--line-strong); border-radius: 7px; color: var(--blue-dark); background: #fff; font-size: 11px; font-weight: 700; transition: 140ms ease; }
+      button:hover, input[type="button"]:hover { border-color: var(--blue); background: var(--blue-pale); }
       button:active, input[type="button"]:active { transform: translateY(1px); }
-      button:disabled, input[type="button"]:disabled { opacity: 0.5; color: var(--faint); border-color: var(--line); background: #f3f6fb; }
-      .btn-primary { color: #ffffff !important; border-color: var(--accent-light) !important; background: var(--accent-light) !important; box-shadow: 0 3px 8px rgba(47,104,203,0.18); }
-      .btn-primary:hover { color: #ffffff !important; border-color: var(--accent-strong) !important; background: var(--accent-strong) !important; }
-      button.btn-success, input[type="button"].btn-success { border-color: #8dc8ac; color: #267b59; background: #f2fbf6; }
-      button.btn-danger, input[type="button"].btn-danger { border-color: #e2a3ac; color: #b64e5d; background: #fff7f8; }
-      button.btn-quiet, input[type="button"].btn-quiet { border-color: transparent; background: transparent; color: var(--muted); }
-      .btn-quiet:hover { border-color: var(--line); background: var(--hover-bg); }
+      button:disabled, input[type="button"]:disabled { opacity: 0.48; color: var(--faint); border-color: var(--line); background: #f3f6fb; }
+      .btn-primary { color: #fff !important; border-color: var(--blue-bright) !important; background: var(--blue-bright) !important; box-shadow: 0 4px 10px rgba(47,104,203,0.2); }
+      .btn-primary:hover { border-color: var(--blue-dark) !important; background: var(--blue-dark) !important; }
+      .btn-success { color: #267b59 !important; border-color: #8dc8ac !important; background: #f2fbf6 !important; }
+      .btn-danger { color: var(--red) !important; border-color: #e2a3ac !important; background: #fff7f8 !important; }
+      .btn-quiet { color: var(--muted) !important; border-color: transparent !important; background: transparent !important; box-shadow: none; }
       .button-note { color: var(--faint); font-size: 10px; }
-
-      .connection-card { border-color: #b9cdec; background: linear-gradient(120deg, #f0f5ff 0%, #ffffff 72%); }
-      .connection-row { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 20px; }
-      .device-identity { display: flex; gap: 12px; align-items: center; }
-      .device-avatar { width: 42px; height: 42px; display: grid; place-items: center; color: var(--accent); border: 1px solid #b9cdec; border-radius: 9px; background: var(--accent-soft); font-size: 20px; }
-      .device-name { font-size: 14px; font-weight: 700; }
-      .device-caption { margin-top: 2px; color: var(--muted); font-size: 11px; }
-      .device-caption code, code { color: var(--accent); font-family: var(--mono); font-size: 10px; }
-      .connection-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
-      .connected-list { display: flex; flex-wrap: wrap; gap: 7px; min-height: 0; margin: 14px 0 0; padding: 0; list-style: none; }
+      .connection-card { border-color: #b9cdec; background: linear-gradient(120deg, #f0f5ff 0%, #fff 76%); }
+      .connection-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 18px; }
+      .device-identity { display: flex; align-items: center; gap: 12px; min-width: 0; }
+      .device-avatar { width: 43px; height: 43px; display: grid; place-items: center; flex: 0 0 43px; color: var(--blue); border: 1px solid #b9cdec; border-radius: 10px; background: var(--surface-blue); font-size: 20px; }
+      .device-name { overflow: hidden; font-size: 14px; font-weight: 750; text-overflow: ellipsis; white-space: nowrap; }
+      .device-caption { margin-top: 2px; overflow: hidden; color: var(--muted); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+      .connected-list { display: flex; flex-wrap: wrap; gap: 7px; margin: 13px 0 0; padding: 0; list-style: none; }
       .connected-list:empty { display: none; }
-      .connected-list li { padding: 5px 8px; border: 1px solid #b9cdec; border-radius: 5px; color: var(--accent-strong); background: var(--accent-soft); font-family: var(--mono); font-size: 10px; }
-      .status { display: none; margin: 12px 0 0; padding: 8px 10px; border: 1px solid var(--line); border-radius: 5px; font-size: 11px; }
+      .connected-list li { padding: 5px 8px; border: 1px solid #b9cdec; border-radius: 5px; color: var(--blue-dark); background: var(--surface-blue); font-family: var(--mono); font-size: 10px; }
+      .status { display: none; margin-top: 12px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 6px; font-size: 11px; }
       .status.success { display: block; color: #267b59; border-color: #b5dec4; background: #f2fbf6; }
-      .status.error { display: block; color: #b64e5d; border-color: #e7b5bc; background: #fff7f8; }
-      .status.info { display: block; color: var(--accent-strong); border-color: #b9cdec; background: var(--accent-soft); }
-      .metric-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
-      .metric { padding: 11px 12px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel-soft); }
+      .status.error { display: block; color: var(--red); border-color: #e7b5bc; background: #fff7f8; }
+      .status.info { display: block; color: var(--blue-dark); border-color: #b9cdec; background: var(--surface-blue); }
+      .metric-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; margin-bottom: 14px; }
+      .metric { padding: 11px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-soft); }
       .metric-label { color: var(--faint); font-size: 10px; }
-      .metric-value { margin-top: 4px; color: var(--text); font-family: var(--mono); font-size: 13px; }
+      .metric-value { margin-top: 4px; color: var(--ink); font-family: var(--mono); font-size: 13px; }
+      .metric-value.accent { color: var(--blue); }
       .metric-value.good { color: var(--green); }
-      .metric-value.accent { color: var(--accent); }
-
-      .setting-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 42px; padding: 9px 0; border-bottom: 1px solid rgba(64,84,98,0.42); }
+      .workspace-grid { display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(275px, 0.82fr); align-items: start; gap: 14px; }
+      .setting-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 44px; padding: 9px 0; border-bottom: 1px solid var(--line); }
       .setting-row:first-child { padding-top: 0; }
       .setting-row:last-child { padding-bottom: 0; border-bottom: 0; }
-      .setting-label { display: grid; gap: 2px; }
+      .setting-label { display: grid; min-width: 0; gap: 2px; }
       .setting-title { font-size: 12px; }
       .setting-help { color: var(--faint); font-size: 10px; }
-      .setting-row:has(#InputModeSelect) { align-items: center; }
-      .setting-row:has(#InputModeSelect) .setting-label { flex: 0 0 145px; }
-      .setting-row:has(#InputModeSelect) .setting-help { white-space: nowrap; }
-      .setting-row:has(#InputModeSelect) .button-group { flex-wrap: nowrap; flex-shrink: 0; }
-      select, input[type="text"] { min-height: 32px; padding: 6px 9px; color: var(--text); border: 1px solid var(--line-strong); border-radius: 5px; outline: none; background: var(--field-bg); }
-      select:focus, input[type="text"]:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(72,200,255,0.12); }
-      select { min-width: 142px; }
-      input[type="color"] { width: 42px; height: 32px; padding: 3px; border: 1px solid var(--line-strong); border-radius: 5px; background: var(--field-bg); }
+      .setting-row .button-group { justify-content: flex-end; flex: 0 1 auto; }
+      select, input[type="text"] { min-height: 32px; min-width: 132px; padding: 6px 9px; color: var(--ink); border: 1px solid var(--line-strong); border-radius: 7px; outline: none; background: #fff; }
+      select:focus, input[type="text"]:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 2px rgba(80,138,237,0.13); }
+      input[type="color"] { width: 42px; height: 32px; padding: 3px; border: 1px solid var(--line-strong); border-radius: 7px; background: #fff; }
+      .native-color-input { position: absolute; width: 1px !important; height: 1px !important; padding: 0 !important; overflow: hidden; opacity: 0; pointer-events: none; }
+      .color-picker-card { overflow: visible; }
+      .color-picker-shell { position: relative; display: inline-flex; align-items: center; z-index: 4; }
+      .color-picker-trigger { display: inline-flex; align-items: center; gap: 8px; min-width: 132px; padding: 6px 9px; }
+      .color-picker-trigger-swatch, .color-picker-preview { width: 22px; height: 22px; flex: 0 0 22px; border: 1px solid rgba(23,35,63,0.22); border-radius: 5px; background: #48c8ff; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.35); }
+      .color-picker-trigger-value { color: var(--ink); font-family: var(--mono); font-size: 10px; }
+      .color-picker-trigger-chevron { margin-left: auto; color: var(--muted); font-size: 13px; line-height: 1; }
+      .color-picker-shell > .color-picker {
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        z-index: 40;
+        display: none;
+        width: 192px;
+        height: 192px;
+        min-width: 192px;
+        min-height: 192px;
+        border: 1px solid var(--line-strong);
+        box-shadow: 0 14px 32px rgba(36,75,135,0.2);
+      }
+      .color-picker-shell.is-open { z-index: 41; }
+      .color-picker-shell.is-open > .color-picker { display: block; animation: picker-in 120ms ease-out; }
+      #LedBoardColorPicker.color-picker { left: auto; right: 0; }
+      @keyframes picker-in { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
 
-      .inspector-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 17px; }
-      .inspector-title { margin: 0; font-size: 13px; }
-      .inspector-card { margin-bottom: 12px; padding: 13px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); box-shadow: 0 4px 13px rgba(35,73,132,0.05); }
-      .inspector-card h3 { margin: 0 0 10px; font-size: 11px; }
-      .inspector-card p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.7; }
-      .inspector-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
-      .inspector-list li { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 10px; }
-      .inspector-list strong { color: var(--text); font-family: var(--mono); font-weight: 500; }
-      .flow-step { display: flex; gap: 9px; padding: 6px 0; color: var(--muted); font-size: 10px; }
-      .flow-number { width: 18px; height: 18px; display: grid; place-items: center; flex: 0 0 18px; color: var(--faint); border: 1px solid var(--line-strong); border-radius: 50%; font-family: var(--mono); font-size: 9px; }
-      .flow-step.current { color: var(--text); }
-      .flow-step.current .flow-number { color: var(--accent); border-color: var(--accent); }
-
-      .device-status { min-height: 100px; padding: 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel-soft); color: var(--muted); font-family: var(--mono); font-size: 10px; line-height: 1.75; overflow: auto; }
-      .device-status strong { color: var(--text); font-weight: 600; }
+      /* Full simple-color-picker implementation, adapted from the original package. */
+      .color-picker,
+      .color-picker *,
+      .color-picker *::before,
+      .color-picker *::after {
+        border: 0;
+        margin: 0;
+        padding: 0;
+        display: block;
+        box-sizing: border-box;
+      }
+      .color-picker { background-color: #fff; display: block; min-width: 128px; min-height: 128px; position: relative; }
+      .color-picker > .color-picker-right-bar {
+        border: solid #000 1px;
+        background: linear-gradient(#f00, #f0f, #00f, #0ff, #0f0, #ff0, #f00);
+        width: 16px;
+        height: calc(100% - 46px);
+        position: absolute;
+        right: 12px;
+        top: 12px;
+      }
+      .color-picker .color-picker-right-bar-picker { position: absolute; width: 100%; height: 1px; }
+      .color-picker .color-picker-right-bar-picker::before,
+      .color-picker .color-picker-right-bar-picker::after {
+        content: '';
+        width: 10px;
+        height: 7px;
+        position: absolute;
+        background: transparent;
+        border: solid transparent 5px;
+        border-width: 3.5px 5px;
+        top: -3px;
+      }
+      .color-picker .color-picker-right-bar-picker::before { border-left: solid #404040 5px; left: -6px; }
+      .color-picker .color-picker-right-bar-picker::after { border-right: solid #404040 5px; right: -6px; }
+      .color-picker > .color-picker-gradients {
+        position: absolute;
+        width: calc(100% - 50px);
+        height: calc(100% - 46px);
+        border: solid #000 1px;
+        left: 12px;
+        top: 12px;
+      }
+      .color-picker > .color-picker-gradients,
+      .color-picker > .color-picker-gradients * { cursor: url('/color-picker.cur'), crosshair; }
+      .color-picker > .color-picker-gradient-black { background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,1)); }
+      .color-picker > .color-picker-color-block {
+        position: absolute;
+        border: solid #000 1px;
+        background: #fff;
+        width: calc(100% - 104px);
+        max-width: 72px;
+        height: 18px;
+        left: 12px;
+        bottom: 8px;
+      }
+      .color-picker > .color-picker-input {
+        position: absolute;
+        width: 56px;
+        border: solid #909090 1px;
+        text-align: left;
+        height: 18px;
+        bottom: 8px;
+        right: 12px;
+      }
+      .color-picker > .color-picker-input > input { padding: 0 4px; text-align: center; }
+      .color-picker > .color-picker-input > input {
+        width: 100%;
+        min-width: 0;
+        min-height: 0;
+        height: 18px;
+        border: 0;
+        border-radius: 0;
+        outline: 0;
+        background: transparent;
+      }
+      .color-picker > .color-picker-input * { font-size: 12px; color: #808080; line-height: 18px; }
+      .color-picker > .color-picker-input::before {
+        width: 16px;
+        height: 18px;
+        display: block;
+        position: absolute;
+        border: solid #909090 1px;
+        border-right: 0;
+        content: '#';
+        text-align: center;
+        font-size: 12px;
+        color: #808080;
+        line-height: 18px;
+        top: -1px;
+        left: -16px;
+      }
+      .color-picker .color-picker-circle { background-color: transparent; position: absolute; }
+      .color-picker .color-picker-circle::before {
+        border-radius: 50%;
+        width: 11px;
+        height: 11px;
+        border: solid #000 1px;
+        background-color: transparent;
+        position: relative;
+        left: -6px;
+        top: -6px;
+        display: block;
+        content: '';
+      }
+      .color-picker .color-picker-circle.color-picker-circle-black::before { border-color: #000; }
+      .color-picker .color-picker-circle.color-picker-circle-white::before { border-color: #fff; }
+      /* Match the application controls while keeping the original picker geometry. */
+      .color-picker-shell > .color-picker {
+        border: 1px solid var(--line-strong);
+        border-radius: 9px;
+        background: var(--surface);
+        box-shadow: var(--shadow);
+        overflow: hidden;
+      }
+      .color-picker > .color-picker-gradients,
+      .color-picker > .color-picker-right-bar {
+        border-color: var(--line-strong);
+        border-radius: 6px;
+      }
+      .color-picker > .color-picker-color-block {
+        border-color: var(--line-strong);
+        border-radius: 4px;
+      }
+      .color-picker > .color-picker-input {
+        display: flex;
+        align-items: center;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        width: 72px;
+        height: 20px;
+        padding: 0;
+      }
+      .color-picker > .color-picker-input::before {
+        position: static;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 16px;
+        width: 16px;
+        height: 20px;
+        border: 1px solid var(--line-strong);
+        border-right: 0;
+        border-radius: 5px 0 0 5px;
+        color: var(--muted);
+        content: '#';
+        background: var(--surface);
+        font-family: var(--mono);
+        font-size: 11px;
+        line-height: 1;
+        padding: 0;
+      }
+      .color-picker > .color-picker-input > input {
+        flex: 1 1 auto;
+        width: auto;
+        height: 20px;
+        min-width: 0;
+        border: 1px solid var(--line-strong);
+        border-left: 0;
+        border-radius: 0 5px 5px 0;
+        background: var(--surface);
+        color: var(--ink);
+        font-family: var(--mono);
+        font-size: 11px;
+        line-height: 20px;
+        text-align: left;
+      }
+      .device-status { min-height: 102px; padding: 12px; overflow: auto; border: 1px solid var(--line); border-radius: 7px; color: var(--muted); background: var(--surface-soft); font-family: var(--mono); font-size: 10px; line-height: 1.75; }
+      .device-status strong { color: var(--ink); }
       .device-status hr { border: 0; border-top: 1px solid var(--line); }
-      .joystick-layout { display: grid; grid-template-columns: minmax(180px, 240px) 1fr; align-items: center; gap: 22px; }
-      .joystick-area { position: relative; width: 210px; height: 210px; margin: 0 auto; border: 1px solid #9ab5e4; border-radius: 50%; background: radial-gradient(circle, rgba(80,138,237,0.13) 0 2px, transparent 3px 30%, rgba(80,138,237,0.05) 31% 54%, transparent 55%), #ffffff; box-shadow: inset 0 0 35px rgba(35,73,132,0.08), 0 0 0 7px rgba(80,138,237,0.06); }
+      .save-bar { position: sticky; bottom: 14px; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 14px; border: 1px solid #b9cdec; border-radius: 9px; background: rgba(255,255,255,0.95); box-shadow: var(--shadow); backdrop-filter: blur(12px); }
+      .save-message { color: var(--muted); font-size: 10px; }
+      .save-message strong { color: var(--orange); }
+      .log-drawer { margin-top: 14px; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; }
+      .log-drawer summary { display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; cursor: pointer; color: var(--muted); font-size: 11px; list-style: none; }
+      .log-drawer summary::-webkit-details-marker { display: none; }
+      .log-drawer summary::after { content: "+"; color: var(--blue); font-family: var(--mono); font-size: 14px; }
+      .log-drawer[open] summary::after { content: "−"; }
+      .log-hint { color: var(--faint); font-size: 10px; }
+      .log-box { display: block; width: calc(100% - 30px); min-height: 150px; margin: 0 15px 15px; padding: 11px; resize: vertical; border: 1px solid var(--line); border-radius: 7px; outline: none; color: #5d6d82; background: var(--surface-soft); font-family: var(--mono); font-size: 10px; line-height: 1.6; }
+
+      .joystick-layout { display: grid; grid-template-columns: minmax(180px, 235px) minmax(0, 1fr); align-items: center; gap: 24px; }
+      .joystick-area { position: relative; width: 210px; height: 210px; margin: 0 auto; border: 1px solid var(--line-strong); border-radius: 50%; background: radial-gradient(circle, rgba(80,138,237,0.13) 0 2px, transparent 3px 30%, rgba(80,138,237,0.05) 31% 54%, transparent 55%), #fff; box-shadow: inset 0 0 35px rgba(35,73,132,0.08), 0 0 0 7px rgba(80,138,237,0.06); }
       .joystick-area::before, .joystick-area::after { content: ""; position: absolute; background: rgba(47,104,203,0.2); }
       .joystick-area::before { left: 10%; right: 10%; top: calc(50% - 1px); height: 1px; }
       .joystick-area::after { top: 10%; bottom: 10%; left: calc(50% - 1px); width: 1px; }
       .joystick-crosshair { position: absolute; inset: 18%; border: 1px dashed rgba(47,104,203,0.2); border-radius: 50%; }
-      .joystick-dot { position: absolute; left: 50%; top: 50%; width: 22px; height: 22px; transform: translate(-50%, -50%); border: 2px solid #ffffff; border-radius: 50%; background: var(--accent-light); box-shadow: 0 0 0 6px rgba(80,138,237,0.14), 0 0 18px rgba(47,104,203,0.35); }
+      .joystick-dot { position: absolute; top: 50%; left: 50%; width: 22px; height: 22px; transform: translate(-50%, -50%); border: 2px solid #fff; border-radius: 50%; background: var(--blue-bright); box-shadow: 0 0 0 6px rgba(80,138,237,0.14), 0 0 18px rgba(47,104,203,0.35); }
       .joystick-values { display: grid; gap: 8px; }
-      .joystick-value-row { display: flex; align-items: baseline; justify-content: space-between; gap: 15px; padding: 9px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel-soft); }
+      .joystick-value-row { display: flex; align-items: baseline; justify-content: space-between; gap: 15px; padding: 9px 10px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface-soft); }
       .value-label { color: var(--muted); font-size: 10px; }
-      .value-text { color: var(--accent); font-family: var(--mono); font-size: 11px; }
-      .raw-input-status { margin-top: 11px; color: var(--faint); font-family: var(--mono); font-size: 10px; }
-      .arcade-panel { display: grid; gap: 8px; padding: 14px; border: 1px solid var(--line); border-radius: 8px; background: #f7f9fe; }
+      .value-text { color: var(--blue); font-family: var(--mono); font-size: 11px; }
+      .raw-input-status { margin-top: 10px; color: var(--faint); font-family: var(--mono); font-size: 10px; }
+      .arcade-panel { display: grid; gap: 8px; padding: 14px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-soft); }
       .panel-row { display: flex; align-items: center; justify-content: center; gap: 6px; }
       .panel-spacer { width: 33px; flex: 0 0 33px; }
       .panel-spacer-large { flex: 1; }
-      .arcade-button { min-width: 54px; height: 34px; padding: 7px; display: grid; place-items: center; border: 1px solid #b3c5e5; border-radius: 5px; color: #5d6d82; background: #ffffff; font-family: var(--mono); font-size: 10px; transition: 80ms ease; }
+      .arcade-button { min-width: 54px; height: 34px; display: grid; place-items: center; padding: 7px; border: 1px solid #b3c5e5; border-radius: 6px; color: #5d6d82; background: #fff; font-family: var(--mono); font-size: 10px; transition: 80ms ease; }
       .arcade-button.main-btn { min-width: 57px; color: #b15d43; border-color: #e3b2a2; background: #fff8f5; }
       .arcade-button.side-btn { color: #6f5cab; border-color: #c3b9e7; background: #faf8ff; }
       .arcade-button.coin-btn { color: #977019; border-color: #dfc987; background: #fffdf5; }
-      .arcade-button.pressed { color: #ffffff; border-color: var(--accent); background: var(--accent-light); box-shadow: 0 0 12px rgba(47,104,203,0.25); }
-      .arcade-button.main-btn.pressed { background: #d9795b; border-color: #d9795b; box-shadow: 0 0 12px rgba(217,121,91,0.25); }
-      .arcade-button.side-btn.pressed { background: var(--purple); border-color: var(--purple); box-shadow: 0 0 12px rgba(124,104,201,0.25); }
-      .arcade-button.coin-btn.pressed { background: #c4962c; border-color: #c4962c; box-shadow: 0 0 12px rgba(196,150,44,0.25); }
-      .coin-info { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
-      .coin-row { display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; padding: 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel-soft); }
+      .arcade-button.pressed { color: #fff; border-color: var(--blue); background: var(--blue-bright); box-shadow: 0 0 12px rgba(47,104,203,0.25); }
+      .arcade-button.main-btn.pressed { background: #d9795b; border-color: #d9795b; }
+      .arcade-button.side-btn.pressed { background: var(--purple); border-color: var(--purple); }
+      .arcade-button.coin-btn.pressed { background: #c4962c; border-color: #c4962c; }
+      .coin-info { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 12px; }
+      .coin-row { display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; padding: 10px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface-soft); }
       .coin-label { grid-column: 1 / -1; color: var(--muted); font-size: 10px; }
-      .coin-status { color: var(--accent); font-family: var(--mono); font-size: 10px; }
-      .coin-count { color: var(--yellow); font-family: var(--mono); font-size: 10px; }
-      .coin-count span { margin-left: 4px; }
-
-      .data-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
-      .data-item { padding: 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel-soft); }
+      .coin-status { color: var(--blue); font-family: var(--mono); font-size: 10px; }
+      .coin-count { color: var(--orange); font-family: var(--mono); font-size: 10px; }
+      .data-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin-top: 13px; }
+      .data-item { min-width: 0; padding: 10px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface-soft); }
       .data-label { display: block; margin-bottom: 4px; color: var(--faint); font-size: 10px; }
-      .data-value { display: block; overflow: hidden; color: var(--text); font-family: var(--mono); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
-      .data-value.emphasis { color: var(--accent); }
-      .led-preview { display: grid; grid-template-columns: repeat(12, 1fr); gap: 6px; padding: 14px; margin-bottom: 13px; border: 1px solid var(--line); border-radius: 7px; background: #f7f9fe; }
+      .data-value { display: block; overflow: hidden; color: var(--ink); font-family: var(--mono); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+      .data-value.emphasis { color: var(--blue); }
+      .color-control { display: flex; align-items: center; flex-wrap: wrap; gap: 9px; }
+      .color-label { color: var(--muted); font-size: 11px; }
+      .led-preview { display: grid; grid-template-columns: repeat(12, 1fr); gap: 6px; padding: 14px; margin-bottom: 13px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface-soft); }
       .led-preview span { height: 12px; border-radius: 3px; background: #b9cdec; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.6); }
       .led-preview span:nth-child(3n) { background: #79a4e8; }
       .led-preview span:nth-child(4n) { background: #aca0df; }
-      .color-control { display: flex; align-items: center; gap: 9px; }
-      .color-label { color: var(--muted); font-size: 11px; }
-
-      .version-info-container { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; margin-bottom: 13px; }
-      .version-info { padding: 12px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel-soft); }
+      .version-info-container { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin-bottom: 13px; }
+      .version-info { min-width: 0; padding: 12px; border: 1px solid var(--line); border-radius: 7px; background: var(--surface-soft); }
       .version-label { color: var(--muted); font-size: 10px; }
-      .version-value { display: block; margin-top: 4px; color: var(--accent); font-family: var(--mono); font-size: 12px; font-weight: 650; word-break: break-all; }
+      .version-value { display: block; margin-top: 4px; overflow-wrap: anywhere; color: var(--blue); font-family: var(--mono); font-size: 12px; font-weight: 700; }
       .version-value.loading { color: var(--muted); }
       .version-value.error { color: var(--red); }
-      .download-notice { margin-top: 12px; padding: 9px 10px; border-left: 2px solid var(--yellow); color: var(--muted); background: rgba(244,189,84,0.07); font-size: 10px; }
-      .download-notice strong { color: var(--yellow); }
+      .download-notice { margin-top: 12px; padding: 9px 10px; border-left: 2px solid var(--orange); color: var(--muted); background: rgba(244,189,84,0.08); font-size: 10px; }
+      .download-notice strong { color: var(--orange); }
       .file-input-wrapper { position: relative; display: inline-flex; }
-      input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
-      .file-input-label { display: inline-flex; align-items: center; min-height: 32px; padding: 7px 12px; border: 1px dashed var(--line-strong); border-radius: 6px; color: var(--accent-strong); background: var(--accent-soft); font-size: 11px; font-weight: 650; }
-      .file-input-label:hover { border-color: var(--accent); background: var(--accent-soft); }
-      .selected-file { display: inline-block; margin-left: 10px; color: var(--muted); font-family: var(--mono); font-size: 10px; }
+      #FileInput { position: absolute; width: 1px; height: 1px; overflow: hidden; opacity: 0; }
+      .file-input-label { display: inline-flex; align-items: center; min-height: 32px; padding: 7px 12px; border: 1px dashed var(--line-strong); border-radius: 7px; color: var(--blue-dark); background: var(--surface-blue); font-size: 11px; font-weight: 700; }
+      .selected-file { display: inline-block; max-width: 100%; margin: 9px 0 0 10px; overflow: hidden; color: var(--muted); font-family: var(--mono); font-size: 10px; text-overflow: ellipsis; vertical-align: middle; white-space: nowrap; }
       .operation-bar { display: flex; align-items: center; justify-content: space-between; gap: 15px; }
-      .operation-actions { display: flex; flex-wrap: wrap; gap: 8px; }
       .progress-container { display: none; margin-top: 15px; }
       .progress-bar { height: 6px; overflow: hidden; border-radius: 3px; background: #e5edf9; }
-      .progress-fill { width: 0%; height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent-strong), var(--accent-light)); transition: width 160ms ease; }
+      .progress-fill { width: 0%; height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--blue-dark), var(--blue-bright)); transition: width 160ms ease; }
       .progress-text { margin-top: 7px; color: var(--muted); font-family: var(--mono); font-size: 10px; text-align: right; }
 
-      .log-drawer { margin-top: 14px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--panel); }
-      .log-drawer summary { display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; cursor: pointer; color: var(--muted); font-size: 11px; list-style: none; }
-      .log-drawer summary::-webkit-details-marker { display: none; }
-      .log-drawer summary::after { content: "+"; color: var(--accent); font-family: var(--mono); font-size: 14px; }
-      .log-drawer[open] summary::after { content: "−"; }
-      .log-hint { color: var(--faint); font-size: 10px; }
-      .log-box { display: block; width: calc(100% - 30px); min-height: 150px; margin: 0 15px 15px; padding: 11px; resize: vertical; border: 1px solid var(--line); border-radius: 6px; outline: none; color: #5d6d82; background: #f7f9fe; font-family: var(--mono); font-size: 10px; line-height: 1.6; }
-      .save-bar { position: sticky; bottom: 14px; z-index: 2; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 13px; border: 1px solid #b9cdec; border-radius: 8px; background: rgba(255,255,255,0.96); box-shadow: var(--shadow); backdrop-filter: blur(12px); }
-      .save-message { color: var(--muted); font-size: 10px; }
-      .save-message strong { color: var(--yellow); }
-      .hint-line { margin-top: 10px; color: var(--faint); font-size: 10px; }
+      .inspector-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 17px; }
+      .inspector-title { margin: 0; font-size: 14px; }
+      .inspector-card { margin-bottom: 12px; padding: 13px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); box-shadow: 0 4px 13px rgba(35,73,132,0.05); }
+      .inspector-card h3 { margin: 0 0 10px; font-size: 11px; }
+      .inspector-card p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.7; }
+      .inspector-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+      .inspector-list li { display: flex; justify-content: space-between; gap: 12px; color: var(--muted); font-size: 10px; }
+      .inspector-list strong { overflow: hidden; color: var(--ink); font-family: var(--mono); font-weight: 500; text-overflow: ellipsis; white-space: nowrap; }
+      .flow-step { display: flex; gap: 9px; padding: 6px 0; color: var(--muted); font-size: 10px; }
+      .flow-step .flow-number { width: 18px; height: 18px; flex-basis: 18px; font-size: 9px; }
+      .flow-step.current { color: var(--ink); }
+      .flow-step.current .flow-number { color: var(--blue); border-color: var(--blue); }
 
-      @media (max-width: 1600px) and (min-width: 901px) {
-        .app-body { grid-template-columns: 238px minmax(0, 1fr); }
+      @media (max-width: 1320px) {
+        .app-body { grid-template-columns: 220px minmax(0, 1fr); }
         .inspector { display: none; }
       }
-
-      @media (max-width: 1200px) and (min-width: 901px) {
-        .workspace-grid { grid-template-columns: minmax(0, 1fr); }
-      }
-
-      @media (max-width: 1240px) {
-        body { min-width: 900px; }
-        .app-body { grid-template-columns: 210px minmax(580px, 1fr); }
-        .inspector { display: none; }
+      @media (max-width: 1180px) and (min-width: 901px) {
+        .app-topbar { padding-left: 18px; padding-right: 18px; }
+        .topbar-context { display: none; }
+        .tab-content { padding-left: 24px; padding-right: 24px; }
+        .workspace-grid { grid-template-columns: 1fr; }
       }
       @media (max-width: 900px) {
-        body { min-width: 0; }
-        .app-body { display: block; }
-        .app-topbar { padding: 0 14px; }
-        .topbar-context, .topbar-chip { display: none; }
+        .picker-header { flex-direction: column; }
+        .picker-meta { text-align: left; }
+        .device-choice-grid { grid-template-columns: 1fr; }
+        .picker-footer { align-items: stretch; flex-direction: column; }
+        .picker-footer .button-group { justify-content: stretch; }
+        .picker-footer button { flex: 1; }
+        .app-topbar { align-items: flex-start; flex-wrap: wrap; padding: 12px 15px; }
+        .topbar-brand { min-width: 0; }
+        .topbar-context { display: none; }
+        .topbar-actions { min-width: 0; margin-left: auto; }
+        .topbar-chip { display: none; }
+        .app-body { display: block; min-height: 0; }
         .sidebar { border-right: 0; border-bottom: 1px solid var(--line); padding: 10px; }
-        .sidebar-heading, .nav-group-label, .sidebar-footer { display: none; }
+        .sidebar-kicker, .sidebar-device, .nav-group-label, .sidebar-footer { display: none; }
         .nav-group { margin: 0; }
-        .tab-nav { display: flex; overflow-x: auto; }
-        .tab-button { min-width: 150px; }
-        .tab-button.active::before { left: 8px; right: 8px; bottom: -10px; top: auto; width: auto; height: 2px; }
+        .tab-nav { display: flex; overflow-x: auto; gap: 4px; }
+        .tab-button { min-width: 145px; }
+        .tab-button.active::before { top: auto; right: 8px; bottom: -10px; left: 8px; width: auto; height: 2px; }
         .tab-button .nav-description, .tab-button .nav-badge { display: none; }
         .tab-content { padding: 22px 15px 30px; }
         .page-head, .connection-row, .operation-bar { align-items: flex-start; flex-direction: column; }
+        .page-meta { padding-top: 0; }
         .connection-actions { justify-content: flex-start; }
-        .workspace-grid, .card-grid { grid-template-columns: 1fr; }
+        .workspace-grid { grid-template-columns: 1fr; }
         .joystick-layout { grid-template-columns: 1fr; }
-        .joystick-area { width: 190px; height: 190px; }
-        .save-bar { position: static; flex-direction: column; align-items: stretch; }
-        .setting-row:has(#InputModeSelect) { align-items: flex-start; flex-direction: column; }
-        .setting-row:has(#InputModeSelect) .setting-label { flex-basis: auto; }
-        .setting-row:has(#InputModeSelect) .setting-help { white-space: normal; }
-        .setting-row:has(#InputModeSelect) .button-group { flex-wrap: wrap; }
+        .save-bar { position: static; align-items: flex-start; flex-direction: column; }
+      }
+      @media (max-width: 620px) {
+        .device-picker { padding: 18px 13px; }
+        .picker-card { margin-top: 20px; padding: 20px 16px; }
+        .flow-strip { grid-template-columns: 1fr; gap: 7px; margin: 22px 0; }
+        .flow-node { min-height: 42px; }
+        .device-choice { grid-template-columns: 38px minmax(0, 1fr); padding: 13px; }
+        .choice-icon { width: 38px; height: 38px; }
+        .choice-transport { grid-column: 2; }
+        .picker-footer { margin-top: 20px; }
+        .topbar-action { font-size: 10px; }
+        .topbar-brand .brand-subtitle { display: none; }
+        .tab-content { padding-right: 12px; padding-left: 12px; }
+        .card-header, .card-body { padding-right: 14px; padding-left: 14px; }
+        .metric-row, .version-info-container, .coin-info, .data-grid { grid-template-columns: 1fr; }
+        .setting-row { align-items: stretch; flex-direction: column; gap: 9px; }
+        .setting-row .button-group { justify-content: flex-start; }
+      .setting-row:has(select) .button-group { display: grid; grid-template-columns: minmax(0, 1fr); }
+      .setting-row:has(select) select { width: 100%; }
+        .panel-row { flex-wrap: wrap; }
+        .panel-spacer, .panel-spacer-large { display: none; }
+        .joystick-area { width: min(210px, 70vw); height: min(210px, 70vw); }
+        .selected-file { display: block; margin-left: 0; }
       }
     </style>
   </head>
-  <body data-theme="blue" data-active-tab="config">
-    <div class="app-shell">
+  <body data-theme="blue" data-active-tab="config" data-session="selecting">
+    <section class="mobile-unsupported" id="mobile-unsupported" hidden>
+      <div class="mobile-unsupported-card">
+        <div class="brand-mark">SG</div>
+        <h1>请使用电脑浏览器访问</h1>
+        <p>SimGEKI 控制中心需要 Web HID / Web Serial 访问 USB 设备。手机浏览器无法完成设备连接，请在支持 USB 的电脑上使用 Chrome 或 Edge 打开本页面。</p>
+        <div class="capability-list"><a href="https://sim.bysb.net" target="_blank" rel="noopener noreferrer">查看 Wiki</a><a href="https://github.com/SimDevices-Project/SimGEKI-WebControl" target="_blank" rel="noopener noreferrer">Github</a></div>
+      </div>
+    </section>
+    <section class="device-picker" id="device-picker" aria-labelledby="picker-title">
+      <div class="picker-frame">
+        <header class="picker-header">
+          <div class="brand-lockup">
+            <div class="brand-mark">SG</div>
+            <div>
+              <div class="brand-title">SimGEKI 控制中心</div>
+              <div class="brand-subtitle">USB 驱动与设备诊断工作台</div>
+            </div>
+          </div>
+          <div class="picker-meta"><strong>DEVICE WORKSPACE</strong>LOCAL / WEB HID + WEB SERIAL</div>
+        </header>
+
+        <main class="picker-card">
+          <div class="picker-intro">
+            <div class="eyebrow">SETUP SESSION / DEVICE SELECT</div>
+            <h1 class="picker-title" id="picker-title">先选择操作设备，再连接硬件</h1>
+            <p class="picker-description">SimGEKI 可能同时连接主控、读卡器和灯板。先指定要操作的通道，确认后再打开浏览器设备授权，可以避免选错设备。</p>
+          </div>
+
+          <div class="flow-strip" aria-label="设备连接流程">
+            <div class="flow-node is-active"><span class="flow-number">1</span><span class="flow-copy"><strong>选择设备</strong><span>指定操作通道</span></span></div>
+            <div class="flow-node"><span class="flow-number">2</span><span class="flow-copy"><strong>连接设备</strong><span>打开 HID / Serial 授权</span></span></div>
+            <div class="flow-node"><span class="flow-number">3</span><span class="flow-copy"><strong>进入工作区</strong><span>执行诊断与维护</span></span></div>
+          </div>
+
+          <div class="device-choice-grid" role="listbox" aria-label="选择设备工作区">
+            <button class="device-choice is-selected" type="button" data-device-role="config" aria-pressed="true">
+              <span class="choice-icon">⌘</span><span class="choice-copy"><span class="choice-title">主控配置通道</span><span class="choice-description">摇杆校准、输入模式与设备参数</span></span><span class="choice-transport">HID / 0xAA</span>
+            </button>
+            <button class="device-choice" type="button" data-device-role="inputtest" aria-pressed="false">
+              <span class="choice-icon">⌁</span><span class="choice-copy"><span class="choice-title">主控输入通道</span><span class="choice-description">摇杆、按键矩阵与投币器诊断</span></span><span class="choice-transport">HID INPUT</span>
+            </button>
+            <button class="device-choice" type="button" data-device-role="cardreader" aria-pressed="false">
+              <span class="choice-icon">▣</span><span class="choice-copy"><span class="choice-title">读卡器</span><span class="choice-description">读取卡片 UID、固件与板卡信息</span></span><span class="choice-transport">CDC / 115200</span>
+            </button>
+            <button class="device-choice" type="button" data-device-role="ledboard" aria-pressed="false">
+              <span class="choice-icon">✦</span><span class="choice-copy"><span class="choice-title">灯板</span><span class="choice-description">查看板卡信息并测试 RGB 分区</span></span><span class="choice-transport">CDC / RGB</span>
+            </button>
+            <button class="device-choice" type="button" data-device-role="firmware" aria-pressed="false">
+              <span class="choice-icon">⇧</span><span class="choice-copy"><span class="choice-title">固件维护通道</span><span class="choice-description">下载、烧入、验证并启动设备固件</span></span><span class="choice-transport">HID / IAP</span>
+            </button>
+          </div>
+
+          <div class="picker-footer">
+            <div class="picker-selected">
+              <span class="picker-selected-pill" id="picker-selected-pill">已选择 · 主控配置通道</span>
+              <strong class="picker-selected-name" id="picker-selected-name">主控配置通道</strong>
+              <span class="picker-selected-detail"><span id="picker-selected-description">摇杆校准、输入模式与设备参数</span> · <span class="mono" id="picker-selected-transport">Web HID · 配置报告 0xAA</span></span>
+            </div>
+            <div class="button-group">
+              <button class="btn-quiet" type="button" id="device-continue">仅进入工作台</button>
+              <button class="btn-primary" type="button" id="device-start-connect">连接 主控配置通道</button>
+            </div>
+          </div>
+        </main>
+      </div>
+    </section>
+
+    <div class="app-shell" id="app-shell" hidden>
       <header class="app-topbar">
-        <div class="brand"><div class="brand-mark">SG</div><div class="brand-copy"><div class="brand-title">SimGEKI 控制中心</div><div class="brand-subtitle">USB 驱动与设备诊断工作台</div></div></div>
-        <div class="topbar-context"><span class="context-label">工作区</span><span class="context-value">LOCAL / HARDWARE</span></div>
-        <div class="topbar-actions"><span class="topbar-chip"><span class="state-dot"></span>等待设备连接</span><span class="topbar-chip">Web HID / Serial</span></div>
+        <div class="topbar-brand">
+          <div class="brand-mark">SG</div>
+          <div><div class="brand-title">SimGEKI 控制中心</div><div class="brand-subtitle">USB 驱动与设备诊断工作台</div></div>
+        </div>
+        <div class="topbar-context"><span>当前通道</span><span class="context-divider">/</span><span class="context-value" id="active-device-name">主控配置通道</span></div>
+        <div class="topbar-actions"><span class="topbar-chip"><span class="topbar-dot"></span>设备连接独立管理</span><button class="topbar-action" type="button" id="open-device-picker">切换设备</button></div>
       </header>
 
       <div class="app-body">
         <aside class="sidebar">
-          <div class="sidebar-heading">设备工作区</div>
+          <div class="sidebar-kicker">设备工作区</div>
+          <div class="sidebar-device"><div class="sidebar-device-icon">⌘</div><div class="sidebar-device-copy"><div class="sidebar-device-name" id="sidebar-selected-name">主控配置通道</div><div class="sidebar-device-transport" id="sidebar-selected-transport">Web HID · 配置报告 0xAA</div></div></div>
           <div class="nav-group"><div class="nav-group-label">主控设备</div><nav class="tab-nav" aria-label="主控设备功能">
             <button class="tab-button active" type="button" data-tab="config" role="tab" aria-selected="true"><span class="nav-icon">⌘</span><span class="nav-copy"><span class="nav-title">配置中心</span><span class="nav-description">设备参数与校准</span></span><span class="nav-badge">01</span></button>
             <button class="tab-button" type="button" data-tab="inputtest" role="tab" aria-selected="false"><span class="nav-icon">⌁</span><span class="nav-copy"><span class="nav-title">输入诊断</span><span class="nav-description">摇杆、按键与投币</span></span><span class="nav-badge">02</span></button>
@@ -346,67 +650,69 @@
           <div class="nav-group"><div class="nav-group-label">维护工具</div><nav class="tab-nav" aria-label="维护工具">
             <button class="tab-button" type="button" data-tab="firmware" role="tab" aria-selected="false"><span class="nav-icon">⇧</span><span class="nav-copy"><span class="nav-title">固件维护</span><span class="nav-description">下载、烧入与验证</span></span><span class="nav-badge">05</span></button>
           </nav></div>
-          <div class="sidebar-footer"><div class="section-kicker">相关入口</div><p>访问项目文档、购买页面或源码仓库，获取设备与软件的最新信息。</p><div class="capability-list"><a href="https://sim.bysb.net" target="_blank" rel="noopener noreferrer">Wiki</a><a href="https://item.taobao.com/item.htm?id=807658111168" target="_blank" rel="noopener noreferrer">购买</a><a class="github-link" href="https://github.com/SimDevices-Project/SimGEKI-WebControl" target="_blank" rel="noopener noreferrer"><svg class="github-logo" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.64 0 8.13c0 3.59 2.29 6.64 5.47 7.71.4.08.55-.18.55-.39 0-.19-.01-.83-.01-1.5-2.01.45-2.53-.5-2.69-.96-.09-.23-.48-.96-.82-1.15-.28-.16-.68-.56-.01-.57.63-.01 1.08.6 1.23.85.72 1.24 1.87.89 2.33.68.07-.53.28-.89.51-1.1-1.78-.21-3.64-.92-3.64-4.1 0-.91.32-1.65.82-2.23-.08-.2-.36-1.06.08-2.2 0 0 .67-.22 2.2.85a7.41 7.41 0 0 1 4 0c1.53-1.07 2.2-.85 2.2-.85.44 1.14.16 2 .08 2.2.51.58.82 1.32.82 2.23 0 3.19-1.87 3.89-3.65 4.1.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.47.55.39A8.13 8.13 0 0 0 16 8.13C16 3.64 12.42 0 8 0Z" /></svg>Github</a></div></div>
+          <div class="sidebar-footer"><div class="section-kicker">相关入口</div><p>访问项目文档、购买页面或源码仓库，获取设备与软件的最新信息。</p><div class="capability-list"><a href="https://sim.bysb.net" target="_blank" rel="noopener noreferrer">Wiki</a><a href="https://item.taobao.com/item.htm?id=807658111168" target="_blank" rel="noopener noreferrer">购买</a><a class="github-link" href="https://github.com/SimDevices-Project/SimGEKI-WebControl" target="_blank" rel="noopener noreferrer">Github</a></div></div>
         </aside>
 
         <main class="workspace"><div class="tab-container">
           <section class="tab-content active" id="config-tab" role="tabpanel">
-            <div class="page-head"><div><div class="eyebrow">MAIN DEVICE / CONFIGURATION</div><h1 class="page-title">设备配置中心</h1><p class="page-description">连接主控设备，校准摇杆并管理输入模式。修改后的参数需要明确保存，避免误操作直接写入设备。</p></div><div class="page-meta"><span class="state-dot"></span><span class="page-meta-text">未连接主控设备</span></div></div>
+            <div class="page-head"><div><div class="eyebrow">MAIN DEVICE / CONFIGURATION</div><h1 class="page-title">设备配置中心</h1><p class="page-description">连接主控设备，校准摇杆并管理输入及读卡模式。配置不会自动写入设备，完成检查后再保存。</p></div><div class="page-meta"><span class="state-dot"></span><span>未连接主控设备</span></div></div>
             <div class="card connection-card"><div class="card-body"><div class="connection-row"><div class="device-identity"><div class="device-avatar">⌘</div><div><div class="device-name">主控设备 / SimGEKI</div><div class="device-caption">HID 配置通道 · <code>VID 0x8088 / PID 0x00FE</code></div></div></div><div class="connection-actions"><input class="btn-primary" type="button" value="连接主控设备" id="ConnectConfigDevice" /></div></div><ul id="ConfigConnectedList" class="connected-list"></ul><div id="ConfigConnectionStatus" class="status"></div></div></div>
             <div class="metric-row"><div class="metric"><div class="metric-label">连接状态</div><div class="metric-value" id="config-state-value">OFFLINE</div></div><div class="metric"><div class="metric-label">配置通道</div><div class="metric-value accent">HID / 0xAA</div></div><div class="metric"><div class="metric-label">保存策略</div><div class="metric-value good">手动提交</div></div></div>
             <div class="workspace-grid"><div>
-              <div class="card"><div class="card-header"><div class="card-heading"><span class="card-icon">◉</span><div><h2 class="card-title">摇杆与输入模式</h2><p class="card-subtitle">先读取当前值，再进行校准或模式切换。</p></div></div><span class="button-note">配置项 01</span></div><div class="card-body">
+              <div class="card"><div class="card-header"><div class="card-heading"><span class="workspace-icon">◉</span><div><h2 class="card-title">摇杆与工作模式</h2><p class="card-subtitle">先读取当前值，再进行校准或模式切换。</p></div></div><span class="button-note">配置项 01</span></div><div class="card-body">
                 <div class="setting-row"><div class="setting-label"><span class="setting-title">摇杆校准</span><span class="setting-help">将当前位置设为设备参考中心</span></div><div class="button-group"><input type="button" value="校准摇杆" id="ResetLeverBtn" /><input type="button" value="读取摇杆信息" id="ReadLeverInfoBtn" /></div></div>
                 <div class="setting-row"><div class="setting-label"><span class="setting-title">输入模式</span><span class="setting-help">决定主控设备向上层输出的协议</span></div><div class="button-group"><select id="InputModeSelect" aria-label="输入模式"><option value="0">未知</option><option value="1">IO4兼容</option><option value="2">DLL输入</option><option value="3">模拟键盘</option></select><input type="button" value="读取当前模式" id="ReadInputModeBtn" /><input class="btn-primary" type="button" value="应用模式" id="SetInputModeBtn" /></div></div>
+                <div class="setting-row"><div class="setting-label"><span class="setting-title">真实卡号读取</span><span class="setting-help">在设备本地读取 Amusement IC 卡真实卡号</span></div><div class="button-group"><select id="CardModeSelect" aria-label="真实卡号读取模式"><option value="0">关闭（标准读卡流程）</option><option value="1">开启（本地读取卡号）</option></select><input type="button" value="读取当前设置" id="ReadCardModeBtn" /><input class="btn-primary" type="button" value="应用设置" id="SetCardModeBtn" /></div></div>
                 <div id="ConfigOperationStatus" class="status"></div>
               </div></div>
-              <div class="card"><div class="card-header"><div class="card-heading"><span class="card-icon">✦</span><div><h2 class="card-title">调试工具</h2><p class="card-subtitle">实时查看摇杆变化并触发灯光检查。</p></div></div><span class="button-note">辅助功能</span></div><div class="card-body"><div class="setting-row"><div class="setting-label"><span class="setting-title">摇杆实时监控</span><span class="setting-help">持续读取设备当前处理值</span></div><input type="button" value="开启实时监控" id="ToggleMonitorBtn" /></div><div class="setting-row"><div class="setting-label"><span class="setting-title">灯光测试</span><span class="setting-help">向主控发送一次灯光测试命令</span></div><input type="button" value="运行灯光测试" id="LightTestBtn" /></div></div></div>
+              <div class="card"><div class="card-header"><div class="card-heading"><span class="workspace-icon">✦</span><div><h2 class="card-title">调试工具</h2><p class="card-subtitle">实时查看摇杆变化并触发灯光检查。</p></div></div><span class="button-note">辅助功能</span></div><div class="card-body"><div class="setting-row"><div class="setting-label"><span class="setting-title">摇杆实时监控</span><span class="setting-help">持续读取设备当前处理值</span></div><input type="button" value="开启实时监控" id="ToggleMonitorBtn" /></div><div class="setting-row"><div class="setting-label"><span class="setting-title">灯光测试</span><span class="setting-help">向主控发送一次灯光测试命令</span></div><input type="button" value="运行灯光测试" id="LightTestBtn" /></div></div></div>
             </div><div>
-              <div class="card"><div class="card-header"><div class="card-heading"><span class="card-icon">▤</span><div><h2 class="card-title">设备检查器</h2><p class="card-subtitle">读取数据后在此查看原始值与偏移。</p></div></div></div><div class="card-body"><div id="DeviceStatus" class="device-status">未连接设备<br /><span class="hint-line">连接后点击“读取摇杆信息”查看设备数据。</span></div></div></div>
-              <div class="save-bar"><div class="save-message"><strong>未保存的更改</strong><br />保存前请确认输入模式与校准值。</div><div class="button-group"><input class="btn-quiet" type="button" value="放弃更改" id="CancelConfigBtn" /><input class="btn-primary" type="button" value="保存配置" id="SaveConfigBtn" /></div></div>
+              <div class="card"><div class="card-header"><div class="card-heading"><span class="workspace-icon">▤</span><div><h2 class="card-title">设备检查器</h2><p class="card-subtitle">读取数据后在此查看原始值与偏移。</p></div></div></div><div class="card-body"><div id="DeviceStatus" class="device-status">未连接设备<br /><span>连接后点击“读取摇杆信息”查看设备数据。</span></div></div></div>
+              <div class="save-bar"><div class="save-message"><strong>未保存的更改</strong><br />保存前请确认工作模式与校准值。</div><div class="button-group"><input class="btn-quiet" type="button" value="放弃更改" id="CancelConfigBtn" /><input class="btn-primary" type="button" value="保存配置" id="SaveConfigBtn" /></div></div>
             </div></div>
             <details class="log-drawer"><summary><span>配置通信日志</span><span class="log-hint">默认折叠 · 调试时展开</span></summary><textarea id="ConfigLogBox" class="log-box" readonly></textarea></details>
           </section>
 
           <section class="tab-content" id="inputtest-tab" role="tabpanel">
-            <div class="page-head"><div><div class="eyebrow">MAIN DEVICE / INPUT DIAGNOSTICS</div><h1 class="page-title">输入诊断</h1><p class="page-description">像检查街机控制面板一样逐项确认摇杆、按钮和投币器的输入状态。</p></div><div class="page-meta"><span class="state-dot"></span><span class="page-meta-text">测试未启动</span></div></div>
+            <div class="page-head"><div><div class="eyebrow">MAIN DEVICE / INPUT DIAGNOSTICS</div><h1 class="page-title">输入诊断</h1><p class="page-description">像检查街机控制面板一样逐项确认摇杆、按钮和投币器的输入状态。</p></div><div class="page-meta"><span class="state-dot"></span><span>测试未启动</span></div></div>
             <div class="card connection-card"><div class="card-body"><div class="connection-row"><div class="device-identity"><div class="device-avatar">⌁</div><div><div class="device-name">输入测试通道</div><div class="device-caption">读取主控原始输入报告 · <code>HID input report</code></div></div></div><div class="connection-actions"><input class="btn-primary" type="button" value="连接测试设备" id="ConnectInputTestDevice" /><input class="btn-danger" type="button" value="停止测试" id="StopInputTestBtn" /></div></div><ul id="InputTestConnectedList" class="connected-list"></ul><div id="InputTestConnectionStatus" class="status"></div></div></div>
-            <div class="card"><div class="card-header"><div class="card-heading"><span class="card-icon">◌</span><div><h2 class="card-title">测试控制台</h2><p class="card-subtitle">启动后会持续显示设备上报的输入变化。</p></div></div><input class="btn-success" type="button" value="开始输入测试" id="StartInputTestBtn" /></div><div class="card-body"><div id="InputTestStatus" class="status"></div><div class="joystick-layout"><div class="joystick-area"><div class="joystick-crosshair"></div><div class="joystick-dot" id="JoystickDot"></div></div><div class="joystick-values"><div class="joystick-value-row"><span class="value-label">处理值 / X</span><span class="value-text" id="JoystickX">32768 (0x8000)</span></div><div class="joystick-value-row"><span class="value-label">Y 轴</span><span class="value-text" id="JoystickY">- (无Y轴)</span></div><div class="joystick-value-row"><span class="value-label">原始值</span><span class="value-text" id="JoystickRaw">32768 (0x8000)</span></div><div id="RawInputStatus" class="raw-input-status">等待输入报告…</div></div></div></div></div>
-            <div class="card"><div class="card-header"><div class="card-heading"><span class="card-icon">▦</span><div><h2 class="card-title">按键矩阵</h2><p class="card-subtitle">按下设备按钮时，对应按键会高亮。</p></div></div><span class="button-note">12 inputs</span></div><div class="card-body"><div class="arcade-panel"><div class="panel-row"><div class="arcade-button coin-btn" id="btn-Test">Test</div><div class="arcade-button coin-btn" id="btn-Service">Service</div><div class="panel-spacer-large"></div><div class="arcade-button" id="btn-LMenu">LMenu</div><div class="arcade-button" id="btn-RMenu">RMenu</div></div><div class="panel-row"><div class="arcade-button side-btn" id="btn-LSide">LSide</div><div class="arcade-button main-btn" id="btn-LA">LA</div><div class="arcade-button main-btn" id="btn-LB">LB</div><div class="arcade-button main-btn" id="btn-LC">LC</div><div class="panel-spacer"></div><div class="arcade-button main-btn" id="btn-RA">RA</div><div class="arcade-button main-btn" id="btn-RB">RB</div><div class="arcade-button main-btn" id="btn-RC">RC</div><div class="arcade-button side-btn" id="btn-RSide">RSide</div></div></div><div class="coin-info"><div class="coin-row"><span class="coin-label">投币器 1</span><span class="coin-status" id="Coin1Condition">-</span><span class="coin-count">计数 <span id="Coin1Count">0</span></span></div><div class="coin-row"><span class="coin-label">投币器 2</span><span class="coin-status" id="Coin2Condition">-</span><span class="coin-count">计数 <span id="Coin2Count">0</span></span></div></div></div></div>
+            <div class="card"><div class="card-header"><div class="card-heading"><span class="workspace-icon">◌</span><div><h2 class="card-title">测试控制台</h2><p class="card-subtitle">启动后会持续显示设备上报的输入变化。</p></div></div><input class="btn-success" type="button" value="开始输入测试" id="StartInputTestBtn" /></div><div class="card-body"><div id="InputTestStatus" class="status"></div><div class="joystick-layout"><div class="joystick-area"><div class="joystick-crosshair"></div><div class="joystick-dot" id="JoystickDot"></div></div><div class="joystick-values"><div class="joystick-value-row"><span class="value-label">处理值 / X</span><span class="value-text" id="JoystickX">32768 (0x8000)</span></div><div class="joystick-value-row"><span class="value-label">Y 轴</span><span class="value-text" id="JoystickY">- (无Y轴)</span></div><div class="joystick-value-row"><span class="value-label">原始值</span><span class="value-text" id="JoystickRaw">32768 (0x8000)</span></div><div id="RawInputStatus" class="raw-input-status">等待输入报告…</div></div></div></div></div>
+            <div class="card"><div class="card-header"><div class="card-heading"><span class="workspace-icon">▦</span><div><h2 class="card-title">按键矩阵</h2><p class="card-subtitle">按下设备按钮时，对应按键会高亮。</p></div></div><span class="button-note">12 inputs</span></div><div class="card-body"><div class="arcade-panel"><div class="panel-row"><div class="arcade-button coin-btn" id="btn-Test">Test</div><div class="arcade-button coin-btn" id="btn-Service">Service</div><div class="panel-spacer-large"></div><div class="arcade-button" id="btn-LMenu">LMenu</div><div class="arcade-button" id="btn-RMenu">RMenu</div></div><div class="panel-row"><div class="arcade-button side-btn" id="btn-LSide">LSide</div><div class="arcade-button main-btn" id="btn-LA">LA</div><div class="arcade-button main-btn" id="btn-LB">LB</div><div class="arcade-button main-btn" id="btn-LC">LC</div><div class="panel-spacer"></div><div class="arcade-button main-btn" id="btn-RA">RA</div><div class="arcade-button main-btn" id="btn-RB">RB</div><div class="arcade-button main-btn" id="btn-RC">RC</div><div class="arcade-button side-btn" id="btn-RSide">RSide</div></div></div><div class="coin-info"><div class="coin-row"><span class="coin-label">投币器 1</span><span class="coin-status" id="Coin1Condition">-</span><span class="coin-count">计数 <span id="Coin1Count">0</span></span></div><div class="coin-row"><span class="coin-label">投币器 2</span><span class="coin-status" id="Coin2Condition">-</span><span class="coin-count">计数 <span id="Coin2Count">0</span></span></div></div></div></div>
             <details class="log-drawer"><summary><span>输入报告日志</span><span class="log-hint">原始报文与状态信息</span></summary><textarea id="InputTestLogBox" class="log-box" readonly></textarea><div id="RawButtons" class="hint-line" style="padding: 0 15px 15px;"></div></details>
           </section>
 
           <section class="tab-content" id="cardreader-tab" role="tabpanel">
-            <div class="page-head"><div><div class="eyebrow">EXTENSION / CARD READER</div><h1 class="page-title">读卡器</h1><p class="page-description">连接 Web Serial 读卡器，读取板卡信息、管理轮询并确认卡片 UID。</p></div><div class="page-meta"><span class="state-dot"></span><span class="page-meta-text">读卡器未连接</span></div></div>
+            <div class="page-head"><div><div class="eyebrow">EXTENSION / CARD READER</div><h1 class="page-title">读卡器</h1><p class="page-description">连接 Web Serial 读卡器，读取板卡信息、管理轮询并确认卡片 UID。</p></div><div class="page-meta"><span class="state-dot"></span><span>读卡器未连接</span></div></div>
             <div class="card connection-card"><div class="card-body"><div class="connection-row"><div class="device-identity"><div class="device-avatar">▣</div><div><div class="device-name">NFC / IC 读卡器</div><div class="device-caption">USB CDC 串口 · <code>VID 0x0CA3 / PID 0x0021</code> · 115200 baud</div></div></div><div class="connection-actions"><input class="btn-primary" type="button" value="连接读卡器" id="ConnectCardReader" /><input class="btn-danger" type="button" value="断开连接" id="DisconnectCardReader" /></div></div><div id="CardReaderConnectionStatus" class="status"></div></div></div>
-            <div class="workspace-grid"><div><div class="card"><div class="card-header"><div class="card-heading"><span class="card-icon">▤</span><div><h2 class="card-title">读卡器信息</h2><p class="card-subtitle">查询硬件、固件和当前串口状态。</p></div></div></div><div class="card-body"><div id="CardReaderDeviceStatus" class="device-status">未连接设备</div><div class="button-group" style="margin-top: 12px;"><input type="button" value="读取固件版本" id="GetCardFWVersion" /><input type="button" value="读取硬件版本" id="GetCardHWVersion" /><input type="button" value="读取设备信息" id="GetCardBoardInfo" /></div></div></div><div class="card"><div class="card-header"><div class="card-heading"><span class="card-icon">◎</span><div><h2 class="card-title">轮询与检测</h2><p class="card-subtitle">轮询会每 200ms 发送一次检测请求。</p></div></div><span class="button-note" id="CardPollingStatus">未启动</span></div><div class="card-body"><div class="button-group"><input class="btn-success" type="button" value="开始轮询" id="StartCardPolling" /><input class="btn-danger" type="button" value="停止轮询" id="StopCardPolling" /><input type="button" value="单次检测" id="DetectCard" /></div><div class="data-grid" style="margin-top: 13px;"><div class="data-item"><span class="data-label">卡片类型</span><span class="data-value emphasis" id="CardType">-</span></div><div class="data-item"><span class="data-label">卡片 UID / IDm</span><span class="data-value emphasis" id="CardUID">-</span></div></div><div id="CardReaderOperationStatus" class="status"></div></div></div></div><div><div class="card"><div class="card-header"><div class="card-heading"><span class="card-icon">●</span><div><h2 class="card-title">读卡器 LED</h2><p class="card-subtitle">设置外壳指示灯颜色。</p></div></div></div><div class="card-body"><div class="color-control"><input type="color" id="CardLEDColor" value="#48c8ff" /><span class="color-label">当前颜色</span><input type="button" value="应用颜色" id="SetCardLED" /></div></div></div><div class="inspector-card"><h3>操作顺序</h3><div class="flow-step current"><span class="flow-number">1</span><span>连接读卡器并进入正常模式</span></div><div class="flow-step"><span class="flow-number">2</span><span>读取板卡信息确认通信</span></div><div class="flow-step"><span class="flow-number">3</span><span>按需启动轮询或单次检测</span></div></div></div></div>
+            <div class="workspace-grid"><div><div class="card"><div class="card-header"><div class="card-heading"><span class="workspace-icon">▤</span><div><h2 class="card-title">读卡器信息</h2><p class="card-subtitle">查询硬件、固件和当前串口状态。</p></div></div></div><div class="card-body"><div id="CardReaderDeviceStatus" class="device-status">未连接设备</div><div class="button-group" style="margin-top: 12px;"><input type="button" value="读取固件版本" id="GetCardFWVersion" /><input type="button" value="读取硬件版本" id="GetCardHWVersion" /><input type="button" value="读取设备信息" id="GetCardBoardInfo" /></div></div></div><div class="card"><div class="card-header"><div class="card-heading"><span class="workspace-icon">◎</span><div><h2 class="card-title">轮询与检测</h2><p class="card-subtitle">轮询会每 200ms 发送一次检测请求。</p></div></div><span class="button-note" id="CardPollingStatus">未启动</span></div><div class="card-body"><div class="button-group"><input class="btn-success" type="button" value="开始轮询" id="StartCardPolling" /><input class="btn-danger" type="button" value="停止轮询" id="StopCardPolling" /><input type="button" value="单次检测" id="DetectCard" /></div><div class="data-grid"><div class="data-item"><span class="data-label">卡片类型</span><span class="data-value emphasis" id="CardType">-</span></div><div class="data-item"><span class="data-label">卡片 UID / IDm</span><span class="data-value emphasis" id="CardUID">-</span></div></div><div id="CardReaderOperationStatus" class="status"></div></div></div></div><div><div class="card color-picker-card"><div class="card-header"><div class="card-heading"><span class="workspace-icon">●</span><div><h2 class="card-title">读卡器 LED</h2><p class="card-subtitle">设置外壳指示灯颜色。</p></div></div></div><div class="card-body"><div class="color-control color-picker-shell"><button class="color-picker-trigger" type="button" aria-haspopup="dialog" aria-expanded="false"><span class="color-picker-trigger-swatch"></span><span class="color-picker-trigger-value">#48C8FF</span><span class="color-picker-trigger-chevron">⌄</span></button><span id="CardLEDColorPicker"></span><input class="native-color-input" type="color" id="CardLEDColor" value="#48c8ff" aria-hidden="true" tabindex="-1" /><span class="color-label">当前颜色</span><input type="button" value="应用颜色" id="SetCardLED" /></div></div></div><div class="inspector-card"><h3>操作顺序</h3><div class="flow-step current"><span class="flow-number">1</span><span>连接读卡器并进入正常模式</span></div><div class="flow-step"><span class="flow-number">2</span><span>读取板卡信息确认通信</span></div><div class="flow-step"><span class="flow-number">3</span><span>按需启动轮询或单次检测</span></div></div></div></div>
             <details class="log-drawer"><summary><span>读卡器通信日志</span><span class="log-hint">串口帧与响应</span></summary><textarea id="CardReaderLogBox" class="log-box" readonly></textarea></details>
           </section>
 
           <section class="tab-content" id="ledboard-tab" role="tabpanel">
-            <div class="page-head"><div><div class="eyebrow">EXTENSION / LED BOARD</div><h1 class="page-title">灯板控制</h1><p class="page-description">单独连接灯板，查询板卡信息并对整板、左侧键或右侧键进行分区点亮。</p></div><div class="page-meta"><span class="state-dot"></span><span class="page-meta-text">灯板未连接</span></div></div>
+            <div class="page-head"><div><div class="eyebrow">EXTENSION / LED BOARD</div><h1 class="page-title">灯板控制</h1><p class="page-description">单独连接灯板，查询板卡信息并对整板、左侧键或右侧键进行分区点亮。</p></div><div class="page-meta"><span class="state-dot"></span><span>灯板未连接</span></div></div>
             <div class="card connection-card"><div class="card-body"><div class="connection-row"><div class="device-identity"><div class="device-avatar">✦</div><div><div class="device-name">扩展灯板</div><div class="device-caption">USB CDC 串口 · <code>RGB direct / 183 bytes</code></div></div></div><div class="connection-actions"><input class="btn-primary" type="button" value="连接灯板" id="ConnectLedBoard" /><input class="btn-danger" type="button" value="断开连接" id="DisconnectLedBoard" /></div></div><div id="LedBoardConnectionStatus" class="status"></div></div></div>
-            <div class="workspace-grid"><div><div class="card"><div class="card-header"><div class="card-heading"><span class="card-icon">▤</span><div><h2 class="card-title">灯板信息</h2><p class="card-subtitle">确认型号与修订号，排查串口通信。</p></div></div><input type="button" value="读取设备信息" id="GetLedBoardInfo" /></div><div class="card-body"><div id="LedBoardDeviceStatus" class="device-status">未连接设备</div></div></div><div class="card"><div class="card-header"><div class="card-heading"><span class="card-icon">◈</span><div><h2 class="card-title">颜色分区</h2><p class="card-subtitle">颜色指令发送后设备不会回复确认帧。</p></div></div><div class="color-control"><input type="color" id="LedBoardColor" value="#48c8ff" /></div></div><div class="card-body"><div class="led-preview" aria-label="灯板预览">
-                <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-                <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-                <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
-              </div><div class="button-group"><input class="btn-primary" type="button" value="整板应用" id="SetLedWholeBoard" /><input type="button" value="左侧键" id="SetLedLeftKeys" /><input type="button" value="右侧键" id="SetLedRightKeys" /><input class="btn-quiet" type="button" value="重置灯板" id="ResetLedBoard" /></div><div id="LedBoardOperationStatus" class="status"></div></div></div></div><div><div class="inspector-card"><h3>分区说明</h3><ul class="inspector-list"><li><span>整板</span><strong>183 bytes</strong></li><li><span>左侧键</span><strong>前 6 bytes</strong></li><li><span>右侧键</span><strong>后 6 bytes</strong></li><li><span>协议</span><strong>RGB direct</strong></li></ul></div><div class="inspector-card"><h3>提示</h3><p>左、右侧按键操作会保留其他区域上一次的颜色状态。需要清空全部状态时使用“重置灯板”。</p></div></div></div>
+            <div class="workspace-grid"><div><div class="card"><div class="card-header"><div class="card-heading"><span class="workspace-icon">▤</span><div><h2 class="card-title">灯板信息</h2><p class="card-subtitle">确认型号与修订号，排查串口通信。</p></div></div><input type="button" value="读取设备信息" id="GetLedBoardInfo" /></div><div class="card-body"><div id="LedBoardDeviceStatus" class="device-status">未连接设备</div></div></div><div class="card color-picker-card"><div class="card-header"><div class="card-heading"><span class="workspace-icon">◈</span><div><h2 class="card-title">颜色分区</h2><p class="card-subtitle">颜色指令发送后设备不会回复确认帧。</p></div></div><div class="color-control color-picker-shell"><button class="color-picker-trigger" type="button" aria-haspopup="dialog" aria-expanded="false"><span class="color-picker-trigger-swatch"></span><span class="color-picker-trigger-value">#48C8FF</span><span class="color-picker-trigger-chevron">⌄</span></button><span id="LedBoardColorPicker"></span><input class="native-color-input" type="color" id="LedBoardColor" value="#48c8ff" aria-hidden="true" tabindex="-1" /></div></div><div class="card-body"><div class="led-preview" aria-label="灯板预览"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div><div class="button-group"><input class="btn-primary" type="button" value="整板应用" id="SetLedWholeBoard" /><input type="button" value="左侧键" id="SetLedLeftKeys" /><input type="button" value="右侧键" id="SetLedRightKeys" /><input class="btn-quiet" type="button" value="重置灯板" id="ResetLedBoard" /></div><div id="LedBoardOperationStatus" class="status"></div></div></div></div><div><div class="inspector-card"><h3>分区说明</h3><ul class="inspector-list"><li><span>整板</span><strong>183 bytes</strong></li><li><span>左侧键</span><strong>前 6 bytes</strong></li><li><span>右侧键</span><strong>后 6 bytes</strong></li><li><span>协议</span><strong>RGB direct</strong></li></ul></div><div class="inspector-card"><h3>提示</h3><p>左、右侧按键操作会保留其他区域上一次的颜色状态。需要清空全部状态时使用“重置灯板”。</p></div></div></div>
             <details class="log-drawer"><summary><span>灯板通信日志</span><span class="log-hint">串口帧与 ACK</span></summary><textarea id="LedBoardLogBox" class="log-box" readonly></textarea></details>
           </section>
 
-          <section class="tab-content" id="firmware-tab">
-            <div class="page-head"><div><div class="eyebrow">MAINTENANCE / FIRMWARE</div><h1 class="page-title">固件维护</h1><p class="page-description">选择稳定版或每日构建，准备本地固件后执行烧入、验证或跳转程序。刷写过程中请勿断开 USB。</p></div><div class="page-meta"><span class="state-dot warning"></span><span class="page-meta-text">维护模式</span></div></div>
+          <section class="tab-content" id="firmware-tab" role="tabpanel">
+            <div class="page-head"><div><div class="eyebrow">MAINTENANCE / FIRMWARE</div><h1 class="page-title">固件维护</h1><p class="page-description">选择稳定版或每日构建，准备本地固件后执行烧入、验证或跳转程序。刷写过程中请勿断开 USB。</p></div><div class="page-meta"><span class="state-dot warning"></span><span>维护模式</span></div></div>
             <div class="card connection-card"><div class="card-body"><div class="connection-row"><div class="device-identity"><div class="device-avatar">⇧</div><div><div class="device-name">IAP 固件通道</div><div class="device-caption">主控设备引导程序 · <code>REPORT ID 0xAA</code></div></div></div><div class="connection-actions"><input class="btn-primary" type="button" value="连接并初始化" id="ConnectAndInit" /></div></div><ul id="ConnectedList" class="connected-list"></ul><div id="ConnectionStatus" class="status"></div></div></div>
-            <div class="card"><div class="card-header"><div class="card-heading"><span class="card-icon">↓</span><div><h2 class="card-title">固件来源</h2><p class="card-subtitle">在线下载后会自动作为当前刷写文件。</p></div></div><span class="button-note">版本信息自动获取</span></div><div class="card-body"><div class="version-info-container"><div class="version-info" id="LatestVersionInfo"><div class="version-label">稳定版 / latest</div><span class="version-value loading" id="LatestVersion">获取中...</span></div><div class="version-info" id="NightlyVersionInfo"><div class="version-label">每日构建 / nightly</div><span class="version-value loading" id="NightlyVersion">获取中...</span></div></div><div class="button-group"><input class="btn-primary" type="button" value="下载稳定版" id="DownloadLatest" /><input type="button" value="下载每日构建" id="DownloadNightly" /></div><div id="DownloadStatus" class="status"></div><div class="download-notice"><strong>下载提示</strong> 如果浏览器拦截跨域下载，请手动保存 .bin 文件并从下方选择。</div></div></div>
-            <div class="card"><div class="card-header"><div class="card-heading"><span class="card-icon">□</span><div><h2 class="card-title">本地固件文件</h2><p class="card-subtitle">仅接受设备对应的二进制文件。</p></div></div></div><div class="card-body"><div class="file-input-wrapper"><input type="file" name="fileInput" id="FileInput" accept=".bin" /><label class="file-input-label" for="FileInput">选择 .bin 固件文件</label></div><span class="selected-file" id="SelectedFile">尚未选择文件</span></div></div>
-            <div class="card"><div class="card-header"><div class="card-heading"><span class="card-icon">⚡</span><div><h2 class="card-title">执行维护操作</h2><p class="card-subtitle">烧入会写入设备，验证用于检查完整性，跳转程序会退出 IAP。</p></div></div></div><div class="card-body"><div class="operation-bar"><div class="operation-actions"><input class="btn-primary" type="button" value="烧入固件" id="WriteFirmeware" /><input type="button" value="验证固件" id="VerifyFirmeware" /><input class="btn-success" type="button" value="跳转程序" id="RunFirmeware" /></div><span class="button-note">建议顺序：烧入 → 验证 → 跳转</span></div><div class="progress-container" id="ProgressContainer"><div class="progress-bar"><div class="progress-fill" id="ProgressFill"></div></div><div class="progress-text" id="ProgressText">0%</div></div><div id="OperationStatus" class="status"></div></div></div>
+            <div class="card"><div class="card-header"><div class="card-heading"><span class="workspace-icon">↓</span><div><h2 class="card-title">固件来源</h2><p class="card-subtitle">在线下载后会自动作为当前刷写文件。</p></div></div><span class="button-note">版本信息自动获取</span></div><div class="card-body"><div class="version-info-container"><div class="version-info"><div class="version-label">稳定版 / latest</div><span class="version-value loading" id="LatestVersion">获取中...</span></div><div class="version-info"><div class="version-label">每日构建 / nightly</div><span class="version-value loading" id="NightlyVersion">获取中...</span></div></div><div class="button-group"><input class="btn-primary" type="button" value="下载稳定版" id="DownloadLatest" /><input type="button" value="下载每日构建" id="DownloadNightly" /></div><div id="DownloadStatus" class="status"></div><div class="download-notice"><strong>下载提示</strong> 如果浏览器拦截跨域下载，请手动保存 .bin 文件并从下方选择。</div></div></div>
+            <div class="card"><div class="card-header"><div class="card-heading"><span class="workspace-icon">□</span><div><h2 class="card-title">本地固件文件</h2><p class="card-subtitle">仅接受设备对应的二进制文件。</p></div></div></div><div class="card-body"><div class="file-input-wrapper"><input type="file" name="fileInput" id="FileInput" accept=".bin" /><label class="file-input-label" for="FileInput">选择 .bin 固件文件</label></div><span class="selected-file" id="SelectedFile">尚未选择文件</span></div></div>
+            <div class="card"><div class="card-header"><div class="card-heading"><span class="workspace-icon">⚡</span><div><h2 class="card-title">执行维护操作</h2><p class="card-subtitle">烧入会写入设备，验证用于检查完整性，跳转程序会退出 IAP。</p></div></div></div><div class="card-body"><div class="operation-bar"><div class="operation-actions"><input class="btn-primary" type="button" value="烧入固件" id="WriteFirmeware" /><input type="button" value="验证固件" id="VerifyFirmeware" /><input class="btn-success" type="button" value="跳转程序" id="RunFirmeware" /></div><span class="button-note">建议顺序：烧入 → 验证 → 跳转</span></div><div class="progress-container" id="ProgressContainer"><div class="progress-bar"><div class="progress-fill" id="ProgressFill"></div></div><div class="progress-text" id="ProgressText">0%</div></div><div id="OperationStatus" class="status"></div></div></div>
             <details class="log-drawer"><summary><span>固件维护日志</span><span class="log-hint">刷写进度与设备响应</span></summary><textarea id="LogBox" class="log-box" readonly></textarea></details>
           </section>
         </div></main>
 
-        <aside class="inspector"><div class="inspector-heading"><div><div class="inspector-kicker">SYSTEM INSPECTOR</div><h2 class="inspector-title">当前工作区</h2></div></div><div class="inspector-card"><h3>设备连接</h3><ul class="inspector-list"><li><span>主控 HID</span><strong>未连接</strong></li><li><span>读卡器 CDC</span><strong>未连接</strong></li><li><span>灯板 CDC</span><strong>未连接</strong></li></ul></div><div class="inspector-card"><h3>建议流程</h3><div class="flow-step current"><span class="flow-number">1</span><span>连接对应设备</span></div><div class="flow-step"><span class="flow-number">2</span><span>读取设备状态</span></div><div class="flow-step"><span class="flow-number">3</span><span>执行目标操作</span></div><div class="flow-step"><span class="flow-number">4</span><span>在日志中确认结果</span></div></div><div class="inspector-card"><h3>快速提示</h3><p>每个设备通道独立连接。切换工作区不会自动断开设备，也不会清除已读取的数据。</p></div></aside>
+        <aside class="inspector">
+          <div class="inspector-heading"><div><div class="inspector-kicker">SYSTEM INSPECTOR</div><h2 class="inspector-title">当前工作区</h2></div></div>
+          <div class="inspector-card"><h3>已选择设备</h3><ul class="inspector-list"><li><span>操作通道</span><strong id="inspector-selected-device">主控配置通道</strong></li><li><span>传输方式</span><strong id="inspector-selected-transport">Web HID · 配置报告 0xAA</strong></li><li><span>连接模型</span><strong>按通道独立连接</strong></li></ul></div>
+          <div class="inspector-card"><h3>建议流程</h3><div class="flow-step current"><span class="flow-number">1</span><span>确认左侧设备通道</span></div><div class="flow-step"><span class="flow-number">2</span><span>点击连接并授权设备</span></div><div class="flow-step"><span class="flow-number">3</span><span>读取状态后执行操作</span></div><div class="flow-step"><span class="flow-number">4</span><span>在日志中确认结果</span></div></div>
+          <div class="inspector-card"><h3>连接模型</h3><p>每个子设备独立连接。切换工作区不会自动断开已连接设备，也不会清除已读取的数据。</p></div>
+        </aside>
       </div>
     </div>
-    <script src="main.js"></script>
+    <script src="/main.js"></script>
   </body>
 </html>
