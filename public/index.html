@@ -166,7 +166,9 @@
       .page-meta { display: flex; align-items: center; flex-shrink: 0; gap: 7px; padding-top: 5px; color: var(--muted); font-size: 11px; }
       .state-dot { width: 7px; height: 7px; flex: 0 0 7px; border-radius: 50%; background: var(--faint); }
       .state-dot.live { background: var(--green); box-shadow: 0 0 9px rgba(47,156,113,0.7); }
+      .state-dot.connecting { background: var(--blue-bright); animation: status-pulse 1s ease-in-out infinite alternate; }
       .state-dot.warning { background: var(--orange); }
+      @keyframes status-pulse { to { opacity: 0.4; } }
 
       .card { margin-bottom: 14px; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow-small); }
       .card-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 18px 13px; border-bottom: 1px solid var(--line); }
@@ -655,7 +657,7 @@
 
         <main class="workspace"><div class="tab-container">
           <section class="tab-content active" id="config-tab" role="tabpanel">
-            <div class="page-head"><div><div class="eyebrow">MAIN DEVICE / CONFIGURATION</div><h1 class="page-title">设备配置中心</h1><p class="page-description">连接主控设备，校准摇杆并管理输入及读卡模式。配置不会自动写入设备，完成检查后再保存。</p></div><div class="page-meta"><span class="state-dot"></span><span>未连接主控设备</span></div></div>
+            <div class="page-head"><div><div class="eyebrow">MAIN DEVICE / CONFIGURATION</div><h1 class="page-title">设备配置中心</h1><p class="page-description">连接主控设备，校准摇杆并管理输入及读卡模式。配置不会自动写入设备，完成检查后再保存。</p></div><div class="page-meta"><span class="state-dot" id="ConfigConnectionDot"></span><span id="ConfigConnectionLabel">未连接主控设备</span></div></div>
             <div class="card connection-card"><div class="card-body"><div class="connection-row"><div class="device-identity"><div class="device-avatar">⌘</div><div><div class="device-name">主控设备 / SimGEKI</div><div class="device-caption">HID 配置通道 · <code>VID 0x8088 / PID 0x00FE</code></div></div></div><div class="connection-actions"><input class="btn-primary" type="button" value="连接主控设备" id="ConnectConfigDevice" /></div></div><ul id="ConfigConnectedList" class="connected-list"></ul><div id="ConfigConnectionStatus" class="status"></div></div></div>
             <div class="metric-row"><div class="metric"><div class="metric-label">连接状态</div><div class="metric-value" id="config-state-value">OFFLINE</div></div><div class="metric"><div class="metric-label">配置通道</div><div class="metric-value accent">HID / 0xAA</div></div><div class="metric"><div class="metric-label">保存策略</div><div class="metric-value good">手动提交</div></div></div>
             <div class="workspace-grid"><div>

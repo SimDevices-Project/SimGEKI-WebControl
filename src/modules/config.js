@@ -17,6 +17,9 @@ export const createConfigController = ({
     connectConfigBtn,
     configConnectList,
     configConnectionStatus,
+    configConnectionDot,
+    configConnectionLabel,
+    configStateValue,
     resetLeverBtn,
     readLeverInfoBtn,
     readInputModeBtn,
@@ -32,6 +35,24 @@ export const createConfigController = ({
     configOperationStatus,
     deviceStat,
   } = elements
+
+  const setConnectionState = (state, label) => {
+    if (configConnectionDot) {
+      const dotState =
+        state === 'connected'
+          ? 'live'
+          : state === 'connecting'
+            ? 'connecting'
+            : state === 'error'
+              ? 'warning'
+              : ''
+      configConnectionDot.className = `state-dot${dotState ? ` ${dotState}` : ''}`
+    }
+    if (configConnectionLabel) configConnectionLabel.textContent = label
+    if (configStateValue) {
+      configStateValue.textContent = state === 'connected' ? 'ONLINE' : state === 'connecting' ? 'CONNECTING' : 'OFFLINE'
+    }
+  }
 
   const getInputModeLabel = (mode) => {
     switch (mode) {
@@ -549,6 +570,7 @@ const getSerialNumber = async () => {
   const connectConfigDevice = async () => {
     try {
       connectConfigBtn.disabled = true
+      setConnectionState('connecting', '正在连接主控设备')
       showStatus('正在请求配置设备...', 'info', configConnectionStatus)
       showConfigLog('开始连接配置设备...')
 
@@ -580,15 +602,24 @@ const getSerialNumber = async () => {
       window.configDevice = configDevice
 
       await configDevice.open()
+      if (!configDevice.opened) throw new Error('设备未成功打开')
+      setConnectionState('connected', '主控设备已连接')
       showStatus('配置设备已连接！', 'success', configConnectionStatus)
       showConfigLog(`配置设备已连接: ${configDevice.productName}`)
 
       communicator.setDevice(configDevice)
 
       await readDeviceStat()
+      if (!configDevice?.opened) return
       showConfigLog('设备连接成功！可以使用"开启实时监控"查看摇杆状态变化')
     } catch (error) {
-      showStatus(`连接失败: ${error.message}`, 'error', configConnectionStatus)
+      const disconnected = Boolean(configDevice && !configDevice.opened && !window.configDevice)
+      setConnectionState(disconnected ? 'disconnected' : 'error', disconnected ? '主控设备已断开' : '连接失败')
+      showStatus(
+        disconnected ? '主控设备已断开' : `连接失败: ${error.message}`,
+        'error',
+        configConnectionStatus
+      )
       showConfigLog(`配置设备连接失败: ${error.message}`)
       if (configDevice && configDevice.opened) {
         try {
@@ -598,7 +629,9 @@ const getSerialNumber = async () => {
         }
       }
       configDevice = null
+      window.configDevice = null
       cachedSerialNumber = null
+      communicator.setDevice(null)
       communicator.clearAllRequests()
       stopLeverMonitoring()
     } finally {
@@ -608,6 +641,18 @@ const getSerialNumber = async () => {
 
   const bindEvents = () => {
     connectConfigBtn.addEventListener('click', connectConfigDevice)
+    navigator.hid?.addEventListener('disconnect', ({ device }) => {
+      if (device !== configDevice) return
+
+      window.configDevice = null
+      communicator.setDevice(null)
+      communicator.clearAllRequests()
+      cachedSerialNumber = null
+      stopLeverMonitoring()
+      setConnectionState('disconnected', '主控设备已断开')
+      showStatus('主控设备已断开', 'error', configConnectionStatus)
+      showConfigLog('主控设备已断开')
+    })
     resetLeverBtn.addEventListener('click', resetLever)
     readLeverInfoBtn.addEventListener('click', readLeverInfo)
     if (readInputModeBtn) {
