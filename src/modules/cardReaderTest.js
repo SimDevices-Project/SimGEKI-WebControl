@@ -56,6 +56,7 @@ export const createCardReaderTestController = ({
   }
 
   const handleReceivedData = async (data) => {
+    showCardReaderLog(`收到数据: ${formatBytes(data)}`)
     for (const byte of data) {
       const frame = cardIOProtocol.decodeByte(byte)
       if (frame) {
