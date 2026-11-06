@@ -84,6 +84,7 @@ export const inputTestElements = {
 
 export const cardReaderTestElements = {
   connectBtn: document.getElementById('ConnectCardReader'),
+  connectCompatibleBtn: document.getElementById('ConnectCompatibleCardReader'),
   disconnectBtn: document.getElementById('DisconnectCardReader'),
   connectionStatus: document.getElementById('CardReaderConnectionStatus'),
   deviceStatus: document.getElementById('CardReaderDeviceStatus'),
@@ -139,6 +140,7 @@ export const allButtons = [
   inputTestElements.startInputTestBtn,
   inputTestElements.stopInputTestBtn,
   cardReaderTestElements.connectBtn,
+  cardReaderTestElements.connectCompatibleBtn,
   cardReaderTestElements.disconnectBtn,
   cardReaderTestElements.getFWVersionBtn,
   cardReaderTestElements.getHWVersionBtn,

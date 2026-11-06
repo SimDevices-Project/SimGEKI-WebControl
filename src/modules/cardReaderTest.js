@@ -24,6 +24,7 @@ export const createCardReaderTestController = ({
 
   const {
     connectBtn,
+    connectCompatibleBtn,
     disconnectBtn,
     connectionStatus,
     deviceStatus,
@@ -188,7 +189,7 @@ export const createCardReaderTestController = ({
     await serialCommunicator.send(frame)
   }
 
-  const connectDevice = async () => {
+  const connectDevice = async (compatible = false) => {
     if (!SerialCommunicator.isSupported()) {
       showCardReaderStatus('浏览器不支持 WebSerial API', 'error', connectionStatus)
       showCardReaderLog('错误: 当前浏览器不支持 WebSerial API，请使用 Chrome/Edge 浏览器')
@@ -197,13 +198,14 @@ export const createCardReaderTestController = ({
 
     try {
       connectBtn.disabled = true
+      connectCompatibleBtn.disabled = true
       showCardReaderStatus('正在请求设备...', 'info', connectionStatus)
       showCardReaderLog('开始连接读卡器设备...')
-      showCardReaderLog(`期望 VID: 0x${CARD_READER_VID.toString(16)}, PID: 0x${CARD_READER_PID.toString(16)}`)
+      showCardReaderLog(compatible ? '兼容读卡器：显示所有可用 COM 口，不按 VID/PID 过滤' : `期望 VID: 0x${CARD_READER_VID.toString(16)}, PID: 0x${CARD_READER_PID.toString(16)}`)
 
       serialCommunicator = new SerialCommunicator()
       
-      await navigator.serial.requestPort({
+      await navigator.serial.requestPort(compatible ? {} : {
         filters: [{
           usbVendorId: CARD_READER_VID,
           usbProductId: CARD_READER_PID,
@@ -257,6 +259,7 @@ export const createCardReaderTestController = ({
       serialCommunicator = null
     } finally {
       connectBtn.disabled = false
+      connectCompatibleBtn.disabled = false
     }
   }
 
@@ -408,7 +411,8 @@ export const createCardReaderTestController = ({
   }
 
   const bindEvents = () => {
-    connectBtn.addEventListener('click', connectDevice)
+    connectBtn.addEventListener('click', () => connectDevice())
+    connectCompatibleBtn.addEventListener('click', () => connectDevice(true))
     disconnectBtn.addEventListener('click', disconnectDevice)
     getFWVersionBtn.addEventListener('click', getFWVersion)
     getHWVersionBtn.addEventListener('click', getHWVersion)
